@@ -25,7 +25,7 @@ function App() {
       <BrowserRouter>
         <Menu items={menuItems} />
         <Routes>
-          <Route path="/manager" element={<Manager name={name} age={age} employees={employees} />} />
+          <Route path="/manager" element={<Manager />} />
           <Route path="/" element={<Login />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>

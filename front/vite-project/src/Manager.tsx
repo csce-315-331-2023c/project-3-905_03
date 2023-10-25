@@ -6,16 +6,13 @@ type Props = {
   employees: string[];
 };
 
-const Manager: React.FC<Props> = ({ name, age, employees }) => {
+const Manager: React.FC<Props> = () => {
   return (
     <div>
       <h1>Welcome to the Manager page!</h1>
-      <p>My name is {name} and I am {age} years old.</p>
+      <p>My name is and I am  years old.</p>
       <p>My employees are:</p>
       <ul>
-        {employees.map((employee, index) => (
-          <li key={index}>{employee}</li>
-        ))}
       </ul>
     </div>
   );

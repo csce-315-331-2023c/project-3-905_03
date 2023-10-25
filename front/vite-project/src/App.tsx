@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Menu from './Menu'
 import Manager from './Manager'
 import Login from './Login'
+import ManagerMenu from './Manager-Menu';
 
 interface Props {
   name: string;
@@ -26,6 +27,7 @@ function App() {
         <Menu items={menuItems} />
         <Routes>
           <Route path="/manager" element={<Manager />} />
+          <Route path="/manage-menu" element={<ManagerMenu />} />
           <Route path="/" element={<Login />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>

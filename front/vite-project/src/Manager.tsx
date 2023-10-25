@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
   name: string;
@@ -6,14 +7,18 @@ type Props = {
   employees: string[];
 };
 
+
+
 const Manager: React.FC<Props> = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <h1>Welcome to the Manager page!</h1>
-      <p>My name is and I am  years old.</p>
-      <p>My employees are:</p>
-      <ul>
-      </ul>
+      <button onClick={() => navigate("/manage-menu")}>Manage Menu</button>
+      <button>Manage Inventory</button>
+      <button>Manage Orders</button>
+      <button>Analytics</button>
     </div>
   );
 };

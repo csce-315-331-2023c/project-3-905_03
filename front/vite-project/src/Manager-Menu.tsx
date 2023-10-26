@@ -1,9 +1,10 @@
 import React from 'react';
+import Table from './Table';
 
 const ManagerMenu: React.FC = () => {
     return (
       <div>
-        <h1>Welcome to the Menu!</h1>
+        <Table />
       </div>
     );
   };

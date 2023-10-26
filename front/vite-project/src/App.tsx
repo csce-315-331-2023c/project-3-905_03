@@ -4,6 +4,9 @@ import Menu from './Menu'
 import Manager from './Manager'
 import Login from './Login'
 import ManagerMenu from './Manager-Menu';
+import ManagerInventory from './Manager-Inventory';
+import ManagerOrders from './Manager-Orders';
+import ManagerAnalytics from './Manager-Analytics';
 
 interface Props {
   name: string;
@@ -27,7 +30,10 @@ function App() {
         <Menu items={menuItems} />
         <Routes>
           <Route path="/manager" element={<Manager />} />
-          <Route path="/manage-menu" element={<ManagerMenu />} />
+          <Route path="/manager-menu" element={<ManagerMenu />} />
+          <Route path="/manager-inventory" element={<ManagerInventory />} />
+          <Route path="/manager-orders" element={<ManagerOrders />} />
+          <Route path="/manager-analytics" element={<ManagerAnalytics />} />
           <Route path="/" element={<Login />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>

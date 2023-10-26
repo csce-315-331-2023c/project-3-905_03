@@ -19,15 +19,15 @@ function App() {
   const [age, setAge] = useState(30)
   const [employees, setEmployees] = useState(['Alice', 'Bob', 'Charlie'])
 
-  const menuItems: MenuItem[] = [
-    { label: 'Home', link: '/' },
-    { label: 'Manager', link: '/manager' },
-  ];
+  // const menuItems: MenuItem[] = [
+  //   { label: 'Home', link: '/' },
+  //   { label: 'Manager', link: '/manager' },
+  // ];
 
   return (
     <>
       <BrowserRouter>
-        <Menu items={menuItems} />
+        {/* <Menu items={menuItems} /> */}
         <Routes>
           <Route path="/manager" element={<Manager />} />
           <Route path="/manager-menu" element={<ManagerMenu />} />

@@ -9,16 +9,10 @@ interface MenuProps {
   items: MenuItem[];
 }
 
-const Menu: React.FC<MenuProps> = ({ items }) => {
+const Menu: React.FC = () => {
   return (
     <nav>
-      <ul>
-        {items.map((item) => (
-          <li key={item.link}>
-            <a href={item.link}>{item.name}</a>
-          </li>
-        ))}
-      </ul>
+     
     </nav>
   );
 };

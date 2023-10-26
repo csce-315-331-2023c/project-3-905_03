@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Table from './Table';
 
 const ManagerMenu: React.FC = () => {
     return (
       <div>
-        <Table />
+        <Table/>
       </div>
     );
   };

@@ -4,6 +4,7 @@ const PORT = 8080;
 
 app.use(express.json());
 
+
 // when "get /arg" is called this function will be executed
 // req is incoming data, response is data we want to send back to client
 // try GET http://localhost:8080/arg on postman
@@ -17,14 +18,17 @@ app.get('/tshirt', (req, res) => {
 app.post('/tshirt/:id', (req, res) => {
 
     const { id } = req.params;
-    const { logo } = req.body;
+    let { num } = req.body;
 
-    if (!logo) {
-        res.status(418).send({ message: 'We need a logo!'})
+    if (!num) {
+        res.status(418).send({ message: 'We need a num!'})
+    }
+    else {
+        num = num * 20;
     }
 
     res.send({
-        tshirt: `tshirt with your ${logo} and ID of ${id}`,
+        tshirt: `tshirt with num of ${num} and ID of ${id}`,
     });
 
 });

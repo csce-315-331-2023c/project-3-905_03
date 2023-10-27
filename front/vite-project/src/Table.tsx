@@ -4,11 +4,13 @@ import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
 
 function Table() {
     const [rows, setRows] = useState([
-        {item_id: 0, served_item: "chickenAndWafflesSnack", item_price: 6.95},
-        {item_id: 1, served_item: "chickenAndWafflesRegular", item_price: 11.85},
-        {item_id: 2, served_item: "chickenAndWafflesPlus", item_price: 15.65}
+        {item_id: 0, served_item: "chickenAndWafflesSnack", item_price: "6.95"},
+        {item_id: 1, served_item: "chickenAndWafflesRegular", item_price: "11.85"},
+        {item_id: 2, served_item: "chickenAndWafflesPlus", item_price: "15.65"}
     ]);
     const [editId, setEditId] = useState(-1);
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
     const [rowToEdit, setRowToEdit] = useState(null);
     
     const handleDeleteRow = (targetIndex: number) => {
@@ -16,7 +18,31 @@ function Table() {
     };
 
     const handleEditRow = (item_id: number) => {
+        rows.map((row) => {
+            if (row.item_id === item_id){
+                setName(row.served_item)
+                setPrice(row.item_price)
+            }
+        })
         setEditId(item_id)
+    }
+
+    const handleUpdate = () => {
+        const updatedRows = rows.map((row) => {
+            if (row.item_id === editId){
+                return {
+                    ...row,
+                    served_item: name,
+                    item_price: price
+                };
+            }
+            return row;
+        });
+
+        setRows(updatedRows);
+        setEditId(-1);
+        setName('')
+        setPrice('')
     }
     
     return (
@@ -36,9 +62,9 @@ function Table() {
                             row.item_id === editId ?
                             <tr>
                                 <td>{row.item_id}</td>
-                                <td><input type="text" value={row.served_item}/></td>
-                                <td><input type="text" value={row.item_price} /></td>
-                                <td><button>Update</button></td>
+                                <td><input type="text" value={name} onChange={e => setName(e.target.value)}/></td>
+                                <td><input type="text" value={price} onChange={e => setPrice(e.target.value)}/></td>
+                                <td><button onClick={handleUpdate}>Update</button></td>
                             </tr>
                             :
                             <tr key={idx}>

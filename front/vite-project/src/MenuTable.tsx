@@ -3,6 +3,12 @@ import "./Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
 
 function MenuTable() {
+    interface Row {
+        item_id: number;
+        served_item: string;
+        item_price: string;
+    }
+
     const [rows, setRows] = useState([
         {item_id: 0, served_item: "chickenAndWafflesSnack", item_price: "6.95"},
         {item_id: 1, served_item: "chickenAndWafflesRegular", item_price: "11.85"},
@@ -25,6 +31,10 @@ function MenuTable() {
             }
         })
         setEditId(item_id)
+    }
+
+    const handleAddRow = (newRow: Row) => {
+        setRows([...rows, newRow])
     }
 
     const handleUpdate = () => {

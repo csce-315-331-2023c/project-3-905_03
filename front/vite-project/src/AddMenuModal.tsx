@@ -1,7 +1,27 @@
-import React from 'react';
+import React, {useState, ChangeEvent} from 'react';
+import {Multiselect} from 'multiselect-react-dropdown';
 import "./AddMenuModal.css";
 
 function AddMenuModal () {
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  
+    const options = [
+        'New Ingredient',
+        'chicken',
+        'waffles',
+        'eggs',
+        'bread',
+        'strawberries',
+    ];
+
+    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        const selectedIngredients = Array.from(
+            e.target.selectedOptions,
+            (option) => option.value
+          );
+          setSelectedOptions(selectedIngredients);
+    };    
+
     return (
         <div className='modal-container'>
             <div className='modal'>
@@ -15,8 +35,8 @@ function AddMenuModal () {
                         <input type="item_price" />
                     </div>
                     <div>
-                        <label htmlFor="ingredient" className='form-label'>Select Ingredients</label>
-                        <select name="" id=""></select>
+                        <label htmlFor="Select Ingredient(s)" className='form-label'>Select Ingredients</label>
+                        <Multiselect isObject={false} options={options} className='ingredient-select'/>
                     </div>
                 </form>
             </div>

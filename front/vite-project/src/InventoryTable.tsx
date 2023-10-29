@@ -15,6 +15,7 @@ function InventoryTable() {
     const [maxAmount, setMaxAmount] = useState('');
     const [rowToEdit, setRowToEdit] = useState(null);
     
+    
     const handleDeleteRow = (targetIndex: number) => {
         setRows(rows.filter((_, idx) => idx !== targetIndex))
     };
@@ -36,7 +37,7 @@ function InventoryTable() {
             if (row.stock_id === editId){
                 return {
                     ...row,
-                    served_item: name,
+                    stock_item: name,
                     cost: cost,
                     stock_quantity: quantity,
                     max_amount: maxAmount

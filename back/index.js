@@ -33,15 +33,35 @@ app.get('/getServedItems', (req, res) => {
 });
 
 /**
- * add menu item
+ * add entry to served items table in database
  */
-app.post('/addMenuItem', (req, res) => {
+app.post('/addServedItem', (req, res) => {
     
     let { item_id, served_item, item_price } = req.body;
 
     client.connect();
 
     client.query('INSERT INTO served_items (item_id, served_item, item_price) VALUES ($1, $2, $3)', [item_id, served_item, item_price], (err, result) => {
+        if (!err) {
+            res.status(200).send('success!');
+        }
+        else {
+            res.status(400).send(err.message);
+        }
+        client.end;
+    })
+});
+
+/**
+ * add entry to stock items table in database
+ */
+app.post('/addStockItem', (req, res) => {
+    
+    let { stock_id, stock_item, cost, stock_quantity, max_amount } = req.body;
+
+    client.connect();
+
+    client.query('INSERT INTO stock_items (stock_id, stock_item, cost, stock_quantity, max_amount) VALUES ($1, $2, $3, $4, $5)', [stock_id, stock_item, cost, stock_quantity, max_amount], (err, result) => {
         if (!err) {
             res.status(200).send('success!');
         }

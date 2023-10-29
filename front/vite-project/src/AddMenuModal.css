@@ -22,3 +22,12 @@
 .form-label {
     color: black;
 }
+
+.modal .btn {
+    display: block;
+    margin: auto;
+}
+
+.ingredient-select {
+    color: black;
+}

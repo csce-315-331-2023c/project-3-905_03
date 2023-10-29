@@ -2,7 +2,11 @@ import React, {useState, ChangeEvent} from 'react';
 import {Multiselect} from 'multiselect-react-dropdown';
 import "./AddMenuModal.css";
 
-function AddMenuModal () {
+interface AddMenuModalProps {
+    closeModal: () => void
+}
+
+const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal}) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   
     const options = [
@@ -23,21 +27,22 @@ function AddMenuModal () {
     };    
 
     return (
-        <div className='modal-container'>
+        <div className='modal-container' onClick={closeModal}>
             <div className='modal'>
                 <form action="">
-                    <div>
+                    <div className='form-group'>
                         <label htmlFor="name" className='form-label'>Item Name</label>
                         <input type="served_item" />
                     </div>
-                    <div>
+                    <div className='form-group'>
                         <label htmlFor="price" className='form-label'>Item Price</label>
                         <input type="item_price" />
                     </div>
-                    <div>
+                    <div className='form-group'>
                         <label htmlFor="Select Ingredient(s)" className='form-label'>Select Ingredients</label>
                         <Multiselect isObject={false} options={options} className='ingredient-select'/>
                     </div>
+                    <button className='btn'>Submit</button>
                 </form>
             </div>
         </div>

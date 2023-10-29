@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import Table from './Table';
+import React from 'react';
+import MenuTable from './MenuTable';
 import AddMenuModal from './AddMenuModal';
 
 const ManagerMenu: React.FC = () => {
     return (
       <div>
-        <Table/>
+        <MenuTable/>
         <AddMenuModal/>
       </div>
     );

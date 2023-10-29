@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import "./Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
 
-function Table() {
+function MenuTable() {
     const [rows, setRows] = useState([
         {item_id: 0, served_item: "chickenAndWafflesSnack", item_price: "6.95"},
         {item_id: 1, served_item: "chickenAndWafflesRegular", item_price: "11.85"},
@@ -87,4 +87,4 @@ function Table() {
     )
 }
 
-export default Table
+export default MenuTable

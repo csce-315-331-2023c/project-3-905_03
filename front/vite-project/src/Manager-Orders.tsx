@@ -1,9 +1,10 @@
 import React from 'react';
+import OrdersTable from './OrdersTable';
 
 const ManagerOrders: React.FC = () => {
     return (
       <div>
-        <h1>Welcome to the Orders!</h1>
+        <OrdersTable/>
       </div>
     );
   };

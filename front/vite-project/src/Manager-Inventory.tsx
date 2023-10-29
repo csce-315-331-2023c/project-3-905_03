@@ -1,9 +1,10 @@
 import React from 'react';
+import InventoryTable from './InventoryTable';
 
 const ManagerInventory: React.FC = () => {
     return (
       <div>
-        <h1>Welcome to the Inventory!</h1>
+        <InventoryTable/>
       </div>
     );
   };

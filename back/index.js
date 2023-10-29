@@ -13,10 +13,13 @@ const client = new Client({
     database: 'csce315_905_03db'
 })
 
-app.get('/menu', (req, res) => {
+/**
+ * return served items in json form
+ */
+app.get('/getServedItems', (req, res) => {
     client.connect();
 
-    client.query(`Select * from served_items`, (err, result) => {
+    client.query(`SELECT * FROM served_items`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -24,6 +27,26 @@ app.get('/menu', (req, res) => {
         }
         else {
             console.log(err.message);
+        }
+        client.end;
+    })
+});
+
+/**
+ * add menu item
+ */
+app.post('/addMenuItem', (req, res) => {
+    
+    let { item_id, served_item, item_price } = req.body;
+
+    client.connect();
+
+    client.query('INSERT INTO served_items (item_id, served_item, item_price) VALUES ($1, $2, $3)', [item_id, served_item, item_price], (err, result) => {
+        if (!err) {
+            res.status(200).send('success!');
+        }
+        else {
+            res.status(400).send(err.message);
         }
         client.end;
     })

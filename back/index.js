@@ -36,61 +36,99 @@ app.get('/getServedItems', (req, res) => {
  * add entry to served items table in database
  */
 app.post('/addServedItem', (req, res) => {
-    
-    let { item_id, served_item, item_price } = req.body;
+
+    let { served_item, item_price } = req.body;
 
     client.connect();
 
-    client.query('INSERT INTO served_items (item_id, served_item, item_price) VALUES ($1, $2, $3)', [item_id, served_item, item_price], (err, result) => {
-        if (!err) {
-            res.status(200).send('success!');
-        }
-        else {
+    // Query the database for the max item_id
+    client.query('SELECT MAX(item_id) FROM served_items', (err, result) => {
+        if (err) {
             res.status(400).send(err.message);
+            client.end();
+            return;
         }
-        client.end;
-    })
+
+        let maxItemId = result.rows[0].max || 0; // If no records exist, default to 0
+        let newItemId = maxItemId + 1;
+
+        // Insert the new entry with the incremented item_id
+        client.query('INSERT INTO served_items (item_id, served_item, item_price) VALUES ($1, $2, $3)', [newItemId, served_item, item_price], (err, result) => {
+            if (!err) {
+                res.status(200).send('success!');
+            } else {
+                res.status(400).send(err.message);
+            }
+            client.end();
+        });
+    });
 });
+
 
 /**
  * add entry to stock items table in database
  */
 app.post('/addStockItem', (req, res) => {
-    
-    let { stock_id, stock_item, cost, stock_quantity, max_amount } = req.body;
+
+    let { stock_item, cost, stock_quantity, max_amount } = req.body;
 
     client.connect();
 
-    client.query('INSERT INTO stock_items (stock_id, stock_item, cost, stock_quantity, max_amount) VALUES ($1, $2, $3, $4, $5)', [stock_id, stock_item, cost, stock_quantity, max_amount], (err, result) => {
-        if (!err) {
-            res.status(200).send('success!');
-        }
-        else {
+    // Query the database for the max stock_id
+    client.query('SELECT MAX(stock_id) FROM stock_items', (err, result) => {
+        if (err) {
             res.status(400).send(err.message);
+            client.end();
+            return;
         }
-        client.end;
-    })
+
+        let maxStockId = result.rows[0].max || 0; // If no records exist, default to 0
+        let newStockId = maxStockId + 1;
+
+        // Insert the new entry with the incremented stock_id
+        client.query('INSERT INTO stock_items (stock_id, stock_item, cost, stock_quantity, max_amount) VALUES ($1, $2, $3, $4, $5)', [newStockId, stock_item, cost, stock_quantity, max_amount], (err, result) => {
+            if (!err) {
+                res.status(200).send('success!');
+            } else {
+                res.status(400).send(err.message);
+            }
+            client.end();
+        });
+    });
 });
+
 
 /**
  * add entry to served item stock item table in database
  */
 app.post('/addServedItemStockItem', (req, res) => {
-    
-    let { served_stock_id, item_id, stock_id } = req.body;
+    let { item_id, stock_id } = req.body;
 
     client.connect();
 
-    client.query('INSERT INTO serveditemstockitem (served_stock_id, item_id, stock_id) VALUES ($1, $2, $3)', [served_stock_id, item_id, stock_id], (err, result) => {
-        if (!err) {
-            res.status(200).send('success!');
-        }
-        else {
+    //Query the database for the max served_stock_id
+    client.query('SELECT MAX(served_stock_id) FROM serveditemstockitem', (err, result) => {
+        if (err) {
             res.status(400).send(err.message);
+            client.end();
+            return;
         }
-        client.end;
-    })
+
+        let maxServedStockId = result.rows[0].max || 0; // If no records exist, default to 0
+        let newServedStockId = maxServedStockId + 1;
+
+        //Insert the new entry with the incremented served_stock_id
+        client.query('INSERT INTO serveditemstockitem (served_stock_id, item_id, stock_id) VALUES ($1, $2, $3)', [newServedStockId, item_id, stock_id], (err, result) => {
+            if (!err) {
+                res.status(200).send('success!');
+            } else {
+                res.status(400).send(err.message);
+            }
+            client.end();
+        });
+    });
 });
+
 
 app.listen(
     PORT,

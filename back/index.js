@@ -72,6 +72,26 @@ app.post('/addStockItem', (req, res) => {
     })
 });
 
+/**
+ * add entry to served item stock item table in database
+ */
+app.post('/addServedItemStockItem', (req, res) => {
+    
+    let { served_stock_id, item_id, stock_id } = req.body;
+
+    client.connect();
+
+    client.query('INSERT INTO serveditemstockitem (served_stock_id, item_id, stock_id) VALUES ($1, $2, $3)', [served_stock_id, item_id, stock_id], (err, result) => {
+        if (!err) {
+            res.status(200).send('success!');
+        }
+        else {
+            res.status(400).send(err.message);
+        }
+        client.end;
+    })
+});
+
 app.listen(
     PORT,
     () => console.log(`it alive on http://localhost:${PORT}`)

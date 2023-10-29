@@ -44,6 +44,7 @@ function Table() {
         setName('')
         setPrice('')
     }
+
     
     return (
         <div className='table-container'>

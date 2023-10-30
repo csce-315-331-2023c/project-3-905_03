@@ -9,10 +9,11 @@ interface MenuProps {
   items: MenuItem[];
 }
 
-const Menu: React.FC<MenuProps> = ({ items }) => {
+const Menu: React.FC = () => {
   return (
-    <>
-    </>
+    <nav>
+     
+    </nav>
   );
 };
 

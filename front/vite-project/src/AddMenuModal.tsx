@@ -16,13 +16,14 @@ interface stockData {
 interface AddMenuModalProps {
     closeModal: () => void
     onSubmit: (newRow: Row) => void
+    maxID: number
 }
 
-const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit}) => {
+const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit, maxID}) => {
     const [options, setOptions] = useState<any []>([])
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [formState, setFormState] = useState(
-        {item_id: 0, served_item: "", item_price: 0}
+        {item_id: ++maxID, served_item: "", item_price: 0}
     )
 
 

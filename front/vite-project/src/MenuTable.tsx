@@ -20,6 +20,12 @@ function MenuTable() {
     const [name, setName] = useState('');
     const [price, setPrice] = useState(-1);
     const [modalOpen, setModalOpen] = useState(false);
+    let maxItemId = -1;
+    for (let row of rows){
+        if (row.item_id > maxItemId){
+            maxItemId = row.item_id;
+        }
+    }
 
     useEffect(() => {
         axios.get('http://localhost:8080/getServedItems')
@@ -110,7 +116,7 @@ function MenuTable() {
             <button className='btn' onClick={() => setModalOpen(true)}>Create New Menu Item</button>
             {modalOpen && <AddMenuModal closeModal={() => (
                 setModalOpen(false)
-            )} onSubmit={handleAddRow}/>}
+            )} onSubmit={handleAddRow} maxID={maxItemId}/>}
         </div>
     )
 }

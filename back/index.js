@@ -52,6 +52,29 @@ app.get('/getStockItems', (req, res) => {
 });
 
 /**
+ * get 20 most recent orders
+ */
+app.get('/getRecentOrders', (req, res) => {
+    client.connect();
+
+    client.query(`select * from orders order by order_date desc limit 20`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            })
+        }
+        else {
+            console.log(err.message);
+        }
+        client.end;
+    })
+});
+
+/**
+ * get orders between 2 dates
+ */
+
+/**
  * add entry to served items table in database
  */
 app.post('/addServedItem', (req, res) => {

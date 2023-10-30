@@ -33,6 +33,25 @@ app.get('/getServedItems', (req, res) => {
 });
 
 /**
+ * return stock items in json form
+ */
+app.get('/getStockItems', (req, res) => {
+    client.connect();
+
+    client.query(`SELECT * FROM stock_items`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            })
+        }
+        else {
+            console.log(err.message);
+        }
+        client.end;
+    })
+});
+
+/**
  * add entry to served items table in database
  */
 app.post('/addServedItem', (req, res) => {

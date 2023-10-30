@@ -1,3 +1,4 @@
+// NOTE this was a test file, is not currently used in the project
 const { Client } = require('pg')
 
 const client = new Client({

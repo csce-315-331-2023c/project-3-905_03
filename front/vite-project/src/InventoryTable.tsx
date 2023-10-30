@@ -1,8 +1,17 @@
 import React, {useState} from 'react';
 import "./Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
+import AddInventoryModal from './AddInventoryModal';
 
 function InventoryTable() {
+    interface Row {
+        stock_id: number;
+        stock_item: string;
+        cost: string;
+        stock_quantity: string;
+        max_amount: string;
+    }
+
     const [rows, setRows] = useState([
         {stock_id: 0, stock_item: "chicken", cost: "6.95", stock_quantity: "39", max_amount: "120"},
         {stock_id: 1, stock_item: "waffles", cost: "3.95", stock_quantity: "62", max_amount: "128"},
@@ -14,7 +23,7 @@ function InventoryTable() {
     const [quantity, setQuantity] = useState('');
     const [maxAmount, setMaxAmount] = useState('');
     const [rowToEdit, setRowToEdit] = useState(null);
-    
+    const [modalOpen, setModalOpen] = useState(false);
     
     const handleDeleteRow = (targetIndex: number) => {
         setRows(rows.filter((_, idx) => idx !== targetIndex))
@@ -30,6 +39,10 @@ function InventoryTable() {
             }
         })
         setEditId(stock_id)
+    }
+
+    const handleAddRow = (newRow: Row): void => {
+        setRows([...rows, newRow])
     }
 
     const handleUpdate = () => {
@@ -98,6 +111,10 @@ function InventoryTable() {
                     }
                 </tbody>
             </table>
+            <button className='btn' onClick={() => setModalOpen(true)}>Create New Inventory Item</button>
+            {modalOpen && <AddInventoryModal closeModal={() => (
+                setModalOpen(false)
+            )} onSubmit={handleAddRow}/>}
         </div>
     )
 }

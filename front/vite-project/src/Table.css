@@ -58,9 +58,10 @@
 /* Menu Components */
 
 .btn {
-    margin-top: 1rem;
+    margin-top: 2rem;
+    margin-left: 65%;
     border: none;
-    background-color: black;
+    background-color: #242424;
     color: #fff;
     padding: 0.5rem 1rem;
     border-radius: 10px;

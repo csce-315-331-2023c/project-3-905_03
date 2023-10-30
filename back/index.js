@@ -4,6 +4,9 @@ const PORT = 8080;
 
 app.use(express.json());
 
+var cors = require('cors');
+app.use(cors());
+
 const { Client } = require('pg')
 
 /**

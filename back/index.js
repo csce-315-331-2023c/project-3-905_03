@@ -228,14 +228,33 @@ app.post('/addServedItemStockItem', (req, res) => {
  * will be provided with all values
  */
 app.post('/editServedItem', (req, res) => {
+    let { item_id, served_item, item_price } = req.body;
 
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('UPDATE served_items SET served_item = $1, item_price = $2 WHERE item_id = $3', [served_item, item_price, item_id], (err, result) => {
+        if (!err) {
+            res.status(200).send('success!');
+        } else {
+            res.status(400).send(err.message);
+        }
+        client.end();
+    })
 });
 /**
  * edit stock_items entry
  * will be provided with all values
  */
 app.post('/editStockItem', (req, res) => {
-
+    let { stock_id, stock_item, cost, stock_quantity, max_amount } = req.body;
+    
 });
 
 /**

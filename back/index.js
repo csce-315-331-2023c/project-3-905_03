@@ -20,7 +20,7 @@ app.get('/getServedItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items`, (err, result) => {
+    client.query(`SELECT * FROM served_items ORDER BY item_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -47,7 +47,7 @@ app.get('/getStockItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM stock_items`, (err, result) => {
+    client.query(`SELECT * FROM stock_items ORDER BY stock_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows

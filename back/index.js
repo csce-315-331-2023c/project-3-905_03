@@ -10,7 +10,7 @@ const { Client } = require('pg')
  * return served items in json form
  */
 app.get('/getServedItems', (req, res) => {
-    
+
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
         user: 'csce315_905_03user',
@@ -37,14 +37,14 @@ app.get('/getServedItems', (req, res) => {
  * return stock items in json form
  */
 app.get('/getStockItems', (req, res) => {
-    
+
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
         user: 'csce315_905_03user',
         password: '90503',
         database: 'csce315_905_03db'
     })
-    
+
     client.connect();
 
     client.query(`SELECT * FROM stock_items`, (err, result) => {
@@ -64,7 +64,7 @@ app.get('/getStockItems', (req, res) => {
  * get 20 most recent orders
  */
 app.get('/getRecentOrders', (req, res) => {
-    
+
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
         user: 'csce315_905_03user',
@@ -175,6 +175,7 @@ app.post('/addStockItem', (req, res) => {
  * add entry to served item stock item table in database
  */
 app.post('/addServedItemStockItem', (req, res) => {
+
     let { item_id, stock_id } = req.body;
 
     const client = new Client({
@@ -213,7 +214,7 @@ app.post('/addServedItemStockItem', (req, res) => {
  * edit served_items entry 
  * will be provided with all values
  */
-app.post('/editServedItem', (req, res) => { 
+app.post('/editServedItem', (req, res) => {
 
 });
 /**
@@ -221,13 +222,44 @@ app.post('/editServedItem', (req, res) => {
  * will be provided with all values
  */
 app.post('/editStockItem', (req, res) => {
-    
-    });
+
+});
 
 /**
  * Delete served_items entry
  * will be provided with id
  */
+app.post('/deleteServedItem', (req, res) => { 
+    let { item_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    //delete from joint table
+    client.query('DELETE FROM serveditemstockitem WHERE item_id = $1', [item_id], (err, result) => {
+        if (err) {
+            res.status(400).send(err.message);
+            client.end();
+            return;
+        }
+
+        //Insert the new entry with the incremented served_stock_id
+        client.query('DELETE FROM served_items WHERE item_id = $1', [item_id], (err, result) => {
+            if (!err) {
+                res.status(200).send('success!');
+            } else {
+                res.status(400).send(err.message);
+            }
+            client.end();
+        });
+    });
+});
 
 /**
  * Delete stock_items entry

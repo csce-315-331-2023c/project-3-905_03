@@ -1,5 +1,5 @@
 import React from 'react';
-import InventoryTable from './TableInventory';
+import InventoryTable from './InventoryTable';
 
 const ManagerInventory: React.FC = () => {
     return (

@@ -1,0 +1,27 @@
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--background-color);
+}
+
+.login-input {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 0.6em;
+    margin: 0.3em;
+    width: 80%;
+}
+
+.login-button,
+.google-button {
+    margin-top: 1em;
+}
+
+.google-button {
+    background-color: #4285F4;
+    color: white;
+}

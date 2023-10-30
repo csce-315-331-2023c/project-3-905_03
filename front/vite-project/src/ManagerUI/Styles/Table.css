@@ -1,5 +1,5 @@
 .table-container {
-    width: 70%;
+    width: 100%;
 }
 
 .table {
@@ -10,11 +10,10 @@
     box-shadow: 0px 10px 10px #ccc;
     border-radius: 10px;
     white-space: nowrap;
-    width: 100em;
+    width: 100%;
     max-width: 80%;
     margin: auto;
-    margin-left: 35%;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .table thead {

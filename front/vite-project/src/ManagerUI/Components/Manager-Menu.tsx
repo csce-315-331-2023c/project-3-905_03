@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import MenuTable from './TableMenu';
+import MenuTable from './MenuTable';
 import AddMenuModal from './AddMenuModal';
 
 const ManagerMenu: React.FC = () => {

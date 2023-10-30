@@ -6,17 +6,18 @@ app.use(express.json());
 
 const { Client } = require('pg')
 
-const client = new Client({
-    host: 'csce-315-db.engr.tamu.edu',
-    user: 'csce315_905_03user',
-    password: '90503',
-    database: 'csce315_905_03db'
-})
-
 /**
  * return served items in json form
  */
 app.get('/getServedItems', (req, res) => {
+    
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
     client.connect();
 
     client.query(`SELECT * FROM served_items`, (err, result) => {
@@ -28,7 +29,7 @@ app.get('/getServedItems', (req, res) => {
         else {
             console.log(err.message);
         }
-        client.end;
+        client.end();
     })
 });
 
@@ -36,6 +37,14 @@ app.get('/getServedItems', (req, res) => {
  * return stock items in json form
  */
 app.get('/getStockItems', (req, res) => {
+    
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+    
     client.connect();
 
     client.query(`SELECT * FROM stock_items`, (err, result) => {
@@ -55,6 +64,14 @@ app.get('/getStockItems', (req, res) => {
  * get 20 most recent orders
  */
 app.get('/getRecentOrders', (req, res) => {
+    
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
     client.connect();
 
     client.query(`select * from orders order by order_date desc limit 20`, (err, result) => {
@@ -80,6 +97,13 @@ app.get('/getRecentOrders', (req, res) => {
 app.post('/addServedItem', (req, res) => {
 
     let { served_item, item_price } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
 
     client.connect();
 
@@ -114,6 +138,13 @@ app.post('/addStockItem', (req, res) => {
 
     let { stock_item, cost, stock_quantity, max_amount } = req.body;
 
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
     client.connect();
 
     // Query the database for the max stock_id
@@ -146,6 +177,13 @@ app.post('/addStockItem', (req, res) => {
 app.post('/addServedItemStockItem', (req, res) => {
     let { item_id, stock_id } = req.body;
 
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
     client.connect();
 
     //Query the database for the max served_stock_id
@@ -171,36 +209,38 @@ app.post('/addServedItemStockItem', (req, res) => {
     });
 });
 
+/**
+ * edit served_items entry 
+ * will be provided with all values
+ */
+app.post('/editServedItem', (req, res) => { 
+
+});
+/**
+ * edit stock_items entry
+ * will be provided with all values
+ */
+app.post('/editStockItem', (req, res) => {
+    
+    });
+
+/**
+ * Delete served_items entry
+ * will be provided with id
+ */
+
+/**
+ * Delete stock_items entry
+ * will be provided with id
+ */
+
+
 
 app.listen(
     PORT,
     () => console.log(`it alive on http://localhost:${PORT}`)
 )
 
-// // when "get /arg" is called this function will be executed
-// // req is incoming data, response is data we want to send back to client
-// // try GET http://localhost:8080/arg on postman
-// app.get('/tshirt', (req, res) => {
-//     res.status(200).send({
-//         tshirt: 'red',
-//         size: 'large',
-//     })
-// });
-
-// app.post('/tshirt/:id', (req, res) => {
-
-//     const { id } = req.params;
-//     let { num } = req.body;
-
-//     if (!num) {
-//         res.status(418).send({ message: 'We need a num!'})
-//     }
-//     else {
-//         num = num * 20;
-//     }
-
-//     res.send({
-//         tshirt: `tshirt with num of ${num} and ID of ${id}`,
-//     });
-
-// });
+// when "get /arg" is called this function will be executed
+// req is incoming data, response is data we want to send back to client
+// try GET http://localhost:8080/arg on postman

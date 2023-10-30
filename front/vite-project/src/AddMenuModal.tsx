@@ -6,7 +6,7 @@ import "./AddMenuModal.css";
 interface Row {
     item_id: number;
     served_item: string;
-    item_price: number;
+    item_price: string;
 }
 
 interface stockData {
@@ -23,7 +23,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit, maxID}
     const [options, setOptions] = useState<any []>([])
     const [selectedOptions, setSelectedOptions] = useState<string []>([]);
     const [formState, setFormState] = useState(
-        {item_id: ++maxID, served_item: "", item_price: 0}
+        {item_id: ++maxID, served_item: "", item_price: ""}
     )
   
     useEffect(() => {

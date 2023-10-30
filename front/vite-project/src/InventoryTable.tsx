@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios'
 import "./Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
 import AddInventoryModal from './AddInventoryModal';
@@ -12,20 +13,37 @@ function InventoryTable() {
         max_amount: string;
     }
 
-    const [rows, setRows] = useState([
-        {stock_id: 0, stock_item: "chicken", cost: "6.95", stock_quantity: "39", max_amount: "120"},
-        {stock_id: 1, stock_item: "waffles", cost: "3.95", stock_quantity: "62", max_amount: "128"},
-        {stock_id: 2, stock_item: "eggs", cost: "1.95", stock_quantity: "90", max_amount: "122"}
-    ]);
+    interface Data {
+        data: Row[];
+    }
+
+    const [rows, setRows] = useState<any []>([]);
     const [editId, setEditId] = useState(-1);
     const [name, setName] = useState('');
     const [cost, setCost] = useState('');
     const [quantity, setQuantity] = useState('');
     const [maxAmount, setMaxAmount] = useState('');
-    const [rowToEdit, setRowToEdit] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    let maxStockId = -1;
+    for (let row of rows){
+        if (row.stock_id > maxStockId){
+            maxStockId = row.stock_id;
+        }
+    }
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/getStockItems')
+        .then(res => {
+            const data: Data = res.data;
+            const items: Row[] = data.data;
+            setRows(items);
+        })
+        .catch(er => console.log(er));
+    }, []);
+    
     
     const handleDeleteRow = (targetIndex: number) => {
+        axios.post('http://localhost:8080/deleteStockItem', rows[targetIndex])
         setRows(rows.filter((_, idx) => idx !== targetIndex))
     };
 
@@ -42,12 +60,14 @@ function InventoryTable() {
     }
 
     const handleAddRow = (newRow: Row): void => {
+        axios.post('http://localhost:8080/addStockItem', newRow)
         setRows([...rows, newRow])
     }
 
     const handleUpdate = () => {
         const updatedRows = rows.map((row) => {
             if (row.stock_id === editId){
+                axios.post('http://localhost:8080/editStockItem', {stock_id: row.stock_id, stock_item: name, cost: cost, stock_quantity: quantity, max_amount: maxAmount})
                 return {
                     ...row,
                     stock_item: name,
@@ -114,7 +134,7 @@ function InventoryTable() {
             <button className='btn' onClick={() => setModalOpen(true)}>Create New Inventory Item</button>
             {modalOpen && <AddInventoryModal closeModal={() => (
                 setModalOpen(false)
-            )} onSubmit={handleAddRow}/>}
+            )} onSubmit={handleAddRow} maxID={maxStockId}/>}
         </div>
     )
 }

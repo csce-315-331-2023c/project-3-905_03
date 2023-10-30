@@ -12,11 +12,12 @@ interface Row {
 interface AddInventoryModalProps {
     closeModal: () => void
     onSubmit: (newRow: Row) => void
+    maxID: number
 }
 
-const AddInventoryModal: React.FC<AddInventoryModalProps> = ({closeModal, onSubmit}) => {
+const AddInventoryModal: React.FC<AddInventoryModalProps> = ({closeModal, onSubmit, maxID}) => {
     const [formState, setFormState] = useState(
-        {stock_id: 3, stock_item: "", cost: "", stock_quantity: "", max_amount: ""}
+        {stock_id: ++maxID, stock_item: "", cost: "", stock_quantity: "", max_amount: ""}
     )
 
     const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {

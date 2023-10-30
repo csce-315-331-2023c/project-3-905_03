@@ -1,4 +1,5 @@
-import React, {useState, ChangeEvent} from 'react';
+import React, {useState, ChangeEvent, useEffect} from 'react';
+import axios from 'axios'
 import {Multiselect} from 'multiselect-react-dropdown';
 import "./AddMenuModal.css";
 
@@ -8,25 +9,33 @@ interface Row {
     item_price: number;
 }
 
+interface stockData {
+    data: Array<{stock_item: string}>
+}
+
 interface AddMenuModalProps {
     closeModal: () => void
     onSubmit: (newRow: Row) => void
 }
 
 const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit}) => {
+    const [options, setOptions] = useState<any []>([])
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [formState, setFormState] = useState(
-        {item_id: 3, served_item: "", item_price: 0}
+        {item_id: 0, served_item: "", item_price: 0}
     )
+
+
   
-    const options = [
-        'New Ingredient',
-        'chicken',
-        'waffles',
-        'eggs',
-        'bread',
-        'strawberries',
-    ];
+    useEffect(() => {
+        axios.get('http://localhost:8080/getStockItems')
+        .then(res => {
+            const data: stockData = res.data;
+            const stockitems: string[] = data.data.map(item => item.stock_item)
+            setOptions(stockitems)
+        })
+        .catch(er => console.log(er));
+    }, []);
 
     const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const selectedIngredients = Array.from(
@@ -46,7 +55,16 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit}) => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         onSubmit(formState)
+        const axiosRequests = selectedOptions.map(selectedOption =>
+            axios.post('http://localhost:8080/addServedItemStockItem', (formState.served_item, selectedOption))
+        );
+        Promise.all(axiosRequests)
+        .then(responses => {
         closeModal();
+        })
+        .catch(error => {
+        console.error('Error sending requests:', error);
+        });
     }
 
     return (
@@ -67,7 +85,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit}) => {
                     </div>
                     <div className='form-group'>
                         <label htmlFor="Select Ingredient(s)" className='form-label'>Select Ingredients</label>
-                        <Multiselect isObject={false} options={options} className='ingredient-select'/>
+                        <Multiselect isObject={false} options={options} className='ingredient-select' onSelect={handleSelectChange}/>
                     </div>
                     <button className='btn' onClick={handleSubmit}>Submit</button>
                 </form>

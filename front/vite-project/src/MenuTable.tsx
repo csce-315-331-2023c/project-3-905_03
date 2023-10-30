@@ -47,6 +47,7 @@ function MenuTable() {
     }
 
     const handleAddRow = (newRow: Row): void => {
+        axios.post('http://localhost:8080/addServedItem', newRow)
         setRows([...rows, newRow])
     }
 

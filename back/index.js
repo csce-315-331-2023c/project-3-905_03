@@ -279,7 +279,26 @@ app.post('/deleteServedItem', (req, res) => {
  * will be provided with id
  */
 app.post('/deleteStockItem', (req, res) => { 
+    let { stock_id } = req.body;
 
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    //Delete from stock_items
+    client.query('DELETE FROM stock_items WHERE stock_id = $1', [stock_id], (err, result) => {
+        if (!err) {
+            res.status(200).send('success!');
+        } else {
+            res.status(400).send(err.message);
+        }
+        client.end();
+    });
 });
 
 

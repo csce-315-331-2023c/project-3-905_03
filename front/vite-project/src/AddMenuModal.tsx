@@ -2,11 +2,18 @@ import React, {useState, ChangeEvent} from 'react';
 import {Multiselect} from 'multiselect-react-dropdown';
 import "./AddMenuModal.css";
 
-interface AddMenuModalProps {
-    closeModal: () => void
+interface Row {
+    item_id: number;
+    served_item: string;
+    item_price: string;
 }
 
-const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal}) => {
+interface AddMenuModalProps {
+    closeModal: () => void
+    onSubmit: (newRow: Row) => void
+}
+
+const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit}) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [formState, setFormState] = useState(
         {item_id: 3, served_item: "", item_price: ""}
@@ -32,13 +39,14 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal}) => {
     const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormState({
             ...formState,
-            [e.target.name]: e.target.value,
+            [e.target.name]: e.target.value
         });
     }
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        console.log(formState)
+        onSubmit(formState)
+        closeModal();
     }
 
     return (
@@ -51,11 +59,11 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal}) => {
                 <form action="">
                     <div className='form-group'>
                         <label htmlFor="name" className='form-label'>Item Name</label>
-                        <input type="served_item" value={formState.served_item} onChange={handleFormChange}/>
+                        <input name="served_item" value={formState.served_item} onChange={handleFormChange}/>
                     </div>
                     <div className='form-group'>
                         <label htmlFor="price" className='form-label'>Item Price</label>
-                        <input type="item_price" value={formState.item_price} onChange={handleFormChange}/>
+                        <input name="item_price" value={formState.item_price} onChange={handleFormChange}/>
                     </div>
                     <div className='form-group'>
                         <label htmlFor="Select Ingredient(s)" className='form-label'>Select Ingredients</label>

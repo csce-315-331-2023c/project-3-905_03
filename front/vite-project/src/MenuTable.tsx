@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import "./Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
+import AddMenuModal from './AddMenuModal';
 
 function MenuTable() {
     interface Row {
@@ -18,6 +19,7 @@ function MenuTable() {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [rowToEdit, setRowToEdit] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
     
     const handleDeleteRow = (targetIndex: number) => {
         setRows(rows.filter((_, idx) => idx !== targetIndex))
@@ -33,7 +35,7 @@ function MenuTable() {
         setEditId(item_id)
     }
 
-    const handleAddRow = (newRow: Row) => {
+    const handleAddRow = (newRow: Row): void => {
         setRows([...rows, newRow])
     }
 
@@ -93,6 +95,10 @@ function MenuTable() {
                     }
                 </tbody>
             </table>
+            <button className='btn' onClick={() => setModalOpen(true)}>Create New Menu Item</button>
+            {modalOpen && <AddMenuModal closeModal={() => (
+                setModalOpen(false)
+            )} onSubmit={handleAddRow}/>}
         </div>
     )
 }

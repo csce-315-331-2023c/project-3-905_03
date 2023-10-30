@@ -5,7 +5,7 @@ import "./AddMenuModal.css";
 interface Row {
     item_id: number;
     served_item: string;
-    item_price: string;
+    item_price: number;
 }
 
 interface AddMenuModalProps {
@@ -16,7 +16,7 @@ interface AddMenuModalProps {
 const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit}) => {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [formState, setFormState] = useState(
-        {item_id: 3, served_item: "", item_price: ""}
+        {item_id: 3, served_item: "", item_price: 0}
     )
   
     const options = [

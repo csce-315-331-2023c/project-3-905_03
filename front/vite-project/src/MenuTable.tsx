@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios'
 import "./Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
 import AddMenuModal from './AddMenuModal';
@@ -7,21 +8,31 @@ function MenuTable() {
     interface Row {
         item_id: number;
         served_item: string;
-        item_price: string;
+        item_price: number;
     }
 
-    const [rows, setRows] = useState([
-        {item_id: 0, served_item: "chickenAndWafflesSnack", item_price: "6.95"},
-        {item_id: 1, served_item: "chickenAndWafflesRegular", item_price: "11.85"},
-        {item_id: 2, served_item: "chickenAndWafflesPlus", item_price: "15.65"}
-    ]);
+    interface Data {
+        data: Row[];
+    }
+
+    const [rows, setRows] = useState<any []>([]);
     const [editId, setEditId] = useState(-1);
     const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
-    const [rowToEdit, setRowToEdit] = useState(null);
+    const [price, setPrice] = useState(-1);
     const [modalOpen, setModalOpen] = useState(false);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/getServedItems')
+        .then(res => {
+            const data: Data = res.data;
+            const items: Row[] = data.data;
+            setRows(items);
+        })
+        .catch(er => console.log(er));
+    }, []);
     
     const handleDeleteRow = (targetIndex: number) => {
+        axios.post('http://localhost:8080/deleteServedItem', rows[targetIndex])
         setRows(rows.filter((_, idx) => idx !== targetIndex))
     };
 
@@ -54,7 +65,7 @@ function MenuTable() {
         setRows(updatedRows);
         setEditId(-1);
         setName('')
-        setPrice('')
+        setPrice(-1)
     }
 
     
@@ -76,7 +87,7 @@ function MenuTable() {
                             <tr>
                                 <td>{row.item_id}</td>
                                 <td><input type="text" value={name} onChange={e => setName(e.target.value)}/></td>
-                                <td><input type="text" value={price} onChange={e => setPrice(e.target.value)}/></td>
+                                <td><input type="text" value={price} onChange={e => setPrice(e.target.valueAsNumber)}/></td>
                                 <td><button onClick={handleUpdate}>Update</button></td>
                             </tr>
                             :

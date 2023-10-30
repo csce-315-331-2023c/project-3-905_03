@@ -1,6 +1,6 @@
 import React, {useState, ChangeEvent} from 'react';
 import {Multiselect} from 'multiselect-react-dropdown';
-import "./AddMenuModal.css";
+import "../Styles/AddMenuModal.css";
 
 interface Row {
     item_id: number;

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import "./Table.css";
+import "../Styles/Table.css";
 import {BsFillTrashFill, BsEyeFill} from 'react-icons/bs'
 
 function OrdersTable() {

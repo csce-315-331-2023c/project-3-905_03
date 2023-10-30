@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import React from "react";
 
 function Login() {
   // const [error, setError] = useState<string>(""); // add type annotation for 'error'

@@ -1,0 +1,27 @@
+.manager-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+}
+
+.lhs {
+    flex: 1 0 20%;
+}
+
+.rhs {
+    flex: 4 0 80%;
+    background-color: #303030;
+    color: white;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.rhs section {
+    margin-bottom: 20px;
+}
+
+.rhs h1 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}

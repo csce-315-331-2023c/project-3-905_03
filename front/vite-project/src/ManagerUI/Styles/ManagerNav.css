@@ -1,0 +1,45 @@
+.manager-nav {
+    flex: 1 0 20%;
+    height: 100vh;
+    background-color: #1a1a1a;
+    color: white;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-size: 1.2rem;
+
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.nav-item button {
+    background: none;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.4rem;
+    border-radius: 3px;
+}
+
+.dropdown {
+    background-color: #333;
+    margin-top: 10px;
+    border-radius: 3px;
+    padding-left: 20px;
+}
+
+.dropdown div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown div:hover {
+    background-color: #555;
+}

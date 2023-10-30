@@ -1,5 +1,5 @@
 import React, {useState, ChangeEvent} from 'react';
-import "./AddMenuModal.css";
+import "../Styles/AddMenuModal.css";
 
 interface Row {
     stock_id: number;

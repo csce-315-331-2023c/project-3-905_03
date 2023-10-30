@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import "./Table.css";
+import "../Styles/Table.css";
 import {BsFillPencilFill, BsFillTrashFill} from 'react-icons/bs'
 import AddMenuModal from './AddMenuModal';
 

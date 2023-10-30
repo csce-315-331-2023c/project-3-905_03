@@ -1,45 +1,44 @@
-import { useState } from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Menu from './Menu'
-import Manager from './Manager'
-import Login from './Login'
-import ManagerMenu from './Manager-Menu';
-import ManagerInventory from './Manager-Inventory';
-import ManagerOrders from './Manager-Orders';
-import ManagerAnalytics from './Manager-Analytics';
-
-interface Props {
-  name: string;
-  age: number;
-  employees: string[];
-}
+import React from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import ManagerGUI from './ManagerUI/Pages/Manager';
+import Cashier from './CashierUI/Pages/Cashier';
+import CustomerKiosk from './CustomerUI/Pages/Customer';
+import DynamicMenu from './DynamicMenu/Pages/DynamicMenu';
+import './styles/App.css';
 
 function App() {
-  const [name, setName] = useState('John')
-  const [age, setAge] = useState(30)
-  const [employees, setEmployees] = useState(['Alice', 'Bob', 'Charlie'])
-
-  // const menuItems: MenuItem[] = [
-  //   { label: 'Home', link: '/' },
-  //   { label: 'Manager', link: '/manager' },
-  // ];
-
   return (
-    <>
-      <BrowserRouter>
-        {/* <Menu items={menuItems} /> */}
-        <Routes>
-          <Route path="/manager" element={<Manager />} />
-          <Route path="/manager-menu" element={<ManagerMenu />} />
-          <Route path="/manager-inventory" element={<ManagerInventory />} />
-          <Route path="/manager-orders" element={<ManagerOrders />} />
-          <Route path="/manager-analytics" element={<ManagerAnalytics />} />
-          <Route path="/" element={<Login />} />
-          <Route path="*" element={<div>404 Not Found</div>} />
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={
+          <div className="app-container">
+            <h1>Welcome to Mess UI</h1>
+            <p>
+              Modified: File Structure, App.tsx 
+            </p>
+            <p>@Revanth: This branch is based off your branch.</p>
+            <p>Note: Depending on who does OAuth, we can just have a single employee sign-in button, onClick calls  Login Modal + Auth Modal and based on role open the corresponding GUI </p>
+            <p>
+              Note: This file structure is slightly different, if anything one can argue its more complex than the original, but I think its more organized tbh. We obv don't have to adopt it
+              but I think it might be a good idea to try it out.
+              <b>Important: see directory_tree.txt in the projects root directory to simplify integration, shouldn't be too bad</b>
+            </p>
+            <div className="landing-container">
+              <Link className="card" to="/manager">Manager</Link>
+              <Link className="card" to="/cashier">Cashier</Link>
+              <Link className="card" to="/customer-kiosk">Kiosk</Link>
+              <Link className="card" to="/dynamic-menu">Display Menu</Link>
+            </div>
+            
+          </div>
+        } />
+        <Route path="/manager" element={<ManagerGUI />} />
+        <Route path="/cashier" element={<Cashier />} />
+        <Route path="/customer-kiosk" element={<CustomerKiosk />} />
+        <Route path="/dynamic-menu" element={<DynamicMenu />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

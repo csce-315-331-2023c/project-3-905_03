@@ -1,13 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import "./Table.css";
 import {BsFillTrashFill, BsEyeFill} from 'react-icons/bs'
 
 function OrdersTable() {
-    const [rows, setRows] = useState([
-        {employee_id: 13, order_id: 0, order_total: "41.19", takeout: "1", split: "1", order_date: "2023-02-01 20:29:21"},
-        {employee_id: 13, order_id: 1, order_total: "47.52", takeout: "1", split: "1", order_date: "2023-01-31 15:49:13"},
-        {employee_id: 9, order_id: 2, order_total: "63.81", takeout: "0", split: "1", order_date: "2023-03-11 07:34:36"}
-    ]);
+    interface Row {
+        employee_id: number;
+        order_id: number;
+        order_total: string;
+        takeout: string;
+        split: string;
+        order_date: string;
+    }
+
+    interface Data {
+        data: Row[];
+    }
+
+    const [rows, setRows] = useState<any []>([]);
     const [employeeID, setEmployeeID] = useState(-1);
     const [orderID, setOrderID] = useState(-1);
     const [orderTotal, setOrderTotal] = useState('');
@@ -15,6 +25,18 @@ function OrdersTable() {
     const [split, setSplit] = useState('');
     const [orderDate, setOrderDate] = useState('');
     const [rowToEdit, setRowToEdit] = useState(null);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/getRecentOrders')
+        .then(res => {
+            const data: Data = res.data;
+            const items: Row[] = data.data;
+            setRows(items);
+        })
+        .catch(er => console.log(er));
+    }, []);
     
     const handleDeleteRow = (targetIndex: number) => {
         setRows(rows.filter((_, idx) => idx !== targetIndex))
@@ -22,6 +44,13 @@ function OrdersTable() {
     
     return (
         <div className='table-container'>
+            <div className='form-div'>
+                <form>
+                    <input type="text" placeholder='Enter Start Date (YYYY-MM-DD)' onChange={e => setStartDate(e.target.value)}/>
+                    <input type="text" placeholder='Enter End Date (YYYY-MM-DD)' onChange={e => setEndDate(e.target.value)}/>
+                    <button>Search</button>
+                </form>
+            </div>
             <table className='table'>
                 <thead>
                     <tr>

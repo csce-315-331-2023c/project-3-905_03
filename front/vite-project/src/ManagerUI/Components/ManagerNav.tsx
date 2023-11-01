@@ -49,10 +49,10 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
             </div>
             <div className="nav-item">
                 <button onClick={() => {
-                    setActiveSection('Inventory');
-                    setInventoryOpen(!inventoryOpen);
-                }}>Inventory</button>
-                {inventoryOpen && (
+                    setActiveSection('Analytics');
+                    setAnalyticsOpen(!analyticsOpen);
+                }}>Analytics</button>
+                {analyticsOpen && (
                     <div className="dropdown">
                         {/* ...existing dropdown items */}
                     </div>

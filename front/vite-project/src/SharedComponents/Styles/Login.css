@@ -1,18 +1,23 @@
-
 .login-container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    height: 100vh;
+    background-color: var(--background-color);
+}
+
+.manual-login {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: var(--background-color);
+    width:30%
 }
 
 .login-input {
     border-radius: 8px;
     border: 1px solid #ccc;
     padding: 0.6em;
-    margin: 0.3em;
     width: 80%;
 }
 
@@ -24,4 +29,14 @@
 .google-button {
     background-color: #4285F4;
     color: white;
+    margin-top: 2em;
+}
+
+.google-auth {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2em;
+    width: 30%
 }

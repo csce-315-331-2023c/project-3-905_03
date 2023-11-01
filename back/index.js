@@ -90,7 +90,7 @@ app.get('/getRecentOrders', (req, res) => {
 /**
  * get orders between 2 dates
  */
-app.post('/getOrdersBetweenDates', (req, res) => {
+app.get('/getOrdersBetweenDates', (req, res) => {
 
     let { start_date, end_date } = req.body;
 
@@ -103,7 +103,7 @@ app.post('/getOrdersBetweenDates', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2 ORDER by order_date`,[start_date, end_date], (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2 ORDER by order_date`, [start_date, end_date], (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -279,7 +279,7 @@ app.post('/editServedItem', (req, res) => {
  */
 app.post('/editStockItem', (req, res) => {
     let { stock_id, stock_item, cost, stock_quantity, max_amount } = req.body;
-    
+
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
         user: 'csce315_905_03user',
@@ -303,7 +303,7 @@ app.post('/editStockItem', (req, res) => {
  * Delete served_items entry
  * will be provided with id
  */
-app.post('/deleteServedItem', (req, res) => { 
+app.post('/deleteServedItem', (req, res) => {
     let { item_id } = req.body;
 
     const client = new Client({
@@ -339,7 +339,7 @@ app.post('/deleteServedItem', (req, res) => {
  * Delete stock_items entry
  * will be provided with id
  */
-app.post('/deleteStockItem', (req, res) => { 
+app.post('/deleteStockItem', (req, res) => {
     let { stock_id } = req.body;
 
     const client = new Client({

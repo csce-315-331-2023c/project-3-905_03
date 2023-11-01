@@ -10,7 +10,7 @@ function OrdersTable() {
         order_total: string;
         takeout: string;
         split: string;
-        order_date: string;
+        formatted_order_date: string;
     }
 
     interface Data {
@@ -41,9 +41,19 @@ function OrdersTable() {
         })
         .catch(er => console.log(er));
     }, []);
-    
-    const handleDeleteRow = (targetIndex: number) => {
-        setRows(rows.filter((_, idx) => idx !== targetIndex))
+
+    const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+        axios.post('http://localhost:8080/getOrdersBetweenDates', { start_date: startDate, end_date: endDate })
+        .then((res) => {
+            const data: Data = res.data;
+            const items: Row[] = data.data;
+            console.log(items);
+            setRows(items);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     };
     
     return (
@@ -52,7 +62,7 @@ function OrdersTable() {
                 <form>
                     <input type="text" placeholder='Enter Start Date (YYYY-MM-DD)' onChange={e => setStartDate(e.target.value)}/>
                     <input type="text" placeholder='Enter End Date (YYYY-MM-DD)' onChange={e => setEndDate(e.target.value)}/>
-                    <button>Search</button>
+                    <button onClick={handleSearch}>Search</button>
                 </form>
             </div>
             <table className='table'>
@@ -76,11 +86,10 @@ function OrdersTable() {
                                 <td>{row.order_total}</td> 
                                 <td>{row.takeout}</td>
                                 <td>{row.split}</td>
-                                <td className='expand'>{row.order_date}</td>
+                                <td className='expand'>{row.formatted_order_date}</td>
                                 <td>
                                     <span className='actions'>
                                         <BsEyeFill className="view-btn"/>
-                                        <BsFillTrashFill className="delete-btn" onClick={() => handleDeleteRow(idx)}/>
                                     </span>
                                 </td>
                             </tr>

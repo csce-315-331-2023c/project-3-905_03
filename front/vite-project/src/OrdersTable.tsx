@@ -27,6 +27,10 @@ function OrdersTable() {
     const [rowToEdit, setRowToEdit] = useState(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 10;
+    const lastIndex = currentPage * recordsPerPage;
+    const firstIndex = lastIndex - recordsPerPage;
 
     useEffect(() => {
         axios.get('http://localhost:8080/getRecentOrders')

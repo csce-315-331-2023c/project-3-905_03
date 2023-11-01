@@ -1,4 +1,6 @@
 .table-container {
+    /* width: 200%;
+    margin-left: 5%; */
     width: 70%;
 }
 
@@ -44,6 +46,7 @@
 .actions {
     display: flex;
     justify-content: space-around;
+    /* width: 25%; */
 }
 
 .actions svg {

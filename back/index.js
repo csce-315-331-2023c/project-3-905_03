@@ -74,7 +74,7 @@ app.get('/getRecentOrders', (req, res) => {
 
     client.connect();
 
-    client.query(`select * from orders order by order_date desc limit 20`, (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_date desc limit 20`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -90,6 +90,31 @@ app.get('/getRecentOrders', (req, res) => {
 /**
  * get orders between 2 dates
  */
+app.get('/getOrdersBetweenDates', (req, res) => {
+
+    let { start_date, end_date } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as order_date FROM orders WHERE order_date BETWEEN $1 AND $2`,[start_date, end_date], (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            })
+        }
+        else {
+            console.log(err.message);
+        }
+        client.end;
+    })
+});
 
 /**
  * add entry to served items table in database

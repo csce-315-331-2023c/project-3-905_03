@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import "./Table.css";
 import {BsFillTrashFill, BsEyeFill} from 'react-icons/bs'
+import ViewOrderModal from './ViewOrderModal';
 
 function OrdersTable() {
     interface Row {
@@ -31,6 +32,7 @@ function OrdersTable() {
     const recordsPerPage = 10;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
+    const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:8080/getRecentOrders')
@@ -89,7 +91,10 @@ function OrdersTable() {
                                 <td className='expand'>{row.formatted_order_date}</td>
                                 <td>
                                     <span className='actions'>
-                                        <BsEyeFill className="view-btn"/>
+                                        <BsEyeFill className="view-btn" onClick={() => setModalOpen(true)}/>
+                                        {modalOpen && <ViewOrderModal closeModal={() => (
+                                            setModalOpen(false)
+                                        )}/>}
                                     </span>
                                 </td>
                             </tr>

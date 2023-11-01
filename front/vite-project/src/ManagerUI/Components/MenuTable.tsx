@@ -15,13 +15,11 @@ function MenuTable() {
         data: Row[];
     }
 
-    const [rows, setRows] = useState<Row[]>([]);
-    const [editId, setEditId] = useState<number | null>(null);
-    const [name, setName] = useState<string>('');
-    const [price, setPrice] = useState<number | null>(null);
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-
+    const [rows, setRows] = useState<any[]>([]);
+    const [editId, setEditId] = useState(-1);
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState(-1);
+    const [modalOpen, setModalOpen] = useState(false);
     let maxItemId = -1;
     for (let row of rows) {
         if (row.item_id > maxItemId) {
@@ -29,19 +27,17 @@ function MenuTable() {
         }
     }
 
+    // Function to fetch menu items from the server
     const fetchMenuItems = () => {
         axios.get('http://localhost:8080/getServedItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);
-                setError(null);  // clear any previous errors
             })
-            .catch(err => {
-                console.log(err);
-                setError("An error occurred while fetching data.");
-            });
+            .catch(err => console.log(err));
     };
 
+    // Fetch items when the component mounts
     useEffect(() => {
         fetchMenuItems();
     }, []);
@@ -49,54 +45,42 @@ function MenuTable() {
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('http://localhost:8080/deleteServedItem', rows[targetIndex])
             .then(() => {
-                fetchMenuItems();
-                setError(null);
+                fetchMenuItems();  // Refresh items after delete
             })
-            .catch(err => {
-                console.log(err);
-                setError("An error occurred while deleting the item.");
-            });
+            .catch(err => console.log(err));
     };
 
     const handleAddRow = (newRow: Row): void => {
         axios.post('http://localhost:8080/addServedItem', newRow)
             .then(() => {
-                fetchMenuItems();
-                setError(null);
+                fetchMenuItems();  // Refresh items after add
             })
-            .catch(err => {
-                console.log(err);
-                setError("An error occurred while adding the item.");
-            });
+            .catch(err => console.log(err));
     };
 
     const handleEditRow = (item_id: number) => {
-        const row = rows.find(r => r.item_id === item_id);
-        if (row) {
-            setName(row.served_item);
-            setPrice(row.item_price);
-            setEditId(item_id);
-        }
+        rows.map((row) => {
+            if (row.item_id === item_id) {
+                setName(row.served_item);
+                setPrice(row.item_price);
+            }
+        });
+        setEditId(item_id);
     };
 
     const handleUpdate = () => {
         axios.post('http://localhost:8080/editServedItem', { item_id: editId, served_item: name, item_price: price })
             .then(() => {
-                fetchMenuItems();
-                setError(null);
+                fetchMenuItems();  // Refresh items after update
             })
-            .catch(err => {
-                console.log(err);
-                setError("An error occurred while updating the item.");
-            });
-        setEditId(null);
+            .catch(err => console.log(err));
+        setEditId(-1);
         setName('');
-        setPrice(null);
+        setPrice(-1);
     };
 
     return (
         <div className='table-container'>
-            {error && <div className="error">{error}</div>}
             <table className='table'>
                 <thead>
                     <tr>
@@ -108,23 +92,23 @@ function MenuTable() {
                 </thead>
                 <tbody>
                     {
-                        rows.map((row) => (
+                        rows.map((row, idx) => (
                             row.item_id === editId ?
-                                <tr key={row.item_id}>
+                                <tr key={idx}>
                                     <td>{row.item_id}</td>
                                     <td><input type="text" value={name} onChange={e => setName(e.target.value)} /></td>
-                                    <td><input type="number" value={price || ''} onChange={e => setPrice(e.target.valueAsNumber)} /></td>
+                                    <td><input type="text" value={price} onChange={e => setPrice(e.target.valueAsNumber)} /></td>
                                     <td><button onClick={handleUpdate}>Update</button></td>
                                 </tr>
                                 :
-                                <tr key={row.item_id}>
+                                <tr key={idx}>
                                     <td>{row.item_id}</td>
                                     <td className='expand'>{row.served_item}</td>
                                     <td>{row.item_price}</td>
                                     <td>
                                         <span className='actions'>
                                             <BsFillPencilFill className="edit-btn" onClick={() => handleEditRow(row.item_id)} />
-                                            <BsFillTrashFill className="delete-btn" onClick={() => handleDeleteRow(row.item_id)} />
+                                            <BsFillTrashFill className="delete-btn" onClick={() => handleDeleteRow(idx)} />
                                         </span>
                                     </td>
                                 </tr>

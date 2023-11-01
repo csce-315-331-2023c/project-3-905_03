@@ -93,7 +93,7 @@ app.get('/getRecentOrders', (req, res) => {
 /**
  * get orders between 2 dates
  */
-app.get('/getOrdersBetweenDates', (req, res) => {
+app.post('/getOrdersBetweenDates', (req, res) => {
 
     let { start_date, end_date } = req.body;
 

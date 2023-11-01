@@ -89,8 +89,9 @@ app.get('/getRecentOrders', (req, res) => {
 
 /**
  * get orders between 2 dates
+ * not sure why it needs to be a post request, cant get axios to submit params with axios.get()
  */
-app.get('/getOrdersBetweenDates', (req, res) => {
+app.post('/getOrdersBetweenDates', (req, res) => {
 
     let { start_date, end_date } = req.body;
 
@@ -119,7 +120,7 @@ app.get('/getOrdersBetweenDates', (req, res) => {
 /**
  * get order items for a given order id
  */
-app.get('/getOrderItems', (req, res) => { 
+app.post('/getOrderItems', (req, res) => { 
     let { order_id } = req.body;
 
     const client = new Client({

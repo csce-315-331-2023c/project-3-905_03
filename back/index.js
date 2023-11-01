@@ -117,6 +117,43 @@ app.get('/getOrdersBetweenDates', (req, res) => {
 });
 
 /**
+ * get order items for a given order id
+ */
+app.get('/getOrderItems', (req, res) => { 
+    let { order_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('SELECT item_id FROM orderServedItem WHERE order_id = $1', [order_id], (err, result) => {
+        if (err) {
+            res.status(400).send(err.message);
+            client.end();
+            return;
+        } else {
+            let item_ids = result.rows.map(row => row.item_id);
+            // Query the database for the served_items info related to the given ids
+            client.query('SELECT * FROM served_items WHERE item_id = ANY($1)', [item_ids], (err, result) => {
+                if (!err) {
+                    res.status(200).send({
+                        data: result.rows
+                    })
+                } else {
+                    res.status(400).send(err.message);
+                }
+                client.end();
+            });
+        }
+    });
+});
+
+/**
  * add entry to served items table in database
  */
 app.post('/addServedItem', (req, res) => {

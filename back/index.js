@@ -92,6 +92,7 @@ app.get('/getRecentOrders', (req, res) => {
 
 /**
  * get orders between 2 dates
+ * not sure why it needs to be a post request, cant get axios to submit params with axios.get()
  */
 app.post('/getOrdersBetweenDates', (req, res) => {
 
@@ -106,7 +107,7 @@ app.post('/getOrdersBetweenDates', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2`,[start_date, end_date], (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2 ORDER by order_date`, [start_date, end_date], (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -117,6 +118,43 @@ app.post('/getOrdersBetweenDates', (req, res) => {
         }
         client.end;
     })
+});
+
+/**
+ * get order items for a given order id
+ */
+app.post('/getOrderItems', (req, res) => { 
+    let { order_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('SELECT item_id FROM orderServedItem WHERE order_id = $1', [order_id], (err, result) => {
+        if (err) {
+            res.status(400).send(err.message);
+            client.end();
+            return;
+        } else {
+            let item_ids = result.rows.map(row => row.item_id);
+            // Query the database for the served_items info related to the given ids
+            client.query('SELECT * FROM served_items WHERE item_id = ANY($1)', [item_ids], (err, result) => {
+                if (!err) {
+                    res.status(200).send({
+                        data: result.rows
+                    })
+                } else {
+                    res.status(400).send(err.message);
+                }
+                client.end();
+            });
+        }
+    });
 });
 
 /**
@@ -282,7 +320,7 @@ app.post('/editServedItem', (req, res) => {
  */
 app.post('/editStockItem', (req, res) => {
     let { stock_id, stock_item, cost, stock_quantity, max_amount } = req.body;
-    
+
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
         user: 'csce315_905_03user',
@@ -306,7 +344,7 @@ app.post('/editStockItem', (req, res) => {
  * Delete served_items entry
  * will be provided with id
  */
-app.post('/deleteServedItem', (req, res) => { 
+app.post('/deleteServedItem', (req, res) => {
     let { item_id } = req.body;
 
     const client = new Client({
@@ -342,7 +380,7 @@ app.post('/deleteServedItem', (req, res) => {
  * Delete stock_items entry
  * will be provided with id
  */
-app.post('/deleteStockItem', (req, res) => { 
+app.post('/deleteStockItem', (req, res) => {
     let { stock_id } = req.body;
 
     const client = new Client({

@@ -22,8 +22,10 @@
     text-align: left;
 }
 
-.table th, .table td {
-    padding: 0.8rem;
+.table th,
+.table td {
+    padding: 0.4rem;
+
 }
 
 .table td {

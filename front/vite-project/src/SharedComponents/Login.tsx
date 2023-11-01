@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+// LoginPage.tsx
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import './Styles/Login.css';
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 const managers: Record<string, number> = {
   'Revanth': 1,
@@ -21,6 +27,21 @@ function LoginPage() {
   const [id, setId] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Initialize Google Identity Services
+    window.google.accounts.id.initialize({
+      client_id: 'YOUR_CLIENT_ID',
+      callback: handleGoogleCallback,
+    });
+    window.google.accounts.id.renderButton(
+      document.getElementById('buttonDiv'),
+      {
+        theme: 'outline',
+        size: 'large',
+      }
+    );
+  }, []);
+
   const handleSubmit = () => {
     const parsedId = parseInt(id, 10);
     if (managers[name] === parsedId) {
@@ -32,8 +53,8 @@ function LoginPage() {
     }
   };
 
-  const handleGoogleSuccess = (credentialResponse: any) => {
-    const email = credentialResponse.profileObj.email;
+  const handleGoogleCallback = (response: any) => {
+    const email = response.getBasicProfile().getEmail();
     if (authorizedManagers.includes(email)) {
       navigate('/manager');
     } else if (authorizedCashiers.includes(email)) {
@@ -66,12 +87,7 @@ function LoginPage() {
         </button>
       </div>
       <div className="google-auth">
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => {
-            console.log('Login Failed');
-          }}
-        />
+        <div id="buttonDiv"></div>
       </div>
     </div>
   );

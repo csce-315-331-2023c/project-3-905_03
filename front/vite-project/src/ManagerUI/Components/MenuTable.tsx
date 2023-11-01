@@ -27,7 +27,6 @@ function MenuTable() {
         }
     }
 
-    // Function to fetch menu items from the server
     const fetchMenuItems = () => {
         axios.get('http://localhost:8080/getServedItems')
             .then(res => {
@@ -37,7 +36,6 @@ function MenuTable() {
             .catch(err => console.log(err));
     };
 
-    // Fetch items when the component mounts
     useEffect(() => {
         fetchMenuItems();
     }, []);

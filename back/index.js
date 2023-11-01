@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path'); // SERVER
 const app = express();
 const PORT = 8080;
 
@@ -8,6 +9,11 @@ var cors = require('cors');
 app.use(cors());
 
 const { Client } = require('pg')
+
+// FOR SERVER
+app.use(express.static(path.join(__dirname, 'dist')));
+
+
 
 /**
  * return served items in json form
@@ -285,7 +291,13 @@ app.post('/deleteStockItem', (req, res) => {
 
 });
 
+//// SERVER
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../front/vite-project/dist/index.html'));
+});
+
+//// END SERVER
 
 app.listen(
     PORT,

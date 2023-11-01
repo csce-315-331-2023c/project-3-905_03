@@ -27,20 +27,6 @@ function LoginPage() {
   const [id, setId] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Initialize Google Identity Services
-    window.google.accounts.id.initialize({
-      client_id: 'YOUR_CLIENT_ID',
-      callback: handleGoogleCallback,
-    });
-    window.google.accounts.id.renderButton(
-      document.getElementById('buttonDiv'),
-      {
-        theme: 'outline',
-        size: 'large',
-      }
-    );
-  }, []);
 
   const handleSubmit = () => {
     const parsedId = parseInt(id, 10);

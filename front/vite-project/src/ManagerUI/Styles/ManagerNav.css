@@ -1,27 +1,75 @@
+:root{
+    --color-bg-dark: #333333;
+}
+
 .manager-nav {
     height: 100vh;
-    background-color: #f9f9f9;
-    color: #333;
+    background-color: var(--color-bg-dark);
+    /* Ensuring we use CSS variables for theming */
+    color: white;
     overflow-y: auto;
-    
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    background-color: #1a1a1a;
+    /* Stacks nav items vertically */
 }
 
 .nav-item {
-    display: flex;
-    flex-direction: column;
-    padding: 24px;
-    cursor: pointer;
+    padding: 1rem;
+    align-self: center;
+    /* Centers nav items horizontally */
+    justify-content: center;
+    /* Centers content within nav-item if flexbox is used */
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    width: 200px;
+    /* Fixed width for each nav item */
+    margin-bottom: 0.5rem;
+    /* Adds space between nav items */
 }
 
 .nav-item button {
-    background: none;
-    color: #333;
-    text-align: left;
-    font-weight: 500;
-    font-size: 30px;
-
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    width: 100%;
+    /* Ensures button fills its container */
+    background-color: transparent;
+    /* Sets a default transparent background */
+    color: inherit;
+    /* Inherits text color from parent */
+    padding: 0.5rem 1rem;
+    /* Consistent padding around the text */
 }
 
 .nav-item button:hover {
-    background-color: #e1e1e1;
+    border-color: #646cff;
+    /* Border color change on hover */
+}
+
+.nav-item button:focus,
+.nav-item button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+    /* Custom focus styles */
+}
+
+@media (prefers-color-scheme: light) {
+    .manager-nav {
+        color: #213547;
+        background-color: #ffffff;
+        /* Light theme background */
+    }
+
+    .nav-item button {
+        background-color: #f9f9f9;
+        /* Light theme button background */
+    }
+
+    .nav-item button:hover {
+        color: #747bff;
+        /* Light theme button hover color */
+    }
 }

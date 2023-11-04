@@ -2,9 +2,14 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 
-app.use(express.json());
-
 var cors = require('cors');
+const authRoutes = require('./authRoutes'); // Assuming authRoutes is a .js file in the same directory.
+
+const bodyParser = require('body-parser');
+
+app.use(express.json());
+app.use(bodyParser.json());
+app.use('/auth', authRoutes);
 app.use(cors());
 
 const { Client } = require('pg')
@@ -28,6 +33,7 @@ app.get('/getServedItems', (req, res) => {
             res.status(200).send({
                 data: result.rows
             });
+      
         }
         else {
             console.log(err.message);

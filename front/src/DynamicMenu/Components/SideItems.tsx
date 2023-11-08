@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MenuItems: React.FC = () => {
+const SideItems: React.FC = () => {
     return (
         <div>
             {/* Menu Items will go here */}
@@ -9,4 +9,4 @@ const MenuItems: React.FC = () => {
     );
 };
 
-export default MenuItems;
+export default SideItems;

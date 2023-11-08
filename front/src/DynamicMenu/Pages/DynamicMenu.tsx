@@ -1,10 +1,26 @@
 import React from 'react';
 import '../Styles/DynamicMenu.css';
+import logo from '../Styles/messLogo.jpg';
 
 const DynamicMenu: React.FC = () => {
     return (
         <div className="dynamic-menu-container">
-            <h1> Dynamic Menu</h1>
+            <div className="header">
+                <img src={logo} alt="Mess Logo" />
+                <div className="header-text">WELCOME TO MESS WAFFLES!</div>
+            </div>
+            <div className="entreeContainer">
+                <h1>Entrees</h1>
+                {/* Entree Items will go here */}  
+            </div>
+            <div className="sidesContainer">
+                <h1>Sides</h1>
+                {/* sides Items will go here */}  
+            </div>
+            <div className="drinkContainer">
+                <h1>Drinks</h1>
+                {/* Drink Items will go here */}  
+            </div>
         </div>
     );
 };

@@ -16,7 +16,7 @@ app.use(cors());
 const { Client } = require('pg')
 
 // FOR SERVER
-app.use(express.static(path.join(__dirname, '../front/vite-project/dist')));
+app.use(express.static(path.join(__dirname, '../front/dist')));
 
 /**
  * return served items in json form
@@ -477,7 +477,7 @@ app.post('/submitOrder', async (req, res) => {
 //// SERVER
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../front/vite-project/dist/index.html'));
+    res.sendFile(path.join(__dirname, '../front/dist/index.html'));
 });
 
 //// END SERVER

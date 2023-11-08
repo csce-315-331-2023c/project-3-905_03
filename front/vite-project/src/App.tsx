@@ -1,45 +1,42 @@
-import { useState } from 'react'
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Menu from './Menu'
-import Manager from './Manager'
-import Login from './Login'
-import ManagerMenu from './Manager-Menu';
-import ManagerInventory from './Manager-Inventory';
-import ManagerOrders from './Manager-Orders';
-import ManagerAnalytics from './Manager-Analytics';
-
-interface Props {
-  name: string;
-  age: number;
-  employees: string[];
-}
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import ManagerGUI from './ManagerUI/Pages/Manager';
+import Cashier from './CashierUI/Pages/Cashier';
+import CustomerKiosk from './CustomerUI/Pages/Customer';
+import DynamicMenu from './DynamicMenu/Pages/DynamicMenu';
+import LoginPage from './SharedComponents/Login';
+import ProtectedRoute from './SharedComponents/ProtectedRoute';
+import { AuthProvider } from './SharedComponents/AuthContext';
+import './styles/App.css';
 
 function App() {
-  const [name, setName] = useState('John')
-  const [age, setAge] = useState(30)
-  const [employees, setEmployees] = useState(['Alice', 'Bob', 'Charlie'])
-
-  // const menuItems: MenuItem[] = [
-  //   { label: 'Home', link: '/' },
-  //   { label: 'Manager', link: '/manager' },
-  // ];
+  const googleClientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID;
 
   return (
-    <>
-      <BrowserRouter>
-        {/* <Menu items={menuItems} /> */}
-        <Routes>
-          <Route path="/manager" element={<Manager />} />
-          <Route path="/manager-menu" element={<ManagerMenu />} />
-          <Route path="/manager-inventory" element={<ManagerInventory />} />
-          <Route path="/manager-orders" element={<ManagerOrders />} />
-          <Route path="/manager-analytics" element={<ManagerAnalytics />} />
-          <Route path="/" element={<Login />} />
-          <Route path="*" element={<div>404 Not Found</div>} />
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+    <AuthProvider>
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/customer-kiosk" element={<CustomerKiosk />} />
+            <Route path="/dynamic-menu" element={<DynamicMenu />} />
+            <Route element={<ProtectedRoute allowedRoles={['Manager']} />}>
+              <Route path="/manager" element={<ManagerGUI />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={['Cashier']} />}>
+              <Route path="/cashier" element={<Cashier />} />
+            </Route>
+            <Route path="*" element={<LoginPage />} />
+          </Routes>
+        </BrowserRouter>
+      </GoogleOAuthProvider>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
+
+/*
+Note: Protected Routes Functionality intersection with OAuth
+*/

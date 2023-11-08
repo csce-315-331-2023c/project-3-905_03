@@ -1,5 +1,4 @@
 const express = require('express');
-<<<<<<< HEAD
 const path = require('path'); // SERVER
 const app = express();
 const PORT = 8080;
@@ -7,29 +6,13 @@ const PORT = 8080;
 app.use(express.json());
 
 var cors = require('cors');
-=======
-const app = express();
-const PORT = 8080;
-
-var cors = require('cors');
-const authRoutes = require('./authRoutes'); // Assuming authRoutes is a .js file in the same directory.
-
-const bodyParser = require('body-parser');
-
-app.use(express.json());
-app.use(bodyParser.json());
-app.use('/auth', authRoutes);
->>>>>>> ryan-manager-frontend
 app.use(cors());
 
 const { Client } = require('pg')
 
-<<<<<<< HEAD
 // FOR SERVER
 app.use(express.static(path.join(__dirname, '../front/vite-project/dist')));
 
-=======
->>>>>>> ryan-manager-frontend
 /**
  * return served items in json form
  */
@@ -48,7 +31,6 @@ app.get('/getServedItems', (req, res) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
-<<<<<<< HEAD
             })
         }
         else {
@@ -56,17 +38,6 @@ app.get('/getServedItems', (req, res) => {
         }
         client.end();
     })
-=======
-            });
-      
-        }
-        else {
-            console.log(err.message);
-            res.status(500).send(err.message);
-        }
-        client.end();  // Ensure the client connection is closed
-    });
->>>>>>> ryan-manager-frontend
 });
 
 /**
@@ -125,14 +96,9 @@ app.get('/getRecentOrders', (req, res) => {
 
 /**
  * get orders between 2 dates
-<<<<<<< HEAD
  * not sure why it needs to be a post request, cant get axios to submit params with axios.get()
  */
 app.post('/getOrdersBetweenDates', (req, res) => {
-=======
- */
-app.get('/getOrdersBetweenDates', (req, res) => {
->>>>>>> ryan-manager-frontend
 
     let { start_date, end_date } = req.body;
 
@@ -145,11 +111,7 @@ app.get('/getOrdersBetweenDates', (req, res) => {
 
     client.connect();
 
-<<<<<<< HEAD
     client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2 ORDER by order_date`, [start_date, end_date], (err, result) => {
-=======
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2`, [start_date, end_date], (err, result) => {
->>>>>>> ryan-manager-frontend
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -163,7 +125,6 @@ app.get('/getOrdersBetweenDates', (req, res) => {
 });
 
 /**
-<<<<<<< HEAD
  * get order items for a given order id
  */
 app.post('/getOrderItems', (req, res) => { 
@@ -201,8 +162,6 @@ app.post('/getOrderItems', (req, res) => {
 });
 
 /**
-=======
->>>>>>> ryan-manager-frontend
  * add entry to served items table in database
  */
 app.post('/addServedItem', (req, res) => {
@@ -448,7 +407,6 @@ app.post('/deleteStockItem', (req, res) => {
     });
 });
 
-<<<<<<< HEAD
 /**
  * given employee_id (for now assume is given to you), a list of item ids, order total, takeout, and split, submit the order to the database
  * get max order id
@@ -522,14 +480,6 @@ app.listen(
     PORT,
     () => console.log(`it alive on http://localhost:${PORT}`)
 )
-=======
-
-
-app.listen(
-    PORT,
-    () => console.log(`it's alive on http://localhost:${PORT}`)
-);
->>>>>>> ryan-manager-frontend
 
 // when "get /arg" is called this function will be executed
 // req is incoming data, response is data we want to send back to client

@@ -1,12 +1,6 @@
 .table-container {
-<<<<<<< HEAD:front/vite-project/src/Table.css
-    /* width: 200%;
-    margin-left: 5%; */
-    width: 70%;
-=======
     width: 100%;
     background-color: var(--background-color);
->>>>>>> ryan-manager-frontend:front/vite-project/src/ManagerUI/Styles/Table.css
 }
 
 .table {

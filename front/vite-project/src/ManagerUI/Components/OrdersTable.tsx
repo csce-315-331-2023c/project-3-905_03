@@ -1,9 +1,8 @@
-<<<<<<< HEAD:front/vite-project/src/OrdersTable.tsx
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import "./Table.css";
+import "../Styles/Table.css";
 import {BsFillTrashFill, BsEyeFill} from 'react-icons/bs'
-import ViewOrderModal from './ViewOrderModal';
+import ViewOrderModal from '../../ViewOrderModal';
 
 function OrdersTable() {
     interface Row {
@@ -20,18 +19,6 @@ function OrdersTable() {
     }
 
     const [rows, setRows] = useState<any []>([]);
-=======
-import React, { useState } from 'react';
-import "../Styles/Table.css";
-import { BsFillTrashFill, BsEyeFill } from 'react-icons/bs'
-
-function OrdersTable() {
-    const [rows, setRows] = useState([
-        { employee_id: 13, order_id: 0, order_total: "41.19", takeout: "1", split: "1", order_date: "2023-02-01 20:29:21" },
-        { employee_id: 13, order_id: 1, order_total: "47.52", takeout: "1", split: "1", order_date: "2023-01-31 15:49:13" },
-        { employee_id: 9, order_id: 2, order_total: "63.81", takeout: "0", split: "1", order_date: "2023-03-11 07:34:36" }
-    ]);
->>>>>>> ryan-manager-frontend:front/vite-project/src/ManagerUI/Components/OrdersTable.tsx
     const [employeeID, setEmployeeID] = useState(-1);
     const [orderID, setOrderID] = useState(-1);
     const [orderTotal, setOrderTotal] = useState('');
@@ -39,7 +26,6 @@ function OrdersTable() {
     const [split, setSplit] = useState('');
     const [orderDate, setOrderDate] = useState('');
     const [rowToEdit, setRowToEdit] = useState(null);
-<<<<<<< HEAD:front/vite-project/src/OrdersTable.tsx
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -70,11 +56,6 @@ function OrdersTable() {
         .catch((error) => {
             console.log(error);
         });
-=======
-
-    const handleDeleteRow = (targetIndex: number) => {
-        setRows(rows.filter((_, idx) => idx !== targetIndex))
->>>>>>> ryan-manager-frontend:front/vite-project/src/ManagerUI/Components/OrdersTable.tsx
     };
 
     return (
@@ -110,15 +91,10 @@ function OrdersTable() {
                                 <td className='expand'>{row.formatted_order_date}</td>
                                 <td>
                                     <span className='actions'>
-<<<<<<< HEAD:front/vite-project/src/OrdersTable.tsx
                                         <BsEyeFill className="view-btn" onClick={() => setModalOpen(true)}/>
                                         {modalOpen && <ViewOrderModal closeModal={() => (
                                             setModalOpen(false)
                                         )} order_id={row.order_id}/>}
-=======
-                                        <BsEyeFill className="view-btn" />
-                                        <BsFillTrashFill className="delete-btn" onClick={() => handleDeleteRow(idx)} />
->>>>>>> ryan-manager-frontend:front/vite-project/src/ManagerUI/Components/OrdersTable.tsx
                                     </span>
                                 </td>
                             </tr>

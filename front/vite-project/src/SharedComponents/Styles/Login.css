@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    --color-divider: #343a40;
 }
 
 body,
@@ -13,66 +14,71 @@ html {
     background-color: var(--color-bg-dark);
     color: var(--font-color);
     font-size: var(--font-size-base);
-
-    /* Slightly darker than the page's background */
-}
-
-.guest-access,
-.manual-login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: calc(50% - 4%);
-}
-
-h1 {
-    font-size: var(--font-size-large);
-    color: var(--font-color);
-    text-align: center;
-    margin-bottom: 2rem;
-    width: 100%;
+    background-color: #4E5253;
 }
 
 
 .login-container {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
-    height: 100%;
-    padding: 4%;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: hidden;
+    /* Use the full height of the viewport */
 }
 
-/* Style for headers */
+.login-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    height: 80%;
+    justify-content: space-between;
+}
+
+.login-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    height: 20%;
+}
+
+
+
+.guest-options,
+.manual-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(50% - 2%);
+}
+
+
+
 h1 {
-    font-size: var(--font-size-large);
     color: var(--font-color);
     text-align: center;
-    margin-bottom: 2rem;
-}
+    width: 100%;
+    padding-top: 2%;
+} 
 
-/* Input fields styles */
 input[type="text"] {
     border: 2px solid var(--color-input-border);
     background-color: #23272b;
     color: var(--color-input-text);
     padding: 0.8em;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
     width: 60%;
     border-radius: 8px;
 
 }
 
-/* Button styles */
 button {
     background-color: var(--button-background);
     color: var(--color-button-text);
-    padding: 0.8em;
+    padding: 0.6em;
     width: 60%;
-    /* Match input field width */
     border-radius: var(--border-radius);
     cursor: pointer;
-    border: none;
-    /* Remove default border */
     transition: background-color 0.25s;
 }
 
@@ -80,34 +86,49 @@ button:hover {
     background-color: var(--button-hover-background);
 }
 
-/* Divider style */
-.vertical-divider {
-    border-left: 1px solid #ffffff;
-    height: 80%;
-
-    opacity: 0.6;
-
-}
 
 .google-auth {
-    /* Add space above the Google Auth button */
-
     margin-top: 2rem;
     display: flex;
     align-self: center;
     cursor: pointer;
     border: none;
     background-color: #202124;
-
 }
 
-.qjTHM {
-    color: #202124;
-    border-radius: 8px;
+.google-auth button {
+    padding: 16px;
+    font-size: 18px;
+}
+
+iframe {
+    border: none;
+}
+
+.vertical-divider {
+    align-self: stretch;
+    width: 1px;
+    background-color: #ddd;
+    opacity: 0.7;
+    height: 80%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 
-/* Responsive styles */
+.settings-button {
+    max-width: 128px;
+
+    max-height: 128px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+
 @media (max-width: 768px) {
     .login-container {
         flex-direction: column;
@@ -117,12 +138,8 @@ button:hover {
         font-size: var(--font-size-base);
     }
 
-    .section {
-        width: 80%;
-        margin-bottom: 2rem;
-    }
 
-    .vertical-divider {
-        display: none;
-    }
 }
+
+
+

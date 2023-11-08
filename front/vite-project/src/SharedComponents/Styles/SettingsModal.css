@@ -1,0 +1,25 @@
+.settings-button {
+    cursor: pointer;
+    display: flex;
+    /* Flex to center the SVG icon */
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    /* Adjust the size as needed */
+    height: 48px;
+    /* Adjust the size as needed */
+    border-radius: 24px;
+    /* Circular shape */
+    transition: background-color 0.3s;
+    /* Add other styles such as padding, margin, etc., as needed */
+}
+
+.settings-button:hover {
+    background-color: #f0f0f0;
+    /* Example hover state color */
+}
+
+.settings-button svg {
+    fill: currentColor;
+    /* SVG color will match the text color */
+}

@@ -1,32 +1,26 @@
-:root{
-    --color-bg-dark: #333333;
+.lhs {
+    background-color: #3B3C3D;
 }
 
 .manager-nav {
     height: 100vh;
-    background-color: var(--color-bg-dark);
-    /* Ensuring we use CSS variables for theming */
+    background-color: #3B3C3D;
     color: white;
     overflow-y: auto;
     padding-top: 1rem;
     display: flex;
     flex-direction: column;
-    background-color: #1a1a1a;
-    /* Stacks nav items vertically */
 }
 
 .nav-item {
+    background-color: #3B3C3D;
     padding: 1rem;
     align-self: center;
-    /* Centers nav items horizontally */
     justify-content: center;
-    /* Centers content within nav-item if flexbox is used */
-    background-color: #1a1a1a;
+    background-color: #3B3C3D;
     border-radius: 8px;
     width: 200px;
-    /* Fixed width for each nav item */
     margin-bottom: 0.5rem;
-    /* Adds space between nav items */
 }
 
 .nav-item button {
@@ -58,7 +52,7 @@
 
 @media (prefers-color-scheme: light) {
     .manager-nav {
-        color: #213547;
+        color: #3B3C3D;
         background-color: #ffffff;
         /* Light theme background */
     }

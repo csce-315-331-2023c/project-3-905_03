@@ -1,9 +1,10 @@
 const express = require('express');
+const styled = require('@emotion/styled').default;
 const app = express();
 const PORT = 8080;
 
 var cors = require('cors');
-const authRoutes = require('./authRoutes'); // Assuming authRoutes is a .js file in the same directory.
+const authRoutes = require('./authRoutes');
 
 const bodyParser = require('body-parser');
 

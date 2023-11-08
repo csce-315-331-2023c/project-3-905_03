@@ -1,14 +1,23 @@
 Directory Tree:
 ├── project-3-905_03/
+  ├── .DS_Store
   ├── directory_tree.txt
   ├── README.md
   ├── package-lock.json
   ├── package.json
-  ├── global.d.ts
   ├── tsconfig.json
   ├── back/
+    ├── database.js
+    ├── authRoutes.js
+    ├── googleOAuth.js
+    ├── index.js
+    ├── package-lock.json
+    ├── package.json
+    ├── .env
   ├── scripts/
     ├── printDirTree.py
+  ├── .vscode/
+    ├── launch.json
   ├── front/
     ├── package-lock.json
     ├── tsconfig.json
@@ -17,10 +26,10 @@ Directory Tree:
       ├── index.html
       ├── .eslintrc.cjs
       ├── README.md
-      ├── . env
       ├── .gitignore
       ├── package-lock.json
       ├── package.json
+      ├── .env
       ├── tsconfig.json
       ├── vite.config.ts
       ├── public/
@@ -39,9 +48,12 @@ Directory Tree:
             ├── MenuItems.tsx
           ├── Pages/
             ├── DynamicMenu.tsx
+        ├── tests/
+          ├── example-test.jsx
         ├── SharedComponents/
           ├── ProtectedRoute.tsx
           ├── Login.tsx
+          ├── User.tsx
           ├── AuthContext.tsx
           ├── Styles/
             ├── Login.css
@@ -56,13 +68,13 @@ Directory Tree:
             ├── Manager-Menu.tsx
             ├── SearchDataModal.tsx
             ├── AddMenuModal.tsx
-            ├── Analytics.tsx
             ├── MenuTable.tsx
             ├── Manager-Inventory.tsx
             ├── Menu.tsx
             ├── Orders.tsx
             ├── InventoryTable.tsx
             ├── AddInventoryModal.tsx
+            ├── ManagerAnalytics.tsx
             ├── ManagerNav.tsx
             ├── OrdersTable.tsx
           ├── Pages/
@@ -77,7 +89,6 @@ Directory Tree:
           ├── App.css
           ├── index.css
         ├── CustomerUI/
-          ├── Customer.tsx
           ├── Styles/
             ├── Customer.css
           ├── Components/

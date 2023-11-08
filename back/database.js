@@ -18,9 +18,4 @@ client.query(`Select * from served_items`, (err, res) => {
         console.log(err.message);
     }
     client.end;
-<<<<<<< HEAD
 })
-
-=======
-})
->>>>>>> ryan-manager-frontend

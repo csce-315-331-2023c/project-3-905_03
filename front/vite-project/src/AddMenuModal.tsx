@@ -6,7 +6,7 @@ import "./AddMenuModal.css";
 interface Row {
     item_id: number;
     served_item: string;
-    item_price: number;
+    item_price: string;
 }
 
 interface stockData {
@@ -21,12 +21,10 @@ interface AddMenuModalProps {
 
 const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit, maxID}) => {
     const [options, setOptions] = useState<any []>([])
-    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+    const [selectedOptions, setSelectedOptions] = useState<string []>([]);
     const [formState, setFormState] = useState(
-        {item_id: ++maxID, served_item: "", item_price: 0}
+        {item_id: ++maxID, served_item: "", item_price: ""}
     )
-
-
   
     useEffect(() => {
         axios.get('http://localhost:8080/getStockItems')
@@ -38,12 +36,8 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit, maxID}
         .catch(er => console.log(er));
     }, []);
 
-    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const selectedIngredients = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-          );
-          setSelectedOptions(selectedIngredients);
+    const handleSelectChange = (selectedOption: string) => {
+        setSelectedOptions(Array.from(selectedOption))
     };    
 
     const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +51,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit, maxID}
         e.preventDefault()
         onSubmit(formState)
         const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('http://localhost:8080/addServedItemStockItem', (formState.served_item, selectedOption))
+            axios.post('http://localhost:8080/addServedItemStockItem', {item_id: formState.item_id, stock_item: selectedOption})
         );
         Promise.all(axiosRequests)
         .then(responses => {
@@ -86,7 +80,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({closeModal, onSubmit, maxID}
                     </div>
                     <div className='form-group'>
                         <label htmlFor="Select Ingredient(s)" className='form-label'>Select Ingredients</label>
-                        <Multiselect isObject={false} options={options} className='ingredient-select' onSelect={handleSelectChange}/>
+                        <Multiselect isObject={false} options={options} className='ingredient-select' onSelect={handleSelectChange} onRemove={handleSelectChange}/>
                     </div>
                     <button className='btn' onClick={handleSubmit}>Submit</button>
                 </form>

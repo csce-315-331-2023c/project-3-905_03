@@ -8,7 +8,7 @@ function MenuTable() {
     interface Row {
         item_id: number;
         served_item: string;
-        item_price: number;
+        item_price: string;
     }
 
     interface Data {
@@ -18,7 +18,7 @@ function MenuTable() {
     const [rows, setRows] = useState<any []>([]);
     const [editId, setEditId] = useState(-1);
     const [name, setName] = useState('');
-    const [price, setPrice] = useState(-1);
+    const [price, setPrice] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     let maxItemId = -1;
     for (let row of rows){
@@ -60,10 +60,11 @@ function MenuTable() {
     const handleUpdate = () => {
         const updatedRows = rows.map((row) => {
             if (row.item_id === editId){
+                axios.post('http://localhost:8080/editServedItem', {item_id: row.item_id, served_item: name, item_price: price})
                 return {
                     ...row,
                     served_item: name,
-                    item_price: price
+                    item_price: price,
                 };
             }
             return row;
@@ -72,7 +73,7 @@ function MenuTable() {
         setRows(updatedRows);
         setEditId(-1);
         setName('')
-        setPrice(-1)
+        setPrice('')
     }
 
     
@@ -94,7 +95,7 @@ function MenuTable() {
                             <tr>
                                 <td>{row.item_id}</td>
                                 <td><input type="text" value={name} onChange={e => setName(e.target.value)}/></td>
-                                <td><input type="text" value={price} onChange={e => setPrice(e.target.valueAsNumber)}/></td>
+                                <td><input type="text" value={price} onChange={e => setPrice(e.target.value)}/></td>
                                 <td><button onClick={handleUpdate}>Update</button></td>
                             </tr>
                             :

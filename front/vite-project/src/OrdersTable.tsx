@@ -94,7 +94,7 @@ function OrdersTable() {
                                         <BsEyeFill className="view-btn" onClick={() => setModalOpen(true)}/>
                                         {modalOpen && <ViewOrderModal closeModal={() => (
                                             setModalOpen(false)
-                                        )}/>}
+                                        )} order_id={row.order_id}/>}
                                     </span>
                                 </td>
                             </tr>

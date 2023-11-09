@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { Container } from "@material-ui/core";
+import ItemCard from '../Components/ItemCard';
 import "../Styles/Cashier.css";
 
 const Cashier = () => {
@@ -61,7 +62,7 @@ const Cashier = () => {
                     {
                         menuItems.map((menuItem) => (
                             <Grid item key={menuItem.item_id} xs={12} md={6} lg={4}>
-                                <Paper>{menuItem.served_item}</Paper>
+                                <ItemCard item={menuItem}/>
                             </Grid>
                         ))
                     }

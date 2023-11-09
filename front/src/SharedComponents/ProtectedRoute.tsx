@@ -20,8 +20,3 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
 
 
 export default ProtectedRoute;
-
-/**
- * 
- * Notes: Components and Functionality Scope
- */

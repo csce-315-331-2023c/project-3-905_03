@@ -1,0 +1,69 @@
+.error-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.error-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.error-modal h2 {
+    color: #d32f2f;
+}
+
+.error-modal p {
+    margin: 15px 0;
+    position: relative;
+    z-index: 1001;
+}
+
+.error-modal button {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.error-modal button:hover {
+    background-color: #b71c1c;
+}
+
+.error-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+.blur-background {
+    filter: blur(5px);
+    /* Blur the content */
+    pointer-events: none;
+    /* Make it non-interactive */
+    user-select: none;
+    /* Prevent text selection */
+}

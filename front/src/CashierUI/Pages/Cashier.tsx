@@ -1,7 +1,36 @@
 import React from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import { Container } from "@material-ui/core";
 import "../Styles/Cashier.css";
 
 const Cashier = () => {
+    interface menuItem {
+        item_id: number;
+        served_item: string;
+        item_price: number;
+    }
+
+    interface Data {
+        data: menuItem[];
+    }
+
+    const [menuItems, setMenuItems] = useState<menuItem[]>([]);
+
+    const fetchMenuItems = () => {
+        axios.get('http://localhost:8080/getServedItems')
+            .then(res => {
+                const data: Data = res.data;
+                setMenuItems(data.data);
+            })
+            .catch(err => console.log(err));
+    };
+
+    useEffect(() => {
+        fetchMenuItems();
+    }, []);
 
     return (
         <div>
@@ -27,6 +56,17 @@ const Cashier = () => {
 
                 so if you want to change the font or something, you can do it there, and it will apply to all subpages
             </p>
+            <Container>
+                <Grid container>
+                    {
+                        menuItems.map((menuItem) => (
+                            <Grid item key={menuItem.item_id} xs={12} md={6} lg={4}>
+                                <Paper>{menuItem.served_item}</Paper>
+                            </Grid>
+                        ))
+                    }
+                </Grid>
+            </Container>
         </div>
     );
 };

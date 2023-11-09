@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ManagerGUI from './ManagerUI/Pages/Manager';
@@ -12,7 +11,7 @@ import './styles/App.css';
 
 function App() {
   const googleClientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID;
-
+  console.log(googleClientId);
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId={googleClientId}>

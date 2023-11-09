@@ -16,7 +16,7 @@ app.use(cors());
 const { Client } = require('pg')
 
 // FOR SERVER
-app.use(express.static(path.join(__dirname, '../front/dist')));
+// app.use(express.static(path.join(__dirname, '../front/dist')));
 
 /**
  * return served items in json form

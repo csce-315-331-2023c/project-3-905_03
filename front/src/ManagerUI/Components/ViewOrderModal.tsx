@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import "./ManagerUI/Styles/AddMenuModal.css";
-import "./ManagerUI/Styles/Table.css"
+import "../Styles/AddMenuModal.css";
+import "../Styles/Table.css"
 
 interface ViewOrderModalProps {
     closeModal: () => void

@@ -48,6 +48,122 @@ app.get('/getServedItems', (req, res) => {
 });
 
 /**
+ * return entree items in json form
+ */
+app.get('/getEntreeItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items WHERE item_id < 36 ORDER BY item_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return side items in json form
+ */
+app.get('/getSideItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items WHERE item_id > 35 AND item_id < 45 ORDER BY item_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return Drink items in json form
+ */
+app.get('/getDrinkItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items WHERE item_id > 45 AND item_id < 52 ORDER BY item_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return specials items in json form
+ */
+app.get('/getSpecialItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items WHERE item_id > 51 ORDER BY item_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
  * return stock items in json form
  */
 app.get('/getStockItems', (req, res) => {

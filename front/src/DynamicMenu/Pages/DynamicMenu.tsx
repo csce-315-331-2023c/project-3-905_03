@@ -2,6 +2,8 @@ import React from 'react';
 import '../Styles/DynamicMenu.css';
 import logo from '../Styles/messLogo.jpg';
 import EntreeItems from '../Components/EntreeItems';
+import SideItems from '../Components/SideItems';
+import DrinkItems from '../Components/DrinkItems';
 
 const DynamicMenu: React.FC = () => {
     return (
@@ -16,11 +18,11 @@ const DynamicMenu: React.FC = () => {
             </div>
             <div className="sidesContainer">
                 <h1>Sides</h1>
-                {/* sides Items will go here */}  
+                {<SideItems />}  
             </div>
             <div className="drinkContainer">
                 <h1>Drinks</h1>
-                {/* Drink Items will go here */}  
+                {<DrinkItems />}  
             </div>
         </div>
     );

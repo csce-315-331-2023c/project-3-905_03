@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {dropLastWord, getSize, formatCamelCase } from '../../SharedComponents/itemFormattingUtils.ts';
 
 const EntreeItems: React.FC = () => {
     interface Row {
@@ -21,8 +22,8 @@ const EntreeItems: React.FC = () => {
         }
     }
 
-    const fetchMenuItems = () => {
-        axios.get('http://localhost:8080/getServedItems')
+    const fetchEntreeItems = () => {
+        axios.get('http://localhost:8080/getEntreeItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);
@@ -31,16 +32,27 @@ const EntreeItems: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchMenuItems();
+        fetchEntreeItems();
     }, []);
-
+    
+    let prevItem: string = "start";
     return (
         <div>
-            {rows.map((row) => (
-                <div key={row.item_id}>
-                    <div>{row.served_item} ${row.item_price}</div>
-                </div>
-            ))}
+            {rows.reduce((acc, row) => {
+            let currItem: string = dropLastWord(row.served_item);
+            let currItemSize: string = getSize(row.served_item);
+            if (currItem.includes(prevItem)) {
+                acc[acc.length - 1].sizes.push({ size: currItemSize, price: row.item_price });
+            } else {
+                prevItem = currItem;
+                acc.push({ name: currItem, sizes: [{ size: currItemSize, price: row.item_price }] });
+            }
+            return acc;
+        }, []).map((item: { name: string, sizes: { size: string, price: number }[] }) => (
+            <div key={item.name}>
+                {item.name.split(' ').map(word => formatCamelCase(word)).join(' ')} {item.sizes.map(size => <span key={size.size}>{size.size} ${size.price} </span>)}
+            </div>
+        ))}
         </div>
     );
 };

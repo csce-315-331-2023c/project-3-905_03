@@ -11,12 +11,10 @@
     background-color: var(--background);
     color: var(--text);
     display: grid;
-    grid-template-rows: 150px 1fr 1fr;
+    grid-template-rows: 100px 1fr 1fr;
     grid-template-columns: 1fr 1fr;
     justify-content: flex-start;
     align-items: flex-start;
-    width: 100vw; /* viewport width */
-    height: 100vh; /* viewport height */
 }
 
 .header {
@@ -28,34 +26,40 @@
 }
 
 .header img {
-    width: 150px;
+    width: 100px;
 }
 
 .header-text {
     flex-grow: 1;
     text-align: center;
+    font-size: 2rem;
     padding-right: 150px; /*to even out space with logo on left*/
 }
 
 .entreeContainer {
     grid-row: 2 / 3;
     grid-column: 1 / 3;
-    border: 2px solid var(--accent);
 }
 
 .sidesContainer {
     grid-row: 3 / 4;
     grid-column: 1 / 2;
-    border: 2px solid var(--accent);
 }
 
 .drinkContainer {
     grid-row: 3 / 4;
     grid-column: 2 / 3;
-    border: 2px solid var(--accent);
 }
 
 .entreeContainer h1, .sidesContainer h1, .drinkContainer h1 {
     text-align: left;
+    padding-left: 10px;
+    margin: 0;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 4px;
+}
+
+.items{
     padding-left: 10px;
 }

@@ -4,6 +4,7 @@ import logo from '../Styles/messLogo.jpg';
 import EntreeItems from '../Components/EntreeItems';
 import SideItems from '../Components/SideItems';
 import DrinkItems from '../Components/DrinkItems';
+import Weather from '../Components/Weather';
 
 const DynamicMenu: React.FC = () => {
     return (
@@ -11,6 +12,9 @@ const DynamicMenu: React.FC = () => {
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
+                <div className="weatherContainer">
+                    <Weather />
+                </div>
             </div>
             <div className="entreeContainer">
                 <h1>Entrees</h1>

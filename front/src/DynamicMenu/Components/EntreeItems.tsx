@@ -37,7 +37,7 @@ const EntreeItems: React.FC = () => {
     
     let prevItem: string = "start";
     return (
-        <div>
+        <div className = "items">
             {rows.reduce((acc, row) => {
             let currItem: string = dropLastWord(row.served_item);
             let currItemSize: string = getSize(row.served_item);

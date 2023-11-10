@@ -10,12 +10,23 @@ export class Order {
   private receipt: Item[] = [];
 
   addItem(id: number, name: string, price: number, quantity: number): void {
-    const item: Item = { id, name, price, quantity };
-    this.receipt.push(item);
+    const existingItem = this.receipt.find((item) => item.id === id);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      const item: Item = { id, name, price, quantity };
+      this.receipt.push(item);
+    }
   }
 
   removeItem(id: number): void {
-    this.receipt = this.receipt.filter((item) => item.id !== id);
+    const existingItem = this.receipt.find((item) => item.id === id);
+    if (existingItem) {
+      existingItem.quantity -= 1;
+      if (existingItem.quantity === 0) {
+        this.receipt = this.receipt.filter((item) => item.id !== id);
+      }
+    }
   }
 
   cancel(): void {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardContent, CardActionArea } from '@material-ui/core';
+import { dropLastWord } from '../../SharedComponents/itemFormattingUtils';
 
 interface menuItem {
     item_id: number;
@@ -16,7 +17,7 @@ const ItemCard: React.FC<ItemCardProps> = ( {item} ) => {
         <div>
             <Card variant='outlined' square>
                 <CardActionArea>
-                    <CardHeader title={item.served_item} subheader={item.item_price}/>
+                    <CardHeader title={dropLastWord(item.served_item)} subheader={item.item_price}/>
                     <CardContent>
                     </CardContent>
                 </CardActionArea>

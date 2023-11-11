@@ -63,25 +63,33 @@ const Cashier = () => {
     }, []);
 
     return (
-        <div>
-            <Container style={{ height: '100vh', width: '100%'}}>
-                <div className="button-container">
-                    <button onClick={displayEntrees}>Entrees</button>
-                    <button onClick={displaySides}>Sides</button>
-                    <button onClick={displayDrinks}>Drinks</button>
-                    <button onClick={displaySpecialItems}>Special Items</button>
-                </div>
-                <Grid container >
-                    {
-                        menuItems.map((menuItem) => (
-                            <Grid item key={menuItem.item_id} xs={12} md={6} lg={4}>
-                                <ItemCard item={menuItem}/>
-                            </Grid>
-                        ))
-                    }
-                </Grid>
-            </Container>
-        </div>
+        <Container style={{ height: '100vh', width: '100%'}}>
+            <div className="button-container">
+                <button onClick={displayEntrees}>Entrees</button>
+                <button onClick={displaySides}>Sides</button>
+                <button onClick={displayDrinks}>Drinks</button>
+                <button onClick={displaySpecialItems}>Special Items</button>
+            </div>
+            <Grid container >
+                {
+                    menuItems.map((menuItem) => (
+                        <Grid item key={menuItem.item_id} xs={12} md={6} lg={3}>
+                            <ItemCard item={menuItem}/>
+                        </Grid>
+                    ))
+                }
+            </Grid>
+            <table className='table'>
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th className='expand'>Item Name</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </Container>
     );
 };
 

@@ -17,8 +17,7 @@ interface CustomJwtPayload {
   family_name: string;
 }
 
-const oAuthFailureMessage = "We're unable to log you in using OAuth at this time. Please try again later or use manual sign-in.";
-
+const oAuthFailureMessage = "You are not authorized to access this application.";
 
 const LoginPage = () => {
   const [name, setName] = useState('');
@@ -31,7 +30,6 @@ const LoginPage = () => {
   const [authErrorMessage, setAuthErrorMessage] = useState('');
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-
 
   const toggleSettingsModal = () => {
     setShowSettingsModal(!showSettingsModal);
@@ -50,11 +48,10 @@ const LoginPage = () => {
       body.style.overflow = 'auto';
     }
 
-    // Cleanup function to reset the overflow when the component unmounts or the modal is closed
     return () => {
       body.style.overflow = 'auto';
     };
-  }, [authError]); // Depend on authError to re-run the effect
+  }, [authError]); 
 
   const handleManualLoginSubmit = () => {
     const parsedId = parseInt(id, 10);
@@ -85,7 +82,7 @@ const LoginPage = () => {
 
     } else {
       console.log('Manual Login Failed');
-      setAuthErrorMessage('You are not authorized to access this application.'); // Set the error message
+      setAuthErrorMessage('Invalid credentials. Please try again.'); 
       setAuthError(true);
     }
   };
@@ -126,11 +123,10 @@ const LoginPage = () => {
   };
 
   return (
-
     <>
       <div className={`login-container ${authError ? 'blur-background' : ''}`}>
+        
         <div className='login-top'>
-
           <div className="manual-login">
             <h1>Sign In</h1>
             <input
@@ -160,7 +156,6 @@ const LoginPage = () => {
                 logo_alignment='center'
               />
             </div>
-
           </div>
 
           <div className='vertical-divider'></div>
@@ -169,7 +164,6 @@ const LoginPage = () => {
             <h1>Continue as Guest</h1>
             <button className="kiosk-button" onClick={handleGuestAccess}>Customer Kiosk</button>
           </div>
-
         </div>
 
         <div className="login-bottom">

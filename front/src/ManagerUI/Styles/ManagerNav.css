@@ -1,60 +1,44 @@
 .lhs {
-    background-color: #3B3C3D;
+    width: 300px;
 }
-
 .manager-nav {
-    height: 100vh;
-    background-color: #3B3C3D;
-    color: white;
-    overflow-y: auto;
-    padding-top: 1rem;
+    width: 100%;
+    height: 100%;
+    color: rgb(235, 235, 233);
+    background-color: #1a1a1a;
     display: flex;
     flex-direction: column;
+    padding: 1rem;
 }
 
 .nav-item {
-    background-color: #3B3C3D;
-    padding: 1rem;
+    width: calc(100% - 2rem);
+    margin: 0.5rem 1rem;
     align-self: center;
-    justify-content: center;
-    background-color: #3B3C3D;
-    border-radius: 8px;
-    width: 200px;
-    margin-bottom: 0.5rem;
 }
 
 .nav-item button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    font-family: inherit;
-    cursor: pointer;
-    transition: border-color 0.25s;
     width: 100%;
+    padding: 1rem 0;
+    text-align: center;
     background-color: transparent;
-    color: inherit;
-    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 1.25rem;
 }
 
 .nav-item button:hover {
-    border-color: #646cff;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
 }
 
-.nav-item button:focus,
-.nav-item button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+.nav-item button:focus {
+    outline: none;
 }
 
-@media (prefers-color-scheme: light) {
-    .manager-nav {
-        color: #3B3C3D;
-        background-color: #ffffff;
-    }
-
-    .nav-item button {
-        background-color: #f9f9f9;
-    }
-
-    .nav-item button:hover {
-        color: #747bff;
-    }
+.nav-item.active button {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
 }

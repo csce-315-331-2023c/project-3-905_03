@@ -1,4 +1,3 @@
-/* CSS reset for consistent styling */
 * {
     margin: 0;
     padding: 0;
@@ -22,7 +21,6 @@ body {
     height: 100vh;
     overflow-y: hidden;
     padding-top: 10%;
-
 }
 
 .login-top {

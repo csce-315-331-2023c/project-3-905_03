@@ -1,0 +1,35 @@
+.sales-report-container {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sales-report-filter {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sales-report-filter label {
+    margin-right: 10px;
+}
+
+.sales-report-filter input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.recharts-responsive-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.recharts-wrapper {
+    margin-top: 20px;
+}

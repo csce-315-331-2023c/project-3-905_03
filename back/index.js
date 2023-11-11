@@ -474,6 +474,211 @@ app.post('/submitOrder', async (req, res) => {
     }
 });
 
+
+{ /* Managerial Analytics / Reports */}
+app.get('/generateRestockReport', async (req, res) => {
+    const restockQuery = `
+        SELECT stock_id, stock_item, cost, stock_quantity, max_amount
+        FROM stock_items
+        WHERE stock_quantity <= max_amount / 3;
+    `;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    });
+
+    try {
+        await client.connect();
+        const result = await client.query(restockQuery);
+        res.status(200).json(result.rows); 
+    } catch (err) {
+        console.error('Database Query Error', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        await client.end();
+    }
+});
+
+
+
+app.post('/generateSalesReport', async (req, res) => {
+    const { startDate, endDate } = req.body;
+    const salesReportQuery = `
+    SELECT si.item_id, si.served_item, COUNT(*) as number_of_sales
+    FROM orders o
+    JOIN orderServedItem osi ON o.order_id = osi.order_id
+    JOIN served_items si ON osi.item_id = si.item_id
+    WHERE o.order_date BETWEEN $1 AND $2
+    GROUP BY si.item_id, si.served_item
+    ORDER BY number_of_sales DESC;
+  `;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    });
+
+    try {
+        await client.connect();
+        const { rows } = await client.query(salesReportQuery, [startDate, endDate]);
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Database Query Error', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        await client.end();
+    }
+});
+
+app.post('/generateUsageReport', async (req, res) => {
+    const { startDate, endDate } = req.body;
+
+    const orderQuery = `
+        SELECT order_id
+        FROM orders
+        WHERE order_date BETWEEN $1 AND $2;
+    `;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    });
+
+    try {
+        await client.connect();
+
+        const orderIDsResult = await client.query(orderQuery, [startDate, endDate]);
+        const orderIDs = orderIDsResult.rows.map(row => row.order_id);
+
+        const usageQuery = `
+            SELECT si.stock_id, COUNT(*) as usage_count
+            FROM orderServedItem osi
+            JOIN serveditemstockitem si ON osi.item_id = si.item_id
+            WHERE osi.order_id = ANY($1)
+            GROUP BY si.stock_id;
+        `;
+
+        const usageResult = await client.query(usageQuery, [orderIDs]);
+        const usageQuantities = usageResult.rows.map(row => ({
+            stock_id: row.stock_id,
+            usage_count: parseInt(row.usage_count)
+        }));
+
+        res.status(200).json({ usageQuantities });
+    } catch (err) {
+        console.error('Database Query Error', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        await client.end();
+    }
+});
+
+
+app.post('/generateExcessReport', async (req, res) => {
+    const { startDate, endDate } = req.body;
+
+    const salesQuery = `
+        SELECT si.stock_id, COUNT(*) as quantity
+        FROM orders o
+        JOIN orderServedItem osi ON o.order_id = osi.order_id
+        JOIN serveditemstockitem si ON osi.item_id = si.item_id
+        WHERE o.order_date BETWEEN $1 AND $2
+        GROUP BY si.stock_id;
+    `;
+
+    const totalStockQuery = `
+        SELECT stock_id, stock_quantity
+        FROM stock_items;
+    `;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    });
+
+    try {
+        await client.connect();
+
+        // total stock quantities
+        const totalQuantitiesResult = await client.query(totalStockQuery);
+        const totalQuantities = totalQuantitiesResult.rows.reduce((acc, { stock_id, stock_quantity }) => {
+            acc[stock_id] = stock_quantity;
+            return acc;
+        }, {});
+
+        // sales quantities
+        const salesResult = await client.query(salesQuery, [startDate, endDate]);
+        const salesCounts = salesResult.rows.reduce((acc, { stock_id, quantity }) => {
+            acc[stock_id] = (acc[stock_id] || 0) + parseInt(quantity);
+            return acc;
+        }, {});
+
+        //excess items
+        const excessItems = Object.keys(totalQuantities).filter(stockID => {
+            const soldQuantity = salesCounts[stockID] || 0;
+            // if sold quantity is less than 10% of total quantity
+            return soldQuantity < (totalQuantities[stockID] * 0.1);
+        }).map(stockID => ({
+            stock_id: stockID,
+            stock_quantity: totalQuantities[stockID],
+            sold_quantity: salesCounts[stockID] || 0
+        }));
+
+        res.status(200).json({ excessItems });
+    } catch (err) {
+        console.error('Database Query Error', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        await client.end();
+    }
+});
+
+
+
+
+app.post('/generateFreqPairsReport', async (req, res) => {
+    const { startDate, endDate } = req.body;
+
+    const freqPairsQuery = `
+        SELECT a.served_item AS item1, b.served_item AS item2, COUNT(*) AS frequency
+        FROM orderServedItem AS osi1
+        JOIN served_items AS a ON osi1.item_id = a.item_id
+        JOIN orderServedItem AS osi2 ON osi1.order_id = osi2.order_id AND osi1.item_id < osi2.item_id
+        JOIN served_items AS b ON osi2.item_id = b.item_id
+        JOIN orders AS o ON osi1.order_id = o.order_id
+        WHERE o.order_date BETWEEN $1 AND $2
+        GROUP BY a.served_item, b.served_item
+        ORDER BY frequency DESC;
+    `;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    });
+
+    try {
+        await client.connect();
+        const result = await client.query(freqPairsQuery, [startDate, endDate]);
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Database Query Error', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        await client.end();
+    }
+});
+
 //// SERVER
 
 app.get('*', (req, res) => {

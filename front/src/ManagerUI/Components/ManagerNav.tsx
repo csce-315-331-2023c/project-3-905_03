@@ -1,4 +1,3 @@
-// ManagerNav.tsx
 import React, { useState } from 'react';
 import '../Styles/ManagerNav.css';
 
@@ -7,52 +6,28 @@ interface ManagerNavProps {
 }
 
 const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
-    const [userOpen, setUserOpen] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [inventoryOpen, setInventoryOpen] = useState(false);
-    const [ordersOpen, setOrdersOpen] = useState(false);
-    const [analyticsOpen, setAnalyticsOpen] = useState(false);
+    const [openSection, setOpenSection] = useState<string>('');
+
+    const toggleSection = (section: string) => {
+        const newSection = openSection === section ? '' : section;
+        setOpenSection(newSection);
+        setActiveSection(newSection);
+    };
+
+    const navItems = ['User', 'Menu', 'Inventory', 'Orders', 'Analytics'];
 
     return (
-        <div className="manager-nav">
-            <div className="nav-item">
-                <button onClick={() => {
-                    setActiveSection('User');
-                    setUserOpen(!userOpen);
-                }}>User</button>
-                {userOpen}
-            </div>
-            
-            <div className="nav-item">
-                <button onClick={() => {
-                    setActiveSection('Menu');
-                    setMenuOpen(!menuOpen);
-                }}>Menu</button>
-                {menuOpen}
-            </div>
-            <div className="nav-item">
-                <button onClick={() => {
-                    setActiveSection('Inventory');
-                    setInventoryOpen(!inventoryOpen);
-                }}>Inventory</button>
-                {inventoryOpen}
-            </div>
-            <div className="nav-item">
-                <button onClick={() => {
-                    setActiveSection('Orders');
-                    setOrdersOpen(!ordersOpen);
-                }}>Orders</button>
-                {ordersOpen}
-            </div>
-            <div className="nav-item">
-                <button onClick={() => {
-                    setActiveSection('Analytics');
-                    setAnalyticsOpen(!analyticsOpen);
-                }}>Analytics</button>
-                {analyticsOpen}
-            </div>
-            
-        </div>
+        <nav className="manager-nav">
+            {navItems.map((item) => (
+                <div className={`nav-item ${openSection === item ? 'active' : ''}`} key={item}>
+                    <button
+                        onClick={() => toggleSection(item)}
+                    >
+                        {item}
+                    </button>
+                </div>
+            ))}
+        </nav>
     );
 };
 

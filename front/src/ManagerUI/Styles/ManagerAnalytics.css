@@ -1,0 +1,91 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.manager-analytics-container {
+    background-color: #414345;
+    color: #EBEBE9;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.date-time-picker-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.date-picker-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-picker-container label {
+    margin-bottom: 10px;
+}
+
+.date-picker,
+.time-picker {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #EBEBE9;
+    color: #414345;
+    margin-right: 10px;
+}
+
+.report-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.report-buttons-container button {
+    background-color: #1A1A1A;
+    border: none;
+    color: #EBEBE9;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.report-buttons-container button:hover {
+    background-color: #333333;
+}
+
+.report-display-container {
+    background-color: #EBEBE9;
+    color: #414345;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.label {
+    display: block;
+    margin-bottom: .5rem;
+    color: #EBEBE9;
+}
+
+.input {
+    width: 100%;
+    padding: .375rem .75rem;
+    line-height: 1.5;
+    background-color: #EBEBE9;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+    .date-time-picker-container {
+        justify-content: start;
+    }
+
+    .date-picker-container {
+        margin-right: 20px;
+    }
+}

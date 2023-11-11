@@ -6,6 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import { Container } from "@material-ui/core";
 import ItemCard from '../Components/ItemCard';
 import "../Styles/Cashier.css";
+import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
 
 const Cashier = () => {
     interface menuItem {
@@ -24,9 +25,13 @@ const Cashier = () => {
         axios.get('http://localhost:8080/getEntreeItems')
             .then(res => {
                 const data: Data = res.data;
-                setMenuItems(data.data);
+                const modifiedData = data.data.map(item => ({
+                    ...item,
+                    served_item: dropLastWord(item.served_item)
+                }));
+                const uniqueItemsMap = new Map(modifiedData.map(item => [item.served_item, item]));
+                setMenuItems(Array.from(uniqueItemsMap.values()));
             })
-            .catch(err => console.log(err));
     }
 
     const displaySides = () => {

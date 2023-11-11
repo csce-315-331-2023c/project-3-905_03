@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardContent, CardActionArea } from '@material-ui/core';
+import { Card, CardHeader, CardContent, CardActionArea, Typography, Box } from '@material-ui/core';
 import { dropLastWord } from '../../SharedComponents/itemFormattingUtils';
 
 interface menuItem {
@@ -14,15 +14,21 @@ interface ItemCardProps {
 
 const ItemCard: React.FC<ItemCardProps> = ( {item} ) => {
     return (
-        <div>
+        <Box display="flex" justifyContent="center">
             <Card variant='outlined' square>
                 <CardActionArea>
-                    <CardHeader title={dropLastWord(item.served_item)} subheader={item.item_price}/>
+                    <CardHeader
+                        title={
+                            <Typography variant="h6" align="center">
+                                {item.served_item}
+                            </Typography>
+                        }
+                    />
                     <CardContent>
                     </CardContent>
                 </CardActionArea>
             </Card>
-        </div>
+        </Box>
     );
 }
 

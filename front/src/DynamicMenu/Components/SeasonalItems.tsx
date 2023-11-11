@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const SeasonalItems: React.FC = () => {
     return (
         <div>

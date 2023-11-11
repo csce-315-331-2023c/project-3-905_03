@@ -14,11 +14,10 @@ interface ItemCardProps {
 const ItemCard: React.FC<ItemCardProps> = ( {item} ) => {
     return (
         <div>
-            <Card>
+            <Card variant='outlined' square>
                 <CardActionArea>
-                    <CardHeader title={item.served_item} />
+                    <CardHeader title={item.served_item} subheader={item.item_price}/>
                     <CardContent>
-                        <p>Price: ${item.item_price}</p>
                     </CardContent>
                 </CardActionArea>
             </Card>

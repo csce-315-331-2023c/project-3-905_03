@@ -20,45 +20,58 @@ const Cashier = () => {
 
     const [menuItems, setMenuItems] = useState<menuItem[]>([]);
 
-    const fetchMenuItems = () => {
-        axios.get('http://localhost:8080/getServedItems')
+    const displayEntrees = () => {
+        axios.get('http://localhost:8080/getEntreeItems')
             .then(res => {
                 const data: Data = res.data;
                 setMenuItems(data.data);
             })
             .catch(err => console.log(err));
-    };
+    }
+
+    const displaySides = () => {
+        axios.get('http://localhost:8080/getSideItems')
+            .then(res => {
+                const data: Data = res.data;
+                setMenuItems(data.data);
+            })
+            .catch(err => console.log(err));
+    }
+
+    const displayDrinks = () => {
+        axios.get('http://localhost:8080/getDrinkItems')
+            .then(res => {
+                const data: Data = res.data;
+                setMenuItems(data.data);
+            })
+            .catch(err => console.log(err));
+    }
+
+    const displaySpecialItems = () => {
+        axios.get('http://localhost:8080/getSeasonalItems')
+            .then(res => {
+                const data: Data = res.data;
+                setMenuItems(data.data);
+            })
+            .catch(err => console.log(err));
+    }
+
+
 
     useEffect(() => {
-        fetchMenuItems();
+        displayEntrees();
     }, []);
 
     return (
         <div>
-            <h1>Cashier</h1>
-            <h2>Note 1:</h2>
-            <p>
-                If you want to keep the Manager and Cashier GUIs consistent with each other and you have not yet implemented the UI yet, u can just use
-                - ManagerUI/Pages/Manager.tsx
-                - ManagerUI/Components/ManagerNav.tsx
-                - ManagerUI/Styles/Manager.css
-                - ManagerUI/Styles/ManagerNav.css
-
-                as a template for the Cashier UI
-            </p>
-            <br></br>
-            <h2>Note 2:</h2>
-            <p>
-                Also feel free to modify anything, but lets try to keep it consistent.
-
-                Gentle reminder:
-                - src/styles/App.css
-                - src/styles/index.css
-
-                so if you want to change the font or something, you can do it there, and it will apply to all subpages
-            </p>
-            <Container>
-                <Grid container>
+            <Container style={{ height: '100vh', width: '100%'}}>
+                <div className="button-container">
+                    <button onClick={displayEntrees}>Entrees</button>
+                    <button onClick={displaySides}>Sides</button>
+                    <button onClick={displayDrinks}>Drinks</button>
+                    <button onClick={displaySpecialItems}>Special Items</button>
+                </div>
+                <Grid container >
                     {
                         menuItems.map((menuItem) => (
                             <Grid item key={menuItem.item_id} xs={12} md={6} lg={4}>

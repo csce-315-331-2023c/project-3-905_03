@@ -35,7 +35,3 @@ function App() {
 }
 
 export default App;
-
-/*
-Note: Protected Routes Functionality intersection with OAuth
-*/

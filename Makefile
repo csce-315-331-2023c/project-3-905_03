@@ -12,7 +12,7 @@ install-front:
 
 build-front: install-front
 	@echo "Building front..."
-	cd $(FRONT_DIR) && vite build
+	cd $(FRONT_DIR) && npx vite build
 
 install-back:
 	@echo "Installing back dependencies..."

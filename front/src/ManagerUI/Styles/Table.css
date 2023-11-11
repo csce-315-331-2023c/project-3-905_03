@@ -46,7 +46,7 @@
 .actions {
     display: flex;
     justify-content: space-around;
-    /* width: 25%; */
+
 }
 
 .actions svg {
@@ -58,7 +58,7 @@
 }
 
 
-/* Menu Components */
+
 
 .btn {
     margin-top: 2rem;
@@ -91,7 +91,7 @@
     margin-bottom: 0.2rem;
 }
 
-/* Order Components */
+
 .form-div {
     margin-bottom: 1%;
     margin-left: 35%;

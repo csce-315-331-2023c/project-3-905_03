@@ -43,7 +43,7 @@ function MenuTable() {
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('http://localhost:8080/deleteServedItem', rows[targetIndex])
             .then(() => {
-                fetchMenuItems();  // Refresh items after delete
+                fetchMenuItems();  
             })
             .catch(err => console.log(err));
     };
@@ -51,7 +51,7 @@ function MenuTable() {
     const handleAddRow = (newRow: Row): void => {
         axios.post('http://localhost:8080/addServedItem', newRow)
             .then(() => {
-                fetchMenuItems();  // Refresh items after add
+                fetchMenuItems(); 
             })
             .catch(err => console.log(err));
     };
@@ -69,7 +69,7 @@ function MenuTable() {
     const handleUpdate = () => {
         axios.post('http://localhost:8080/editServedItem', { item_id: editId, served_item: name, item_price: price })
             .then(() => {
-                fetchMenuItems();  // Refresh items after update
+                fetchMenuItems();  
             })
             .catch(err => console.log(err));
         setEditId(-1);

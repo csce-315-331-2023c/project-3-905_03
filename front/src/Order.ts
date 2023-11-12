@@ -36,6 +36,11 @@ interface Item {
       const orderTotal = this.receipt.reduce((total, item) => total + item.price * item.quantity, 0);
       return orderTotal.toFixed(2);
     }
+
+    splitOrder(): string {
+      const orderTotal = this.receipt.reduce((total, item) => total + item.price * item.quantity, 0);
+      return (orderTotal / 2).toFixed(2);
+    }
   
     cancel(): void {
       this.receipt = [];

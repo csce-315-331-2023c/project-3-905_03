@@ -9,7 +9,9 @@ import "../Styles/Cashier.css";
 import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
 import { BsFillPlusCircleFill, BsFillTrashFill} from 'react-icons/bs';
 import { AiFillMinusCircle } from 'react-icons/ai';
+import { FaCheck } from 'react-icons/fa';
 import { Order } from "../../Order.ts";
+import { set } from "firebase/database";
 
 const Cashier = () => {
     interface menuItem {
@@ -32,6 +34,8 @@ const Cashier = () => {
     const [menuItems, setMenuItems] = useState<menuItem[]>([]);
     const [order, setOrder] = useState<Order>(new Order());
     const [rows, setRows] = useState<Item[]>(order.getReceipt2());
+    const [takeout, setTakeout] = useState<number>(0);
+    const [split, setSplit] = useState<number>(0);
 
     const displayEntrees = () => {
         axios.get('http://localhost:8080/getEntreeItems')
@@ -149,10 +153,23 @@ const Cashier = () => {
                         <td></td>
                         <td></td>
                         <td>Total: </td>
-                        <td>{order.getOrderTotal()}</td>
+                        <td>{split === 0 ? order.getOrderTotal() : order.splitOrder()}</td>
                     </tr>
                 </tbody>
             </table>
+            <div className="button-container">
+                <button>Submit Order</button>
+                <button onClick={() => setTakeout(takeout === 0 ? 1 : 0)}
+                style={{ backgroundColor: takeout === 1 ? 'green' : '#1a1a1a' }}>
+                    Takeout
+                    {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
+                </button>
+                <button onClick={() => setSplit(split === 0 ? 1 : 0)}
+                style={{ backgroundColor: split === 1 ? 'green' : '#1a1a1a' }}>
+                    Split
+                    {split === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
+                </button>
+            </div>
         </Container>
     );
 };

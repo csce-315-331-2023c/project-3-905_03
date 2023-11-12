@@ -128,14 +128,7 @@ const Cashier = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {   rows.length === 0 ? 
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>Waiting For Order...</td>
-                            <td></td>
-                        </tr>
-                        :
+                    {   
                         rows.map((row, index) => (
                             <tr key={index}>
                                 <td>{row.id}</td>
@@ -152,6 +145,12 @@ const Cashier = () => {
                             </tr>
                         ))
                     }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Total: </td>
+                        <td>{order.getOrderTotal()}</td>
+                    </tr>
                 </tbody>
             </table>
         </Container>

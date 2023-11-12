@@ -31,6 +31,11 @@ interface Item {
     deleteItem(id: number): void {
       this.receipt = this.receipt.filter((item) => item.id !== id);
     }
+
+    getOrderTotal(): string {
+      const orderTotal = this.receipt.reduce((total, item) => total + item.price * item.quantity, 0);
+      return orderTotal.toFixed(2);
+    }
   
     cancel(): void {
       this.receipt = [];

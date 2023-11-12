@@ -27,6 +27,10 @@ interface Item {
         }
       }
     }
+
+    deleteItem(id: number): void {
+      this.receipt = this.receipt.filter((item) => item.id !== id);
+    }
   
     cancel(): void {
       this.receipt = [];
@@ -38,5 +42,13 @@ interface Item {
   
     getReceipt(): string {
       return JSON.stringify(this.receipt);
+    }
+
+    getReceipt2(): Item[] {
+        return this.receipt;
+    }
+
+    setReceipt(receipt: Item[]): void {
+        this.receipt = receipt;
     }
   }

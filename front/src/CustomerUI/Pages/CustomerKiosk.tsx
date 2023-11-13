@@ -6,23 +6,15 @@ import "../Styles/CustomerKiosk.css";
 import { ItemComponent } from '../Components/ItemComponent';
 
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, IconButton } from '@mui/material';
-import { ShoppingBag, ShoppingBagOutlined, Undo, Add, LocalFireDepartment } from '@mui/icons-material';
+import { ShoppingBag, ShoppingBagOutlined, Undo, Add} from '@mui/icons-material';
 
 const Customer = () => {
     const [bagView, setBagView] = useState(false);
     const [items, setItems] = useState<Item[]>([]);
     const [formvalue, setFormValue] = React.useState('w&t');
-    const [formats, setFormats] = React.useState(() => ['bold', 'italic']);
     const [bag, setBag] = useState<Item[]>([]);
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Item | undefined>(undefined);
-
-    const handleFormat = (
-        event: React.MouseEvent<HTMLElement>,
-        newFormats: string[],
-    ) => {
-        setFormats(newFormats);
-    };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValue(event.target.value);
@@ -35,11 +27,20 @@ const Customer = () => {
     }
 
     const handleCheckout = () => {
+        
+        printReceipt();
+
         setBag([]);
         setSelected(undefined);
-        // show snackbar or popup
-        // print receipt with order number
     };
+
+    const printReceipt = () => {
+        console.log("printing receipt");
+        for (let i = 0; i < bag.length; i++) {
+            console.log(bag[i].name);
+        }
+        console.log("end of receipt");
+    }
 
     const getItems = async () => {
         axios.get('/getServedItems')

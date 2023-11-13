@@ -2,6 +2,7 @@ import React from 'react';
 import '../Styles/DynamicMenu.css';
 import logo from '../Styles/messLogo.jpg';
 import EntreeItems from '../Components/EntreeItems';
+import WandTItems from '../Components/WandTItems';
 import SideItems from '../Components/SideItems';
 import DrinkItems from '../Components/DrinkItems';
 import Weather from '../Components/Weather';
@@ -15,6 +16,10 @@ const DynamicMenu: React.FC = () => {
                 <div className="weatherContainer">
                     <Weather />
                 </div>
+            </div>
+            <div className="WandTContainer">
+                <h1>Waffles And Toast</h1>
+                {<WandTItems />}  
             </div>
             <div className="entreeContainer">
                 <h1>Entrees</h1>

@@ -164,6 +164,35 @@ app.get('/getDrinkItems', (req, res) => {
 });
 
 /**
+ * return special items in json form
+ */
+app.get('/getSpecialItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items WHERE item_category = 'special' ORDER BY item_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
  * return stock items in json form
  */
 app.get('/getStockItems', (req, res) => {

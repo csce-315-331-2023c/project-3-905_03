@@ -16,7 +16,7 @@ app.use(cors());
 const { Client } = require('pg')
 
 // FOR SERVER
-app.use(express.static(path.join(__dirname, '../front/dist')));
+// app.use(express.static(path.join(__dirname, '../front/dist')));
 
 /**
  * return served items in json form
@@ -61,7 +61,36 @@ app.get('/getEntreeItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_id < 36 ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items WHERE item_category = 'entree' ORDER BY item_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return w&t items in json form
+ */
+app.get('/getW&TItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items WHERE item_category = 'w&t' ORDER BY item_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -90,7 +119,7 @@ app.get('/getSideItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_id > 35 AND item_id < 45 ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items WHERE item_category = 'side' ORDER BY item_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -106,7 +135,7 @@ app.get('/getSideItems', (req, res) => {
 });
 
 /**
- * return Drink items in json form
+ * return drink items in json form
  */
 app.get('/getDrinkItems', (req, res) => {
 
@@ -119,7 +148,7 @@ app.get('/getDrinkItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_id > 45 AND item_id < 52 ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items WHERE item_category = 'drink' ORDER BY item_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -135,7 +164,7 @@ app.get('/getDrinkItems', (req, res) => {
 });
 
 /**
- * return specials items in json form
+ * return special items in json form
  */
 app.get('/getSpecialItems', (req, res) => {
 
@@ -148,7 +177,7 @@ app.get('/getSpecialItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_id > 51 ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items WHERE item_category = 'special' ORDER BY item_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows

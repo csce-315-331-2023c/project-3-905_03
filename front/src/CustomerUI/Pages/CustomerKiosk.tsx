@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Item } from '../../Order.ts';
+import { Item, Order } from '../../Order.ts';
+
 import "../Styles/CustomerKiosk.css";
 
 import { ItemComponent } from '../Components/ItemComponent';
@@ -16,6 +17,7 @@ const Customer = () => {
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Item | undefined>(undefined);
     const [isDineIn, setIsDineIn] = useState(true);
+    const [currOrder, setCurrOrder] = useState<Order>(new Order());
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValue(event.target.value);
@@ -24,15 +26,14 @@ const Customer = () => {
     const handleAdd = () => {
         if (selected) {
             setBag([...bag, selected]);
+            // currOrder.addItem(selected);
         }
     }
 
     const handleCheckout = () => {
-<<<<<<< Updated upstream
-        axios.post('/submitOrder', {});
-=======
-        axios.post('/submitOrder', {bag, });
->>>>>>> Stashed changes
+        const send = new Order();
+
+        axios.post('/submitOrder', { });
 
         printReceipt();
 

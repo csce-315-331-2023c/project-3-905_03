@@ -11,6 +11,8 @@ export interface Item {
 export class Order {
   private receipt: Item[] = [];
 
+  constructor() {}
+
   addItem(id: number, name: string, price: number, quantity: number, category: string): void {
     const existingItem = this.receipt.find((item) => item.id === id);
     if (existingItem) {

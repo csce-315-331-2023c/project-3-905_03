@@ -63,3 +63,7 @@
 .items{
     padding-left: 10px;
 }
+
+.weather {
+    text-align: center;
+}

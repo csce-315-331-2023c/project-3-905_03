@@ -5,9 +5,6 @@ import "../Styles/Customer.css";
 
 import { ItemComponent } from '../Components/ItemComponent';
 
-import gluten from '../../assets/gluten-free.png';
-import vegan from '../../assets/vegan.png';
-
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, ToggleButton, ToggleButtonGroup, IconButton } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add, LocalFireDepartment } from '@mui/icons-material';
 
@@ -37,12 +34,6 @@ const Customer = () => {
         }
     }
 
-    const handleItemClick = (item: Item) => {
-        console.log(item);
-        console.log("please work");
-        setSelected(item);
-    };
-
     const handleCheckout = () => {
         setBag([]);
         setSelected(undefined);
@@ -51,12 +42,10 @@ const Customer = () => {
     const getItems = async () => {
         axios.get('/getServedItems')
             .then((res) => {
-                console.log(res.data.data);
                 const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number }, index: number) => {
                     const { served_item, item_price } = itemData;
                     return { id: index, name: served_item, price: item_price };
                 });
-                console.log(items);
                 setItems(items);
             })
             .catch((error) => {
@@ -69,20 +58,31 @@ const Customer = () => {
     }, []);
 
     useEffect(() => {
+        console.log("selected");
         console.log(selected);
-        setHand(selected?.id || -1);
-    }, [selected]);
+        
+        setHand(typeof selected === 'undefined' ? -1 : selected.id);
+        console.log("hand");
+        console.log(hand);
+    }, [selected, hand]);
 
-    
+
 
     return (
         <>
             <h1>Customer</h1>
             <div className="top">
                 {bagView ? (
-                    <h1>bagview</h1>
+                    <>
+                        <h1>bagview</h1>
+                        <div className="displayedItems">
+                            {bag.map((item, index) => (
+                                <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
+                            ))}
+                        </div>
+                    </>
                 ) : (
-                    <div>
+                    <>
                         <FormControl className='sections'>
                             <FormLabel id="demo-controlled-radio-buttons-group">Sections</FormLabel>
                             <RadioGroup
@@ -97,20 +97,7 @@ const Customer = () => {
                                 <FormControlLabel value="drinks" control={<Radio />} label="Drinks" />
                             </RadioGroup>
                         </FormControl>
-
-                        <ToggleButtonGroup
-                            value={formats}
-                            onChange={handleFormat}
-                            aria-label="text formatting"
-                        >
-                            <ToggleButton value="bold" aria-label="bold">
-                                <img src={gluten} alt="gluten-free" />
-                            </ToggleButton>
-                            <ToggleButton value="italic" aria-label="italic">
-                                <img src={vegan} alt="vegan" />
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </div>
+                    </>
                 )}
                 <div className="bag-controls">
                     <Stack spacing={2} direction="column">
@@ -128,7 +115,7 @@ const Customer = () => {
                         <IconButton className="control" onClick={() => handleAdd()}>
                             <Add />
                         </IconButton>
-                        <Button variant="contained" onClick={() => handleCheckout}>
+                        <Button variant="contained" onClick={() => handleCheckout()}>
                             Checkout
                         </Button>
                     </Stack>
@@ -137,7 +124,7 @@ const Customer = () => {
 
             <div className="displayedItems">
                 {items.map((item, index) => (
-                    <ItemComponent item={item} key={index} hand={hand} setSelected={setSelected} />
+                    <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
                 ))}
             </div>
         </>

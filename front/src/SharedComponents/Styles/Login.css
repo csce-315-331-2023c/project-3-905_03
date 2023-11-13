@@ -13,7 +13,7 @@ body {
     background-color: var(--color-bg-dark);
     color: var(--font-color);
     font-size: var(--font-size-base);
-    background-color: rgb(96, 101, 103);
+    /* background-color: rgb(96, 101, 103); */
 }
 
 .login-container {

@@ -16,7 +16,12 @@ app.use(cors());
 const { Client } = require('pg')
 
 // FOR SERVER
-// app.use(express.static(path.join(__dirname, '../front/dist')));
+app.use(express.static(path.join(__dirname, '../front/dist')));
+
+// test route
+app.get('/test', (req, res) => {
+    res.status(200).send('success!');
+});
 
 /**
  * return served items in json form
@@ -37,7 +42,6 @@ app.get('/getServedItems', (req, res) => {
             res.status(200).send({
                 data: result.rows
             });
-      
         }
         else {
             console.log(err.message);

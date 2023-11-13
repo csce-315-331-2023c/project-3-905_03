@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ManagerGUI from './ManagerUI/Pages/Manager';
 import Cashier from './CashierUI/Pages/Cashier';
-import CustomerKiosk from './CustomerUI/Pages/Customer';
+import CustomerKiosk from './CustomerUI/Pages/CustomerKiosk';
 import DynamicMenu from './DynamicMenu/Pages/DynamicMenu';
 import LoginPage from './SharedComponents/Login';
 import ProtectedRoute from './SharedComponents/ProtectedRoute';

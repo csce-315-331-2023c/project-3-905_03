@@ -6,7 +6,7 @@ import "../Styles/CustomerKiosk.css";
 import { ItemComponent } from '../Components/ItemComponent';
 
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, IconButton } from '@mui/material';
-import { ShoppingBag, ShoppingBagOutlined, Undo, Add} from '@mui/icons-material';
+import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
 
 const Customer = () => {
     const [bagView, setBagView] = useState(false);
@@ -15,6 +15,7 @@ const Customer = () => {
     const [bag, setBag] = useState<Item[]>([]);
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Item | undefined>(undefined);
+    const [isDineIn, setIsDineIn] = useState(true);
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValue(event.target.value);
@@ -27,7 +28,8 @@ const Customer = () => {
     }
 
     const handleCheckout = () => {
-        
+        axios.post('/submitOrder', {});
+
         printReceipt();
 
         setBag([]);
@@ -55,6 +57,10 @@ const Customer = () => {
             .catch((error) => {
                 console.log(error);
             });
+    };
+
+    const handleDineInOrTakeOut = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsDineIn(event.target.value === 'dine-in');
     };
 
     useEffect(() => {
@@ -121,6 +127,13 @@ const Customer = () => {
                         <IconButton className="control" onClick={() => handleAdd()}>
                             <Add />
                         </IconButton>
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">Dine-in or Take-out?</FormLabel>
+                            <RadioGroup aria-label="dine-in-or-take-out" name="dine-in-or-take-out" value={isDineIn ? 'dine-in' : 'take-out'} onChange={handleDineInOrTakeOut}>
+                                <FormControlLabel value="dine-in" control={<Radio />} label="Dine-in" />
+                                <FormControlLabel value="take-out" control={<Radio />} label="Take-out" />
+                            </RadioGroup>
+                        </FormControl>
                         <Button variant="contained" onClick={() => handleCheckout()}>
                             Checkout
                         </Button>
@@ -139,7 +152,7 @@ const Customer = () => {
                             hand={hand}
                             parentSelected={setSelected}
                         />
-                ))}
+                    ))}
             </div>
         </>
     );

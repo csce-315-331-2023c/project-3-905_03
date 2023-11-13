@@ -9,7 +9,7 @@ import "../Styles/Cashier.css";
 import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
 import { BsFillPlusCircleFill, BsFillTrashFill} from 'react-icons/bs';
 import { AiFillMinusCircle } from 'react-icons/ai';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import { Order } from "../../Order.ts";
 import { set } from "firebase/database";
 
@@ -69,7 +69,7 @@ const Cashier = () => {
     }
 
     const displaySpecialItems = () => {
-        axios.get('http://localhost:8080/getSeasonalItems')
+        axios.get('http://localhost:8080/getSpecialItems')
             .then(res => {
                 const data: Data = res.data;
                 setMenuItems(data.data);
@@ -99,6 +99,18 @@ const Cashier = () => {
         tempOrder.setReceipt(order.getReceipt2());
         setOrder(tempOrder);
         setRows(tempOrder.getReceipt2());
+    };
+
+    const submitOrder = () => {
+        axios.post('http://localhost:8080/submitOrder', {
+            order: order.getReceipt2(),
+            takeout: takeout,
+            split: split
+        })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.log(err));    
     };
 
     useEffect(() => {
@@ -140,9 +152,9 @@ const Cashier = () => {
                                 <td>{row.price}</td>
                                 <td>
                                     <span className="actions">
-                                        <BsFillPlusCircleFill onClick={() => addItemToOrder(row.id, row.name, row.price, 1)} />
+                                        <FaMinusSquare onClick={() => removeItemFromOrder(row.id)} />
                                         {row.quantity}
-                                        <AiFillMinusCircle onClick={() => removeItemFromOrder(row.id)} />
+                                        <FaPlusSquare onClick={() => addItemToOrder(row.id, row.name, row.price, 1)} />
                                         <BsFillTrashFill onClick={() => deleteItemFromOrder(row.id)} /> 
                                     </span>
                                 </td>
@@ -158,7 +170,7 @@ const Cashier = () => {
                 </tbody>
             </table>
             <div className="button-container">
-                <button>Submit Order</button>
+                <button onClick={() => submitOrder}>Submit Order</button>
                 <button onClick={() => setTakeout(takeout === 0 ? 1 : 0)}
                 style={{ backgroundColor: takeout === 1 ? 'green' : '#1a1a1a' }}>
                     Takeout

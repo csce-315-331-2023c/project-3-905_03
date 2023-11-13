@@ -28,7 +28,11 @@ const Customer = () => {
     }
 
     const handleCheckout = () => {
+<<<<<<< Updated upstream
         axios.post('/submitOrder', {});
+=======
+        axios.post('/submitOrder', {bag, });
+>>>>>>> Stashed changes
 
         printReceipt();
 

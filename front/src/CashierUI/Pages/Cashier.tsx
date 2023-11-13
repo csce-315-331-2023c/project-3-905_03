@@ -50,6 +50,19 @@ const Cashier = () => {
             })
     }
 
+    const displayWT = () => {
+        axios.get('http://localhost:8080/getW&TItems')
+            .then(res => {
+                const data: Data = res.data;
+                const modifiedData = data.data.map(item => ({
+                    ...item,
+                    served_item: dropLastWord(item.served_item)
+                }));
+                const uniqueItemsMap = new Map(modifiedData.map(item => [item.served_item, item]));
+                setMenuItems(Array.from(uniqueItemsMap.values()));
+            })
+    }
+
     const displaySides = () => {
         axios.get('http://localhost:8080/getSideItems')
             .then(res => {
@@ -121,6 +134,7 @@ const Cashier = () => {
         <Container style={{ height: '100vh', width: '100%'}}>
             <div className="button-container">
                 <button onClick={displayEntrees}>Entrees</button>
+                <button onClick={displayWT}>Waffles & Toasts</button>
                 <button onClick={displaySides}>Sides</button>
                 <button onClick={displayDrinks}>Drinks</button>
                 <button onClick={displaySpecialItems}>Special Items</button>

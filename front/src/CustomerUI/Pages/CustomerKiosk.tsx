@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Stack from '@mui/material/Stack';
 import axios from 'axios';
 import { Item } from '../../Order.ts';
-import Button from '@mui/material/Button';
 import "../Styles/Customer.css";
 
 import { ItemComponent } from '../Components/ItemComponent';
@@ -10,22 +8,8 @@ import { ItemComponent } from '../Components/ItemComponent';
 import gluten from '../../assets/gluten-free.png';
 import vegan from '../../assets/vegan.png';
 
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-
-import { IconButton } from '@mui/material';
-
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
-import UndoIcon from '@mui/icons-material/Undo';
-import AddIcon from '@mui/icons-material/Add';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, ToggleButton, ToggleButtonGroup, IconButton } from '@mui/material';
+import { ShoppingBag, ShoppingBagOutlined, Undo, Add, LocalFireDepartment } from '@mui/icons-material';
 
 const Customer = () => {
     const [bagView, setBagView] = useState(false);
@@ -132,17 +116,17 @@ const Customer = () => {
                     <Stack spacing={2} direction="column">
                         <IconButton className="control" onClick={() => setBagView(!bagView)}>
                             {bagView ? (
-                                <ShoppingBagIcon />
+                                <ShoppingBag />
                             ) : (
-                                <ShoppingBagOutlinedIcon />
+                                <ShoppingBagOutlined />
                             )}
                             {bag.length}
                         </IconButton>
                         <IconButton className="control" onClick={() => setBag(bag.slice(0, -1))}>
-                            <UndoIcon />
+                            <Undo />
                         </IconButton>
                         <IconButton className="control" onClick={() => handleAdd()}>
-                            <AddIcon />
+                            <Add />
                         </IconButton>
                         <Button variant="contained" onClick={() => handleCheckout}>
                             Checkout

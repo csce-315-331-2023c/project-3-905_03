@@ -3,20 +3,20 @@ export interface Item {
   id: number;
   name: string;
   price: number;
-  quantity: number;
+  quantity : number;
+  category : string;
   description ?: string;
-  category ?: string;
 }
 
 export class Order {
   private receipt: Item[] = [];
 
-  addItem(id: number, name: string, price: number, quantity: number): void {
+  addItem(id: number, name: string, price: number, quantity: number, category: string): void {
     const existingItem = this.receipt.find((item) => item.id === id);
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      const item: Item = { id, name, price, quantity };
+      const item: Item = { id, name, price, quantity, category };
       this.receipt.push(item);
     }
   }

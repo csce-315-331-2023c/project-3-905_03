@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Item } from '../../Order.ts';
-import "../Styles/Customer.css";
+import "../Styles/CustomerKiosk.css";
 
 import { ItemComponent } from '../Components/ItemComponent';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, ToggleButton, ToggleButtonGroup, IconButton } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, IconButton } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add, LocalFireDepartment } from '@mui/icons-material';
 
 const Customer = () => {
     const [bagView, setBagView] = useState(false);
     const [items, setItems] = useState<Item[]>([]);
-    const [formvalue, setFormValue] = React.useState('waffles');
+    const [formvalue, setFormValue] = React.useState('w&t');
     const [formats, setFormats] = React.useState(() => ['bold', 'italic']);
     const [bag, setBag] = useState<Item[]>([]);
     const [hand, setHand] = useState(0);
@@ -37,14 +37,17 @@ const Customer = () => {
     const handleCheckout = () => {
         setBag([]);
         setSelected(undefined);
+        // show snackbar or popup
+        // print receipt with order number
     };
 
     const getItems = async () => {
         axios.get('/getServedItems')
             .then((res) => {
-                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number }, index: number) => {
-                    const { served_item, item_price } = itemData;
-                    return { id: index, name: served_item, price: item_price };
+                console.log(res.data);
+                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_category: string }, index: number) => {
+                    const { served_item, item_price, item_category } = itemData;
+                    return { id: index, name: served_item, price: item_price, category: item_category };
                 });
                 setItems(items);
             })
@@ -58,15 +61,16 @@ const Customer = () => {
     }, []);
 
     useEffect(() => {
-        console.log("selected");
+        console.log("<");
         console.log(selected);
-        
-        setHand(typeof selected === 'undefined' ? -1 : selected.id);
-        console.log("hand");
         console.log(hand);
+        console.log(">");
+
+        setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected, hand]);
 
 
+    // ask krish about loading animation
 
     return (
         <>
@@ -89,12 +93,13 @@ const Customer = () => {
                                 aria-labelledby="demo-controlled-radio-buttons-group"
                                 name="controlled-radio-buttons-group"
                                 value={formvalue}
+                                defaultValue="w&t"
                                 onChange={handleSections}
                             >
-                                <FormControlLabel value="wafflesandtoast" control={<Radio />} label="Waffles & French Toast" />
-                                <FormControlLabel value="entrees" control={<Radio />} label="Entrees" />
-                                <FormControlLabel value="sides" control={<Radio />} label="Sides" />
-                                <FormControlLabel value="drinks" control={<Radio />} label="Drinks" />
+                                <FormControlLabel value="w&t" control={<Radio />} label="Waffles & French Toast" />
+                                <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
+                                <FormControlLabel value="side" control={<Radio />} label="Sides" />
+                                <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
                             </RadioGroup>
                         </FormControl>
                     </>
@@ -123,8 +128,16 @@ const Customer = () => {
             </div>
 
             <div className="displayedItems">
-                {items.map((item, index) => (
-                    <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
+                {items
+                    .map((item, index) => ({ ...item, index }))
+                    .filter((item) => item.category === formvalue)
+                    .map((item, index) => (
+                        <ItemComponent
+                            item={item}
+                            key={item.index}
+                            hand={hand}
+                            parentSelected={setSelected}
+                        />
                 ))}
             </div>
         </>

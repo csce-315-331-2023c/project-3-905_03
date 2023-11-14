@@ -20,6 +20,7 @@ function App() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/customer-kiosk" element={<CustomerKiosk />} />
             <Route path="/dynamic-menu" element={<DynamicMenu />} />
+            <Route path="/cashier2" element={<Cashier />} />
             <Route element={<ProtectedRoute allowedRoles={['Manager']} />}>
               <Route path="/manager" element={<ManagerGUI />} />
             </Route>

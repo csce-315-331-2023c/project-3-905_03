@@ -20,7 +20,10 @@ const Weather: React.FC = () => {
     
     return (
         <div className="weather">
-            {temp} &#176;F
+            {temp?.toFixed(1)} &#176;F
+            {temp && temp < 60 ? <p>It's cold outside!</p> : null}
+            {temp && temp > 90 ? <p>It's hot outside!</p> : null}
+            {temp && temp >= 60 && temp <= 90 ? <p>It's nice outside!</p> : null}
         </div>
     );
 };

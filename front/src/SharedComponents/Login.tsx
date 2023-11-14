@@ -1,20 +1,28 @@
-
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
-import { useAuth } from './AuthContext';
-import ErrorModal from './ErrorModal';
-
+import  { jwtDecode } from "jwt-decode"; // Use jwt_decode, jwtDecode was a typo
 import './Styles/Login.css';
+import { useAuth, User } from './AuthContext';
 
-const authorizedManagers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ry4ntr1@gmail.com', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
-const authorizedCashiers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ry4ntr1@gmail.com', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
+const managers = {
+  'Revanth': 0,
+  'Ryan': 1,
+};
+
+const cashiers = {
+  'Sam': 0,
+  'Kotda': 1,
+};
+
+const authorizedManagers = ['revmya09@tamu.edu', 'ry4ntr1@gmail.com'];
+const authorizedCashiers = ['samuel.cole@tamu.edu', 'kotda@tamu.edu'];
 
 interface CustomJwtPayload {
   email: string;
   given_name: string;
   family_name: string;
+  // ... add other fields you expect from the JWT
 }
 
 const oAuthFailureMessage = "You are not authorized to access this application.";
@@ -23,7 +31,6 @@ const LoginPage = () => {
   const [name, setName] = useState('');
   const [id, setId] = useState('');
   const navigate = useNavigate();
-
   const { setUser } = useAuth();
   const [authError, setAuthError] = useState(false);
   const [showAuthError, setShowAuthError] = useState(false);
@@ -57,29 +64,21 @@ const LoginPage = () => {
     const parsedId = parseInt(id, 10);
     let role: 'Manager' | 'Cashier' | undefined;
 
-    const managers = {
-      manager1: 123,
-      manager2: 456,
-      manager3: 789
-    };
-
-    const cashiers = {
-      cashier1: 111,
-      cashier2: 222,
-      cashier3: 333
-    };
+    if (Object.values(managers).includes(parsedId)) {
+      role = 'Manager';
+    } else if (Object.values(cashiers).includes(parsedId)) {
+      role = 'Cashier';
+    }
 
     if (role) {
       setUser({
         firstName: name,
         role: role,
-        isAuthenticated: true
+        isAuthenticated: true,
+        
       });
-
-
-      setAuthError(false);
+      console.log(`${name} authenticated:`, true);
       navigate(`/${role.toLowerCase()}`);
-
     } else {
       console.log('Manual Login Failed');
       setAuthErrorMessage('Invalid credentials. Please try again.'); 
@@ -88,10 +87,11 @@ const LoginPage = () => {
   };
 
   const handleGoogleLoginSuccess = async (response: any) => {
+    console.log(response);
     const idToken = response.credential;
 
     try {
-      const decoded: CustomJwtPayload = jwtDecode(idToken);
+      const decoded: CustomJwtPayload = jwtDecode(idToken); // Correctly typing the decoded payload
       const role = authorizedManagers.includes(decoded.email) ? 'Manager'
         : authorizedCashiers.includes(decoded.email) ? 'Cashier'
           : undefined;
@@ -106,8 +106,8 @@ const LoginPage = () => {
         });
         navigate(`/${role.toLowerCase()}`);
       } else {
-        handleGoogleLoginError();
-        setAuthError(true);
+        console.log('Unauthorized access');
+        // Handle unauthorized access, perhaps navigate to an error page or show a message
       }
     } catch (error) {
       console.error('Error decoding the JWT:', error);
@@ -115,11 +115,7 @@ const LoginPage = () => {
   };
 
   const handleGoogleLoginError = () => {
-    setAuthErrorMessage(oAuthFailureMessage);
-  };
-
-  const handleGuestAccess = () => {
-    navigate('/customer-kiosk');
+    console.error('Google login failed');
   };
 
   return (
@@ -165,23 +161,15 @@ const LoginPage = () => {
             <button className="kiosk-button" onClick={handleGuestAccess}>Customer Kiosk</button>
           </div>
         </div>
-
-        <div className="login-bottom">
-          <button className="settings-button" onClick={handleGuestAccess}>
-            Language
-          </button>
-          <button className="settings-button" onClick={handleGuestAccess}>
-            Accessibility
-          </button>
-        </div>
-
       </div>
-      <ErrorModal
-        isOpen={authError}
-        errorMessage={authErrorMessage}
-        onClose={() => setAuthError(false)}
-      />
-    </>
+      
+      <div className="vertical-divider"></div>
+
+      <div className="guest-access">
+        <h1>Continue as Guest</h1>
+        <button className="kiosk-button">Customer Kiosk</button>
+      </div>
+    </div>
   );
 };
 

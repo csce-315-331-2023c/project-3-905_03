@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import {BsFillTrashFill, BsEyeFill} from 'react-icons/bs'
-import ViewOrderModal from './ViewOrderModal';
+import ViewOrderModal from '../../ViewOrderModal';
 
 function OrdersTable() {
     interface Row {

@@ -37,7 +37,7 @@ app.get('/getServedItems', (req, res) => {
             res.status(200).send({
                 data: result.rows
             });
-      
+
         }
         else {
             console.log(err.message);
@@ -278,7 +278,7 @@ app.post('/getOrdersBetweenDates', (req, res) => {
 /**
  * get order items for a given order id
  */
-app.post('/getOrderItems', (req, res) => { 
+app.post('/getOrderItems', (req, res) => {
     let { order_id } = req.body;
 
     const client = new Client({
@@ -567,11 +567,11 @@ app.post('/deleteStockItem', (req, res) => {
  * for each item in the list of item_ids, get the ingredients used from the serveditemstockitem table
  * for each of these ingredients decrement the stock_quantity in the stock_items table
  */
-app.post('/submitOrder', async (req, res) => { 
+app.post('/submitOrder', async (req, res) => {
     let client;
-    
+
     try {
-        let { item_list, employee_id, order_total, takeout, split} = req.body;
+        let { item_list, employee_id, order_total, takeout, split } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -620,7 +620,7 @@ app.post('/submitOrder', async (req, res) => {
 });
 
 
-{ /* Managerial Analytics / Reports */}
+{ /* Managerial Analytics / Reports */ }
 app.get('/generateRestockReport', async (req, res) => {
     const restockQuery = `
         SELECT stock_id, stock_item, cost, stock_quantity, max_amount
@@ -638,12 +638,16 @@ app.get('/generateRestockReport', async (req, res) => {
     try {
         await client.connect();
         const result = await client.query(restockQuery);
-        res.status(200).json(result.rows); 
+        res.status(200).json(result.rows);
     } catch (err) {
         console.error('Database Query Error', err);
         res.status(500).json({ error: err.message });
     } finally {
-        await client.end();
+        try {
+            await client.end();
+        } catch (endError) {
+            console.error('Error on disconnecting', endError);
+        }
     }
 });
 
@@ -676,17 +680,30 @@ app.post('/generateSalesReport', async (req, res) => {
         console.error('Database Query Error', err);
         res.status(500).json({ error: err.message });
     } finally {
-        await client.end();
+        try {
+            await client.end();
+        } catch (endError) {
+            console.error('Error on disconnecting', endError);
+        }
     }
 });
 
-app.post('/generateUsageReport', async (req, res) => {
+app.post('/generateExcessReport', async (req, res) => {
     const { startDate, endDate } = req.body;
 
-    const orderQuery = `
-        SELECT order_id
-        FROM orders
-        WHERE order_date BETWEEN $1 AND $2;
+    const combinedQuery = `
+    SELECT si.stock_id, si.stock_quantity, COALESCE(sq.sold_quantity, 0) AS sold_quantity
+    FROM stock_items si
+    LEFT JOIN (
+        SELECT sisi.stock_id, COUNT(*) AS sold_quantity
+        FROM orders o
+        JOIN orderServedItem osi ON o.order_id = osi.order_id
+        JOIN serveditemstockitem sisi ON osi.item_id = sisi.item_id
+        WHERE o.order_date BETWEEN $1 AND $2
+        GROUP BY sisi.stock_id
+    ) sq ON si.stock_id = sq.stock_id
+    WHERE COALESCE(sq.sold_quantity, 0) < (si.stock_quantity * 0.1);
+
     `;
 
     const client = new Client({
@@ -698,50 +715,32 @@ app.post('/generateUsageReport', async (req, res) => {
 
     try {
         await client.connect();
-
-        const orderIDsResult = await client.query(orderQuery, [startDate, endDate]);
-        const orderIDs = orderIDsResult.rows.map(row => row.order_id);
-
-        const usageQuery = `
-            SELECT si.stock_id, COUNT(*) as usage_count
-            FROM orderServedItem osi
-            JOIN serveditemstockitem si ON osi.item_id = si.item_id
-            WHERE osi.order_id = ANY($1)
-            GROUP BY si.stock_id;
-        `;
-
-        const usageResult = await client.query(usageQuery, [orderIDs]);
-        const usageQuantities = usageResult.rows.map(row => ({
-            stock_id: row.stock_id,
-            usage_count: parseInt(row.usage_count)
-        }));
-
-        res.status(200).json({ usageQuantities });
+        const excessItemsResult = await client.query(combinedQuery, [startDate, endDate]);
+        const excessItems = excessItemsResult.rows;
+        res.status(200).json(excessItems);
     } catch (err) {
         console.error('Database Query Error', err);
         res.status(500).json({ error: err.message });
     } finally {
-        await client.end();
+        try {
+            await client.end();
+        } catch (endError) {
+            console.error('Error on disconnecting', endError);
+        }
     }
 });
 
 
-app.post('/generateExcessReport', async (req, res) => {
+app.post('/generateUsageReport', async (req, res) => {
     const { startDate, endDate } = req.body;
-
-    const salesQuery = `
-        SELECT si.stock_id, COUNT(*) as quantity
+    const usageQuery = `
+        SELECT si.stock_id, COUNT(*) as usage_count
         FROM orders o
         JOIN orderServedItem osi ON o.order_id = osi.order_id
         JOIN serveditemstockitem si ON osi.item_id = si.item_id
         WHERE o.order_date BETWEEN $1 AND $2
         GROUP BY si.stock_id;
-    `;
-
-    const totalStockQuery = `
-        SELECT stock_id, stock_quantity
-        FROM stock_items;
-    `;
+        `;
 
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
@@ -752,57 +751,41 @@ app.post('/generateExcessReport', async (req, res) => {
 
     try {
         await client.connect();
-
-        // total stock quantities
-        const totalQuantitiesResult = await client.query(totalStockQuery);
-        const totalQuantities = totalQuantitiesResult.rows.reduce((acc, { stock_id, stock_quantity }) => {
-            acc[stock_id] = stock_quantity;
-            return acc;
-        }, {});
-
-        // sales quantities
-        const salesResult = await client.query(salesQuery, [startDate, endDate]);
-        const salesCounts = salesResult.rows.reduce((acc, { stock_id, quantity }) => {
-            acc[stock_id] = (acc[stock_id] || 0) + parseInt(quantity);
-            return acc;
-        }, {});
-
-        //excess items
-        const excessItems = Object.keys(totalQuantities).filter(stockID => {
-            const soldQuantity = salesCounts[stockID] || 0;
-            // if sold quantity is less than 10% of total quantity
-            return soldQuantity < (totalQuantities[stockID] * 0.1);
-        }).map(stockID => ({
-            stock_id: stockID,
-            stock_quantity: totalQuantities[stockID],
-            sold_quantity: salesCounts[stockID] || 0
+        const usageResult = await client.query(usageQuery, [startDate, endDate]);
+        const usageQuantities = usageResult.rows.map(row => ({
+            stock_id: row.stock_id,
+            usage_count: parseInt(row.usage_count)
         }));
-
-        res.status(200).json({ excessItems });
+        res.status(200).json(usageQuantities);
     } catch (err) {
         console.error('Database Query Error', err);
         res.status(500).json({ error: err.message });
     } finally {
-        await client.end();
+        try {
+            await client.end();
+        } catch (endError) {
+            console.error('Error on disconnecting', endError);
+        }
     }
 });
-
-
 
 
 app.post('/generateFreqPairsReport', async (req, res) => {
     const { startDate, endDate } = req.body;
 
     const freqPairsQuery = `
-        SELECT a.served_item AS item1, b.served_item AS item2, COUNT(*) AS frequency
-        FROM orderServedItem AS osi1
-        JOIN served_items AS a ON osi1.item_id = a.item_id
-        JOIN orderServedItem AS osi2 ON osi1.order_id = osi2.order_id AND osi1.item_id < osi2.item_id
-        JOIN served_items AS b ON osi2.item_id = b.item_id
-        JOIN orders AS o ON osi1.order_id = o.order_id
-        WHERE o.order_date BETWEEN $1 AND $2
+        SELECT a.served_item AS item1, b.served_item AS item2, COUNT(*) AS occurences
+        FROM (
+            SELECT osi1.order_id, osi1.item_id AS item1_id, osi2.item_id AS item2_id
+            FROM orderServedItem AS osi1
+            JOIN orderServedItem AS osi2 ON osi1.order_id = osi2.order_id AND osi1.item_id < osi2.item_id
+            JOIN orders AS o ON osi1.order_id = o.order_id
+            WHERE o.order_date BETWEEN $1 AND $2
+        ) AS sub
+        JOIN served_items AS a ON sub.item1_id = a.item_id
+        JOIN served_items AS b ON sub.item2_id = b.item_id
         GROUP BY a.served_item, b.served_item
-        ORDER BY frequency DESC;
+        ORDER BY occurences DESC;
     `;
 
     const client = new Client({
@@ -820,9 +803,14 @@ app.post('/generateFreqPairsReport', async (req, res) => {
         console.error('Database Query Error', err);
         res.status(500).json({ error: err.message });
     } finally {
-        await client.end();
+        try {
+            await client.end();
+        } catch (endError) {
+            console.error('Error on disconnecting', endError);
+        }
     }
 });
+
 
 //// SERVER
 

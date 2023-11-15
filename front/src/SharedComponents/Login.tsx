@@ -26,18 +26,8 @@ const LoginPage = () => {
 
   const { setUser } = useAuth();
   const [authError, setAuthError] = useState(false);
-  const [showAuthError, setShowAuthError] = useState(false);
   const [authErrorMessage, setAuthErrorMessage] = useState('');
 
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-
-  const toggleSettingsModal = () => {
-    setShowSettingsModal(!showSettingsModal);
-  };
-
-  const toggleAuthError = () => {
-    setShowAuthError(!showAuthError);
-  }
 
   useEffect(() => {
     const body = document.querySelector('body');
@@ -54,20 +44,7 @@ const LoginPage = () => {
   }, [authError]); 
 
   const handleManualLoginSubmit = () => {
-    const parsedId = parseInt(id, 10);
     let role: 'Manager' | 'Cashier' | undefined;
-
-    const managers = {
-      manager1: 123,
-      manager2: 456,
-      manager3: 789
-    };
-
-    const cashiers = {
-      cashier1: 111,
-      cashier2: 222,
-      cashier3: 333
-    };
 
     if (role) {
       setUser({

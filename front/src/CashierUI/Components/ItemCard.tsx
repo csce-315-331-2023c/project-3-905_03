@@ -1,5 +1,10 @@
 import React from 'react';
-import { Card, CardHeader, CardContent, CardActionArea, Typography, Box } from '@material-ui/core';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import { dropLastWord } from '../../SharedComponents/itemFormattingUtils';
 
 interface menuItem {

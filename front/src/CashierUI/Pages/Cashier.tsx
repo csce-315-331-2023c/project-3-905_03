@@ -1,17 +1,14 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { Container } from "@material-ui/core";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
 import ItemCard from '../Components/ItemCard';
 import "../Styles/Cashier.css";
 import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
-import { BsFillPlusCircleFill, BsFillTrashFill} from 'react-icons/bs';
-import { AiFillMinusCircle } from 'react-icons/ai';
+import {BsFillTrashFill} from 'react-icons/bs';
 import { FaCheck, FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import { Order } from "../../Order.ts";
-import { set } from "firebase/database";
 
 const Cashier = () => {
     interface menuItem {

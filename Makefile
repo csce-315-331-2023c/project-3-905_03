@@ -22,4 +22,9 @@ run-back: install-back
 	@echo "Running back..."
 	cd $(BACK_DIR) && node index.js
 
+start: install-front install-back
+	@echo "Starting front and back..."
+	cd $(FRONT_DIR) && npm run dev &
+	cd $(BACK_DIR) && node index.js
+
 .PHONY: all install-front build-front install-back run-back

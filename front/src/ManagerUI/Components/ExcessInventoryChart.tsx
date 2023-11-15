@@ -5,12 +5,16 @@ const ExcessInventoryChart = ({ data }: { data: ExcessData[] }) => {
     if (data.length === 0) {
         return <p>No data available</p>;
     }
-
-    console.log("Sales Performance: ", data);
+    console.log("Excess Chart: ", data);
+    const chartData = data.map((item) => ({
+        sold_quantity: item.sold_quantity,
+        stock_quantity: item.stock_quantity,
+        stock_id: item.stock_id,
+    }));
 
     return (
         <BarChart
-            dataset={data}
+            dataset={chartData}
             width={1440}
             height={800}
             series={[

@@ -18,7 +18,7 @@ const FreqPairsChart = ({ data }: { data: FreqPairsData[] }) => {
                 { dataKey: 'occurences', label: 'Occurences' },
             ]}
             xAxis={[{ dataKey: 'item1', scaleType: 'band' }, { dataKey: 'item2', scaleType: 'band' }]}
-
+            
         />
     );
 };

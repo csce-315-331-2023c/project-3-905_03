@@ -7,6 +7,12 @@ const SalesPerformanceChart = ({ data }: { data: SalesPerformanceData[] }) => {
         return <p>No data available</p>;
     }
 
+    const chartData = data.map((item) => ({
+        num_sales: item.num_sales,
+        served_item: item.served_item,
+
+    }));
+
     console.log("Sales Performance: ", data);
 
     return (

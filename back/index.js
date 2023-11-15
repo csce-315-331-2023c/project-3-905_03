@@ -629,18 +629,18 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     const { startDate, endDate } = req.body;
 
     const freqPairsQuery = `
-    SELECT a.served_item AS item1, b.served_item AS item2, COUNT(*) AS occurences
-    FROM (
-        SELECT osi1.order_id, osi1.item_id AS item1_id, osi2.item_id AS item2_id
-        FROM orderServedItem AS osi1
-        JOIN orderServedItem AS osi2 ON osi1.order_id = osi2.order_id AND osi1.item_id < osi2.item_id
-        JOIN orders AS o ON osi1.order_id = o.order_id
-        WHERE o.order_date BETWEEN $1 AND $2
-    ) AS sub
-    JOIN served_items AS a ON sub.item1_id = a.item_id
-    JOIN served_items AS b ON sub.item2_id = b.item_id
-    GROUP BY a.served_item, b.served_item
-    ORDER BY occurences DESC;
+        SELECT a.served_item AS item1, b.served_item AS item2, COUNT(*) AS occurences
+        FROM (
+            SELECT osi1.order_id, osi1.item_id AS item1_id, osi2.item_id AS item2_id
+            FROM orderServedItem AS osi1
+            JOIN orderServedItem AS osi2 ON osi1.order_id = osi2.order_id AND osi1.item_id < osi2.item_id
+            JOIN orders AS o ON osi1.order_id = o.order_id
+            WHERE o.order_date BETWEEN $1 AND $2
+        ) AS sub
+        JOIN served_items AS a ON sub.item1_id = a.item_id
+        JOIN served_items AS b ON sub.item2_id = b.item_id
+        GROUP BY a.served_item, b.served_item
+        ORDER BY occurences DESC;
     `;
 
     const client = new Client({

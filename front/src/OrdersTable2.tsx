@@ -80,7 +80,7 @@ function OrdersTable2() {
     const firstIndex = lastIndex - recordsPerPage;
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getRecentOrders')
+        axios.get('/getRecentOrders')
         .then(res => {
             const data: Data = res.data;
             const items: Row[] = data.data;

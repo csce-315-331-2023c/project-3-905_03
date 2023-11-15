@@ -42,12 +42,12 @@ const ManagerAnalytics: React.FC = () => {
         const formattedStartDate = startDateTime.toISOString();
         const formattedEndDate = endDateTime.toISOString();
 
-        response = await axios.post(`http://localhost:8080/${reportType}`, {
+        response = await axios.post(`/${reportType}`, {
           startDate: formattedStartDate,
           endDate: formattedEndDate,
         });
       } else {
-        response = await axios.get(`http://localhost:8080/${reportType}`);
+        response = await axios.get(`/${reportType}`);
       }
 
       const stateKey = ReportTypeToStateKeyMap[reportType as keyof typeof ReportTypeToStateKeyMap];

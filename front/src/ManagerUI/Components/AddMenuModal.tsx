@@ -29,7 +29,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
 
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getStockItems')
+        axios.get('/getStockItems')
             .then(res => {
                 const data: stockData = res.data;
                 const stockitems: string[] = data.data.map(item => item.stock_item)
@@ -57,7 +57,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
         e.preventDefault()
         onSubmit(formState)
         const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('http://localhost:8080/addServedItemStockItem', (formState.served_item, selectedOption))
+            axios.post('/addServedItemStockItem', (formState.served_item, selectedOption))
         );
         Promise.all(axiosRequests)
             .then(responses => {

@@ -35,7 +35,7 @@ function OrdersTable() {
     const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getRecentOrders')
+        axios.get('/getRecentOrders')
         .then(res => {
             const data: Data = res.data;
             const items: Row[] = data.data;
@@ -46,7 +46,7 @@ function OrdersTable() {
 
     const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        axios.post('http://localhost:8080/getOrdersBetweenDates', {start_date: startDate, end_date: endDate})
+        axios.post('/getOrdersBetweenDates', {start_date: startDate, end_date: endDate})
         .then((res) => {
             const data: Data = res.data;
             const items: Row[] = data.data;

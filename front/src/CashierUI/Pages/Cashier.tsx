@@ -47,11 +47,11 @@ const Cashier = () => {
             .catch(err => console.log(err));
     };
 
-    const displayEntrees = () => fetchData('http://localhost:8080/getEntreeItems');
-    const displayWT = () => fetchData('http://localhost:8080/getW&TItems');
-    const displaySides = () => fetchData('http://localhost:8080/getSideItems');
-    const displayDrinks = () => fetchData('http://localhost:8080/getDrinkItems');
-    const displaySpecialItems = () => fetchData('http://localhost:8080/getSpecialItems');
+    const displayEntrees = () => fetchData('/getEntreeItems');
+    const displayWT = () => fetchData('/getW&TItems');
+    const displaySides = () => fetchData('/getSideItems');
+    const displayDrinks = () => fetchData('/getDrinkItems');
+    const displaySpecialItems = () => fetchData('/getSpecialItems');
 
     const addItemToOrder = (id: number, name: string, price: number, quantity: number) => {
         const tempOrder = new Order();
@@ -78,7 +78,7 @@ const Cashier = () => {
     };
 
     const submitOrder = () => {
-        axios.post('http://localhost:8080/submitOrder', {
+        axios.post('/submitOrder', {
             order: order.getReceipt2(),
             takeout: takeout,
             split: split

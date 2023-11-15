@@ -32,7 +32,7 @@ function InventoryTable() {
     }
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getStockItems')
+        axios.get('/getStockItems')
         .then(res => {
             const data: Data = res.data;
             const items: Row[] = data.data;
@@ -43,7 +43,7 @@ function InventoryTable() {
     
     
     const handleDeleteRow = (targetIndex: number) => {
-        axios.post('http://localhost:8080/deleteStockItem', rows[targetIndex])
+        axios.post('/deleteStockItem', rows[targetIndex])
         setRows(rows.filter((_, idx) => idx !== targetIndex))
     };
 
@@ -60,14 +60,14 @@ function InventoryTable() {
     }
 
     const handleAddRow = (newRow: Row): void => {
-        axios.post('http://localhost:8080/addStockItem', newRow)
+        axios.post('/addStockItem', newRow)
         setRows([...rows, newRow])
     }
 
     const handleUpdate = () => {
         const updatedRows = rows.map((row) => {
             if (row.stock_id === editId){
-                axios.post('http://localhost:8080/editStockItem', {stock_id: row.stock_id, stock_item: name, cost: cost, stock_quantity: quantity, max_amount: maxAmount})
+                axios.post('/editStockItem', {stock_id: row.stock_id, stock_item: name, cost: cost, stock_quantity: quantity, max_amount: maxAmount})
                 return {
                     ...row,
                     stock_item: name,

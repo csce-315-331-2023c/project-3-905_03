@@ -28,7 +28,7 @@ const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSub
     );
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getRelatedItems')
+        axios.get('/getRelatedItems')
             .then(res => {
                 const relatedItems: string[] = res.data.data.map((item: { related_item: string }) => item.related_item);
 
@@ -54,7 +54,7 @@ const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSub
         onSubmit(formState);
 
         const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('http://localhost:8080/addStockItemRelatedItem', { stock_item: formState.stock_item, related_item: selectedOption })
+            axios.post('/addStockItemRelatedItem', { stock_item: formState.stock_item, related_item: selectedOption })
         );
 
         Promise.all(axiosRequests)

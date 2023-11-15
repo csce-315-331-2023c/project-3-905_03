@@ -28,7 +28,7 @@ function InventoryTable() {
 
 
     const fetchInventoryItems = () => {
-        axios.get('http://localhost:8080/getStockItems')
+        axios.get('/getStockItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);
@@ -41,7 +41,7 @@ function InventoryTable() {
     }, []);
 
     const handleDeleteRow = (targetIndex: number) => {
-        axios.post('http://localhost:8080/deleteStockItem', rows[targetIndex])
+        axios.post('/deleteStockItem', rows[targetIndex])
             .then(() => {
                 fetchInventoryItems();  // Refresh items after delete
             })
@@ -49,7 +49,7 @@ function InventoryTable() {
     };
 
     const handleAddRow = (newRow: Row) => {
-        axios.post('http://localhost:8080/addStockItem', newRow)
+        axios.post('/addStockItem', newRow)
             .then(() => {
                 fetchInventoryItems(); 
             })
@@ -70,7 +70,7 @@ function InventoryTable() {
     const handleUpdate = () => {
         if (editId === null) return;
 
-        axios.post('http://localhost:8080/editStockItem', { stock_id: editId, stock_item: name, cost, stock_quantity: quantity, max_amount: maxAmount })
+        axios.post('/editStockItem', { stock_id: editId, stock_item: name, cost, stock_quantity: quantity, max_amount: maxAmount })
             .then(() => {
                 fetchInventoryItems();  
             })

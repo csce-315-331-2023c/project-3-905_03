@@ -28,7 +28,7 @@ function MenuTable() {
     }
 
     const fetchMenuItems = () => {
-        axios.get('http://localhost:8080/getServedItems')
+        axios.get('/getServedItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);
@@ -41,7 +41,7 @@ function MenuTable() {
     }, []);
 
     const handleDeleteRow = (targetIndex: number) => {
-        axios.post('http://localhost:8080/deleteServedItem', rows[targetIndex])
+        axios.post('/deleteServedItem', rows[targetIndex])
             .then(() => {
                 fetchMenuItems();  
             })
@@ -49,7 +49,7 @@ function MenuTable() {
     };
 
     const handleAddRow = (newRow: Row): void => {
-        axios.post('http://localhost:8080/addServedItem', newRow)
+        axios.post('/addServedItem', newRow)
             .then(() => {
                 fetchMenuItems(); 
             })
@@ -67,7 +67,7 @@ function MenuTable() {
     };
 
     const handleUpdate = () => {
-        axios.post('http://localhost:8080/editServedItem', { item_id: editId, served_item: name, item_price: price })
+        axios.post('/editServedItem', { item_id: editId, served_item: name, item_price: price })
             .then(() => {
                 fetchMenuItems();  
             })

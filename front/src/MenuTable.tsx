@@ -28,7 +28,7 @@ function MenuTable() {
     }
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getServedItems')
+        axios.get('/getServedItems')
         .then(res => {
             const data: Data = res.data;
             const items: Row[] = data.data;
@@ -38,7 +38,7 @@ function MenuTable() {
     }, []);
     
     const handleDeleteRow = (targetIndex: number) => {
-        axios.post('http://localhost:8080/deleteServedItem', rows[targetIndex])
+        axios.post('/deleteServedItem', rows[targetIndex])
         setRows(rows.filter((_, idx) => idx !== targetIndex))
     };
 
@@ -53,14 +53,14 @@ function MenuTable() {
     }
 
     const handleAddRow = (newRow: Row): void => {
-        axios.post('http://localhost:8080/addServedItem', newRow)
+        axios.post('/addServedItem', newRow)
         setRows([...rows, newRow])
     }
 
     const handleUpdate = () => {
         const updatedRows = rows.map((row) => {
             if (row.item_id === editId){
-                axios.post('http://localhost:8080/editServedItem', {item_id: row.item_id, served_item: name, item_price: price})
+                axios.post('/editServedItem', {item_id: row.item_id, served_item: name, item_price: price})
                 return {
                     ...row,
                     served_item: name,

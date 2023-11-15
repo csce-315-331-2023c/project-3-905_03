@@ -12,6 +12,7 @@ import './styles/App.css';
 
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId={googleClientId}>

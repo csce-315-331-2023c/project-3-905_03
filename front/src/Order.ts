@@ -9,6 +9,7 @@ export interface Item {
 
 export class Order {
   private receipt: Item[] = [];
+  private total: number;
 
   constructor() { }
 

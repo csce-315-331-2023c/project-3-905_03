@@ -1,6 +1,7 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import ErrorModal from './ErrorModal';
 
 interface ProtectedRouteProps {
     allowedRoles: string[];
@@ -8,12 +9,16 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
+    const [showErrorModal, setShowErrorModal] = useState(false);
 
     const isAuthorized = user && user.isAuthenticated && allowedRoles.includes(user.role || '');
 
-    if (!isAuthorized) {
-        return <Navigate to="/customer-kiosk" replace />;
-    }
+    useEffect(() => {
+        if (!isAuthorized) {
+            setShowErrorModal(true);
+        }
+    }, [isAuthorized]);
 
     const handleClose = () => {
         setShowErrorModal(false);
@@ -34,10 +39,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     );
 };
 
-
 export default ProtectedRoute;
-
-/**
- * 
- * Notes: Components and Functionality Scope
- */

@@ -19,12 +19,12 @@ interface ItemCardProps {
 
 const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
     return (
-        <Box display="flex" justifyContent="center">
+        <Box justifyContent="center">
             <Card variant='outlined' square onClick={() => addItem(item.item_id, item.served_item, item.item_price, 1)}>
                 <CardActionArea>
                     <CardHeader
                         title={
-                            <Typography variant="h6" align="center">
+                            <Typography variant="h6" align="center" style={{color: "black"}}>
                                 {item.served_item}
                             </Typography>
                         }

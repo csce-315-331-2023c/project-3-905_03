@@ -6,6 +6,10 @@ import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+
+import { dropLastWord } from '../../SharedComponents/itemFormattingUtils';
+
+
 interface MenuItem {
     item_id: number;
     served_item: string;

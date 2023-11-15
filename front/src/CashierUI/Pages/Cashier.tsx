@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
+
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import ItemCard from '../Components/ItemCard';
 import "../Styles/Cashier.css";
 import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
+
 import {  FaPlusSquare, FaMinusSquare, FaCheck } from 'react-icons/fa';
 import { Order } from "../../Order.ts";
 import { BsFillTrashFill } from "react-icons/bs";
+
+import {BsFillTrashFill} from 'react-icons/bs';
+import { FaCheck, FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
+import { Order } from "../../Order.ts";
+
 
 const Cashier = () => {
     interface MenuItem {

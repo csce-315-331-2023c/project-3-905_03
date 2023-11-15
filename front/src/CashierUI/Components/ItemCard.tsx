@@ -10,17 +10,18 @@ interface MenuItem {
     item_id: number;
     served_item: string;
     item_price: number;
+    item_category: string;
 }
 
 interface ItemCardProps {
     item: MenuItem;
-    addItem: (id: number, name: string, price: number, quantity: number) => void;
+    addItem: (id: number, name: string, price: number, quantity: number, category: string) => void;
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
     return (
         <Box justifyContent="center">
-            <Card variant='outlined' square onClick={() => addItem(item.item_id, item.served_item, item.item_price, 1)}>
+            <Card variant='outlined' square onClick={() => addItem(item.item_id, item.served_item, item.item_price, 1, item.item_category)}>
                 <CardActionArea>
                     <CardHeader
                         title={

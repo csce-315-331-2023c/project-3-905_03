@@ -14,6 +14,7 @@ const Cashier = () => {
         item_id: number;
         served_item: string;
         item_price: number;
+        item_category: string;
     }
 
     interface Data {
@@ -25,6 +26,7 @@ const Cashier = () => {
         name: string;
         price: number;
         quantity: number;
+        category: string;
     }
 
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -53,9 +55,9 @@ const Cashier = () => {
     const displayDrinks = () => fetchData('/getDrinkItems');
     const displaySpecialItems = () => fetchData('/getSpecialItems');
 
-    const addItemToOrder = (id: number, name: string, price: number, quantity: number) => {
+    const addItemToOrder = (id: number, name: string, price: number, quantity: number, category: string) => {
         const tempOrder = new Order();
-        order.addItem(id, name, price, quantity);
+        order.addItem(id, name, price, quantity, category);
         tempOrder.setReceipt(order.getReceipt2());
         setOrder(tempOrder);
         setRows(tempOrder.getReceipt2());
@@ -128,7 +130,7 @@ const Cashier = () => {
                                 <span className="actions">
                                     <FaMinusSquare onClick={() => removeItemFromOrder(row.id)} />
                                     {row.quantity}
-                                    <FaPlusSquare onClick={() => addItemToOrder(row.id, row.name, row.price, 1)} />
+                                    <FaPlusSquare onClick={() => addItemToOrder(row.id, row.name, row.price, 1, row.category)} />
                                     <BsFillTrashFill onClick={() => deleteItemFromOrder(row.id)} />
                                 </span>
                             </td>

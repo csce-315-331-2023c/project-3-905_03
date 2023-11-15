@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
@@ -41,7 +40,7 @@ const LoginPage = () => {
     return () => {
       body.style.overflow = 'auto';
     };
-  }, [authError]); 
+  }, [authError]);
 
   const handleManualLoginSubmit = () => {
     let role: 'Manager' | 'Cashier' | undefined;
@@ -59,7 +58,7 @@ const LoginPage = () => {
 
     } else {
       console.log('Manual Login Failed');
-      setAuthErrorMessage('Invalid credentials. Please try again.'); 
+      setAuthErrorMessage('Invalid credentials. Please try again.');
       setAuthError(true);
     }
   };
@@ -102,7 +101,7 @@ const LoginPage = () => {
   return (
     <>
       <div className={`login-container ${authError ? 'blur-background' : ''}`}>
-        
+
         <div className='login-top'>
           <div className="manual-login">
             <h1>Sign In</h1>

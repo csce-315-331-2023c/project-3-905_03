@@ -4,7 +4,6 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Button from '@mui/material/Button';
-import 'react-datepicker/dist/react-datepicker.css';
 import '../Styles/ManagerAnalytics.css';
 import { ReportData, ReportTypeToStateKeyMap } from './ReportTypes';
 import RestockChart from './RestockChart';

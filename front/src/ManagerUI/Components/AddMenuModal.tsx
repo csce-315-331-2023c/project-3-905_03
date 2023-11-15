@@ -13,10 +13,6 @@ interface stockData {
     data: Array<{ stock_item: string }>
 }
 
-interface stockData {
-    data: Array<{stock_item: string}>
-}
-
 interface AddMenuModalProps {
     closeModal: () => void
     onSubmit: (newRow: Row) => void

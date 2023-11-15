@@ -1,22 +1,27 @@
-interface Item {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-  }
-  
-  export class Order {
-    private receipt: Item[] = [];
-  
-    addItem(id: number, name: string, price: number, quantity: number): void {
-      const existingItem = this.receipt.find((item) => item.id === id);
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        const item: Item = { id, name, price, quantity };
-        this.receipt.push(item);
-      }
+
+export interface Item {
+  id: number;
+  name: string;
+  price: number;
+  quantity : number;
+  category : string;
+  description ?: string;
+}
+
+export class Order {
+  private receipt: Item[] = [];
+
+  constructor() {}
+
+  addItem(id: number, name: string, price: number, quantity: number, category: string): void {
+    const existingItem = this.receipt.find((item) => item.id === id);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      const item: Item = { id, name, price, quantity, category };
+      this.receipt.push(item);
     }
+  }
   
     removeItem(id: number): void {
       const existingItem = this.receipt.find((item) => item.id === id);

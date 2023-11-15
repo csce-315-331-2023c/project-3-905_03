@@ -2,17 +2,18 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    --color-divider: #343a40;
 }
 
-body {
+body,
+html {
     width: 100%;
     height: 100%;
     font-family: var(--font-primary);
     background-color: var(--color-bg-dark);
     color: var(--font-color);
     font-size: var(--font-size-base);
-    background-color: rgb(96, 101, 103);
+
+    /* Slightly darker than the page's background */
 }
 
 .login-container {
@@ -44,34 +45,57 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(50% - 2%);
+    width: calc(50% - 4%);
 }
 
 h1 {
+    font-size: var(--font-size-large);
     color: var(--font-color);
     text-align: center;
+    margin-bottom: 2rem;
     width: 100%;
-    padding-top: 2%;
 }
 
+
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    padding: 4%;
+}
+
+/* Style for headers */
+h1 {
+    font-size: var(--font-size-large);
+    color: var(--font-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Input fields styles */
 input[type="text"] {
     border: 2px solid var(--color-input-border);
-    background-color: rgb(65, 68, 69);
+    background-color: #23272b;
     color: var(--color-input-text);
     padding: 0.8em;
-    margin-bottom: .5rem;
+    margin-bottom: 1rem;
     width: 60%;
     border-radius: 8px;
 
 }
 
-button,
-.qJTHM {
-    background-color: rgb(57, 58, 59);
+/* Button styles */
+button {
+    background-color: var(--button-background);
     color: var(--color-button-text);
-    padding: 0.6em;
+    padding: 0.8em;
     width: 60%;
+    /* Match input field width */
+    border-radius: var(--border-radius);
     cursor: pointer;
+    border: none;
+    /* Remove default border */
     transition: background-color 0.25s;
 }
 
@@ -79,45 +103,34 @@ button:hover {
     background-color: var(--button-hover-background);
 }
 
-.google-auth {
-    margin-top: 2rem;
-    background-color: #1a1a1a;
-    ;
-}
-
-.qJTHM {
-    background-color: #dcdcdc;
-    color: purple;
-}
-
-.google-auth button {
-    padding: 16px;
-    font-size: 18px;
-}
-
-iframe {
-    border: none;
-}
-
+/* Divider style */
 .vertical-divider {
-    align-self: stretch;
-    width: 1px;
-    background-color: #ddd;
-    opacity: 0.7;
+    border-left: 1px solid #ffffff;
     height: 80%;
-    margin-top: 20px;
-    margin-bottom: 20px;
+
+    opacity: 0.6;
+
 }
 
-.settings-button {
-    max-width: 128px;
-    max-height: 128px;
+.google-auth {
+    /* Add space above the Google Auth button */
+
+    margin-top: 2rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    align-self: center;
+    cursor: pointer;
+    border: none;
+    background-color: #202124;
+
 }
 
+.qjTHM {
+    color: #202124;
+    border-radius: 8px;
+}
+
+
+/* Responsive styles */
 @media (max-width: 768px) {
     .login-container {
         flex-direction: column;
@@ -125,5 +138,14 @@ iframe {
 
     .login-header {
         font-size: var(--font-size-base);
+    }
+
+    .section {
+        width: 80%;
+        margin-bottom: 2rem;
+    }
+
+    .vertical-divider {
+        display: none;
     }
 }

@@ -4,7 +4,7 @@
 }
 
 .table {
-    display: block;
+    display: flexbox;
     overflow: hidden;
     table-layout: auto;
     border-collapse: collapse;

@@ -5,7 +5,7 @@ import OrdersTable from './OrdersTable';
 const ManagerOrders: React.FC = () => {
     return (
       <div>
-        <OrdersTable2/>
+        <OrdersTable/>
       </div>
     );
   };

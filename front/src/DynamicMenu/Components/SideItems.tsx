@@ -23,7 +23,7 @@ const SideItems: React.FC = () => {
     }
 
     const fetchSideItems = () => {
-        axios.get('http://localhost:8080/getSideItems')
+        axios.get('/getSideItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);

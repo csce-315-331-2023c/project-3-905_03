@@ -23,7 +23,7 @@ const DrinkItems: React.FC = () => {
     }
 
     const fetchDrinkItems = () => {
-        axios.get('http://localhost:8080/getDrinkItems')
+        axios.get('/getDrinkItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);

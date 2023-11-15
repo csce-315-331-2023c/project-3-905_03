@@ -23,7 +23,7 @@ const WandTItems: React.FC = () => {
     }
 
     const fetchWandTItems = () => {
-        axios.get('http://localhost:8080/getW&TItems')
+        axios.get('/getW&TItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);

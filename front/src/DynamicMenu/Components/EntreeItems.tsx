@@ -23,7 +23,7 @@ const EntreeItems: React.FC = () => {
     }
 
     const fetchEntreeItems = () => {
-        axios.get('http://localhost:8080/getEntreeItems')
+        axios.get('/getEntreeItems')
             .then(res => {
                 const data: Data = res.data;
                 setRows(data.data);

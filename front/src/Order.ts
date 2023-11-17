@@ -8,29 +8,73 @@ export interface Item {
 }
 
 export class Order {
-  private receipt: Item[] = [];
-  private total: number;
+  public receipt: Item[] = [];
+  public total: number = 0;
+  public split: boolean = false;
+  public dineIn: boolean = false;
+  private tax = 0.07;
 
-  constructor() { }
+  constructor(order?: Order) {
+    if (order) {
+      this.receipt = [...order.receipt];
+      this.total = order.total;
+      this.split = order.split;
+      this.dineIn = order.dineIn;
+      this.tax = order.tax;
+    }
+  }
+  // 
 
-  addItem(adding: Item): void {
+  // change object
+
+  addItem(adding: Item): this {
     this.receipt.push(adding);
+    this.total += adding.price;
+    // add price of add ons
+    return this;
   }
 
+  removeItem(removing: Item): this {
+    for (let i = this.receipt.length - 1; i >= 0; i++) {
+      if (this.receipt[i] === removing) {
+        this.receipt.splice(i, 1);
+        break;
+      }
+    }
 
-  removeItem(removing: Item): void {
-    this.receipt = this.receipt.filter((item) => item !== removing);
+    this.total -= removing.price;
+    // remove price of add ons
+    return this;
   }
+
+  undo(): this {
+    return this.removeItem(this.receipt[this.receipt.length - 1]);
+  }
+
+  setDineIn(isDineIn: boolean): this {
+    this.dineIn = isDineIn;
+    return this;
+  }
+
+  // get info
 
   getOrderTotal(): string {
-    const orderTotal = this.receipt.reduce((total, item) => total + item.price, 0);
-    return orderTotal.toFixed(2);
+    return this.total.toFixed(2);
   }
 
   splitOrder(): string {
-    const orderTotal = this.receipt.reduce((total, item) => total + item.price, 0);
-    return (orderTotal / 2).toFixed(2);
+    return (this.total / 2).toFixed(2);
   }
+
+  getReceiptString(): string {
+    return JSON.stringify(this.receipt);
+  }
+
+  setReceipt(receipt: Item[]): void {
+    this.receipt = receipt;
+  }
+
+  // complete order
 
   cancel(): void {
     this.receipt = [];
@@ -38,17 +82,6 @@ export class Order {
 
   checkout(): void {
     // implementation for checkout
-  }
-
-  getReceipt(): string {
-    return JSON.stringify(this.receipt);
-  }
-
-  getReceipt2(): Item[] {
-    return this.receipt;
-  }
-
-  setReceipt(receipt: Item[]): void {
-    this.receipt = receipt;
+    // axios.post('/submitOrder', { });
   }
 }

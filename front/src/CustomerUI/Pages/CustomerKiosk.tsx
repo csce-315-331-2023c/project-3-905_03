@@ -10,44 +10,53 @@ import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, But
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
 
 const Customer = () => {
+    const [state, upd] = useState(false);
     const [bagView, setBagView] = useState(false);
     const [items, setItems] = useState<Item[]>([]);
     const [formvalue, setFormValue] = React.useState('w&t');
-    const [bag, setBag] = useState<Item[]>([]);
+    
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Item | undefined>(undefined);
-    const [isDineIn, setIsDineIn] = useState(true);
+
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormValue(event.target.value);
     };
 
-    const handleAdd = () => {
-        if (selected) {
-            setBag([...bag, selected]);
-            // currOrder.addItem(selected);
-        }
-    }
-
-    const handleCheckout = () => {
-        const send = new Order();
-
-        axios.post('/submitOrder', { });
-
-        printReceipt();
-
-        setBag([]);
-        setSelected(undefined);
+    const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrOrder(currOrder.setDineIn(event.target.value === 'dine-in'));
+        upd(a => !a);
     };
 
-    const printReceipt = () => {
-        console.log("printing receipt");
-        for (let i = 0; i < bag.length; i++) {
-            console.log(bag[i].name);
+    const handleAdd = () => {
+        if (selected) {
+            setCurrOrder(currOrder.addItem(selected));
+            upd(a => !a);
         }
-        console.log("end of receipt");
     }
+
+    const handleRemove = () => {
+        if (selected) {
+            setCurrOrder(currOrder.removeItem(selected));
+            upd(a => !a);
+        }
+    }
+
+    const handleUndo = () => {
+        setCurrOrder(currOrder.undo());
+        upd(a => !a);
+    };
+
+    const handleCheckout = () => {
+        currOrder.checkout();
+        setCurrOrder(new Order());
+
+        console.log(currOrder.getReceiptString());
+
+        setSelected(undefined);
+        upd(a => !a);
+    };
 
     const getItems = async () => {
         axios.get('/getServedItems')
@@ -64,23 +73,13 @@ const Customer = () => {
             });
     };
 
-    const handleDineInOrTakeOut = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsDineIn(event.target.value === 'dine-in');
-    };
-
     useEffect(() => {
         getItems();
     }, []);
 
     useEffect(() => {
-        console.log("<");
-        console.log(selected);
-        console.log(hand);
-        console.log(">");
-
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
-    }, [selected, hand]);
-
+    }, [selected]);
 
     // ask krish about loading animation
 
@@ -92,7 +91,7 @@ const Customer = () => {
                     <>
                         <h1>bagview</h1>
                         <div className="displayedItems">
-                            {bag.map((item, index) => (
+                            {currOrder.receipt.map((item, index) => (
                                 <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
                             ))}
                         </div>
@@ -124,9 +123,9 @@ const Customer = () => {
                             ) : (
                                 <ShoppingBagOutlined />
                             )}
-                            {bag.length}
+                            {currOrder.receipt.length}
                         </IconButton>
-                        <IconButton className="control" onClick={() => setBag(bag.slice(0, -1))}>
+                        <IconButton className="control" onClick={() => handleUndo()}>
                             <Undo />
                         </IconButton>
                         <IconButton className="control" onClick={() => handleAdd()}>
@@ -134,7 +133,7 @@ const Customer = () => {
                         </IconButton>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Dine-in or Take-out?</FormLabel>
-                            <RadioGroup aria-label="dine-in-or-take-out" name="dine-in-or-take-out" value={isDineIn ? 'dine-in' : 'take-out'} onChange={handleDineInOrTakeOut}>
+                            <RadioGroup aria-label="dine-in-or-take-out" name="dine-in-or-take-out" value={currOrder.dineIn ? 'dine-in' : 'take-out'} onChange={handleDineIn}>
                                 <FormControlLabel value="dine-in" control={<Radio />} label="Dine-in" />
                                 <FormControlLabel value="take-out" control={<Radio />} label="Take-out" />
                             </RadioGroup>

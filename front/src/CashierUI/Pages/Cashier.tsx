@@ -5,46 +5,38 @@ import Container from "@mui/material/Container";
 import ItemCard from '../Components/ItemCard';
 import "../Styles/Cashier.css";
 import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
-import {  FaPlusSquare, FaMinusSquare, FaCheck } from 'react-icons/fa';
-import { Order } from "../../Order.ts";
+import { FaCheck } from 'react-icons/fa';
+import { Order, Item } from "../../Order.ts";
 import { BsFillTrashFill } from "react-icons/bs";
 
 const Cashier = () => {
-    interface MenuItem {
-        item_id: number;
-        served_item: string;
-        item_price: number;
-        item_category: string;
-    }
-
     interface Data {
-        data: MenuItem[];
+        data: Item[];
     }
 
-    interface Item {
-        id: number;
-        name: string;
-        price: number;
-        quantity: number;
-        category: string;
-    }
-
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+    const [state, upd] = useState(false);
+    const [items, setItems] = useState<Item[]>([]);
     const [order, setOrder] = useState<Order>(new Order());
-    const [rows, setRows] = useState<Item[]>(order.getReceipt2());
+    const [rows, setRows] = useState<Item[]>(order.getReceipt());
     const [takeout, setTakeout] = useState<number>(0);
     const [split, setSplit] = useState<number>(0);
 
     const fetchData = (url: string) => {
         axios.get(url)
             .then(res => {
-                const data: Data = res.data;
-                const modifiedData = data.data.map(item => ({
-                    ...item,
-                    served_item: dropLastWord(item.served_item)
-                }));
-                const uniqueItemsMap = new Map(modifiedData.map(item => [item.served_item, item]));
-                setMenuItems(Array.from(uniqueItemsMap.values()));
+                // const data: Data = res.data;
+                // const modifiedData = data.data.map(item => ({
+                //     ...item,
+                //     served_item: dropLastWord(item.name)
+                // }));
+                // const uniqueItemsMap = new Map(modifiedData.map(item => [item.name, item]));
+                // setItems(Array.from(uniqueItemsMap.values()));
+                console.log(res.data);
+                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_category: string }, index: number) => {
+                    const { served_item, item_price, item_category } = itemData;
+                    return { id: index, name: served_item, price: item_price, category: item_category };
+                });
+                setItems(items);
             })
             .catch(err => console.log(err));
     };
@@ -55,33 +47,21 @@ const Cashier = () => {
     const displayDrinks = () => fetchData('/getDrinkItems');
     const displaySpecialItems = () => fetchData('/getSpecialItems');
 
-    const addItemToOrder = (id: number, name: string, price: number, quantity: number, category: string) => {
-        const tempOrder = new Order();
-        order.addItem(id, name, price, quantity, category);
-        tempOrder.setReceipt(order.getReceipt2());
-        setOrder(tempOrder);
-        setRows(tempOrder.getReceipt2());
+    const addItemToOrder = (item: Item) => {
+        setOrder(order.addItem(item));
+        setRows(order.getReceipt());
+        upd(a => !a);
     };
 
-    const removeItemFromOrder = (id: number) => {
-        const tempOrder = new Order();
-        order.removeItem(id);
-        tempOrder.setReceipt(order.getReceipt2());
-        setOrder(tempOrder);
-        setRows(tempOrder.getReceipt2());
-    };
-
-    const deleteItemFromOrder = (id: number) => {
-        const tempOrder = new Order();
-        order.deleteItem(id);
-        tempOrder.setReceipt(order.getReceipt2());
-        setOrder(tempOrder);
-        setRows(tempOrder.getReceipt2());
+    const deleteItemFromOrder = (item: Item) => {
+        setOrder(order.removeItem(item));
+        setRows(order.getReceipt());
+        upd(a => !a);
     };
 
     const submitOrder = () => {
         axios.post('/submitOrder', {
-            order: order.getReceipt2(),
+            order: order.getReceipt(),
             takeout: takeout,
             split: split
         })
@@ -105,8 +85,8 @@ const Cashier = () => {
                 <button onClick={displaySpecialItems}>Special Items</button>
             </div>
             <Grid container>
-                {menuItems.map((menuItem) => (
-                    <Grid item key={menuItem.item_id} xs={12} md={6} lg={3}>
+                {items.map((menuItem) => (
+                    <Grid item key={menuItem.id} xs={12} md={6} lg={3}>
                         <ItemCard item={menuItem} addItem={addItemToOrder} />
                     </Grid>
                 ))}
@@ -128,10 +108,7 @@ const Cashier = () => {
                             <td>{row.price}</td>
                             <td>
                                 <span className="actions">
-                                    <FaMinusSquare onClick={() => removeItemFromOrder(row.id)} />
-                                    {row.quantity}
-                                    <FaPlusSquare onClick={() => addItemToOrder(row.id, row.name, row.price, 1, row.category)} />
-                                    <BsFillTrashFill onClick={() => deleteItemFromOrder(row.id)} />
+                                    <BsFillTrashFill onClick={() => deleteItemFromOrder(row)} />
                                 </span>
                             </td>
                         </tr>

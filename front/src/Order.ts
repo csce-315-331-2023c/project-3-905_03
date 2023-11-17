@@ -66,6 +66,10 @@ export class Order {
     return (this.total / 2).toFixed(2);
   }
 
+  getReceipt(): Item[] {  
+    return this.receipt;
+  }
+  
   getReceiptString(): string {
     return JSON.stringify(this.receipt);
   }

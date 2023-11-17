@@ -5,28 +5,22 @@ import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-
-interface MenuItem {
-    item_id: number;
-    served_item: string;
-    item_price: number;
-    item_category: string;
-}
+import { Item } from '../../Order.ts';
 
 interface ItemCardProps {
-    item: MenuItem;
-    addItem: (id: number, name: string, price: number, quantity: number, category: string) => void;
+    item: Item;
+    addItem: (item: Item) => void;
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
     return (
         <Box justifyContent="center">
-            <Card variant='outlined' square onClick={() => addItem(item.item_id, item.served_item, item.item_price, 1, item.item_category)}>
+            <Card variant='outlined' square onClick={() => addItem(item)}>
                 <CardActionArea>
                     <CardHeader
                         title={
                             <Typography variant="h6" align="center" style={{color: "black"}}>
-                                {item.served_item}
+                                {item.name}
                             </Typography>
                         }
                     />

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Item, Order } from '../../Order.ts';
 
 import "../Styles/CustomerKiosk.css";
+// how tf do u get css in react
 
 import { ItemComponent } from '../Components/ItemComponent';
 

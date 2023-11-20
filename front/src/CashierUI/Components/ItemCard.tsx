@@ -7,9 +7,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Item } from '../../Order.ts';
 
+interface displayItem {
+    family_id: number;
+    family_name: string;
+    family_category: string;
+    family_description: string;
+}
+
 interface ItemCardProps {
-    item: Item;
-    addItem: (item: Item) => void;
+    item: displayItem;
+    addItem: (item: displayItem) => void;
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
@@ -20,7 +27,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
                     <CardHeader
                         title={
                             <Typography variant="h6" align="center" style={{color: "black"}}>
-                                {item.name}
+                                {item.family_name}
                             </Typography>
                         }
                     />

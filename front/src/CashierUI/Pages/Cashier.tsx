@@ -10,12 +10,15 @@ import { Order, Item } from "../../Order.ts";
 import { BsFillTrashFill } from "react-icons/bs";
 
 const Cashier = () => {
-    interface Data {
-        data: Item[];
+    interface displayItem {
+        family_id: number;
+        family_name: string;
+        family_category: string;
+        family_description: string;
     }
 
     const [state, upd] = useState(false);
-    const [items, setItems] = useState<Item[]>([]);
+    const [items, setItems] = useState<displayItem[]>([]);
     const [order, setOrder] = useState<Order>(new Order());
     const [rows, setRows] = useState<Item[]>(order.getReceipt());
     const [takeout, setTakeout] = useState<number>(0);
@@ -32,9 +35,9 @@ const Cashier = () => {
                 // const uniqueItemsMap = new Map(modifiedData.map(item => [item.name, item]));
                 // setItems(Array.from(uniqueItemsMap.values()));
                 console.log(res.data);
-                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_category: string }, index: number) => {
-                    const { served_item, item_price, item_category } = itemData;
-                    return { id: index, name: served_item, price: item_price, category: item_category };
+                const items: displayItem[] = res.data.data.map((itemData: { family_id: number, family_name: string, family_category: string ,family_description: string}, index: number) => {
+                    const { family_id, family_name, family_category, family_description } = itemData;
+                    return { id: index, family_id: family_id, family_name: family_name, family_category: family_category, family_description: family_description};
                 });
                 setItems(items);
             })
@@ -47,8 +50,8 @@ const Cashier = () => {
     const displayDrinks = () => fetchData('/getDrinkItems');
     const displaySpecialItems = () => fetchData('/getSpecialItems');
 
-    const addItemToOrder = (item: Item) => {
-        setOrder(order.addItem(item));
+    const addItemToOrder = (item: displayItem) => {
+        //setOrder(order.addItem(item));
         setRows(order.getReceipt());
         upd(a => !a);
     };
@@ -86,7 +89,7 @@ const Cashier = () => {
             </div>
             <Grid container>
                 {items.map((menuItem) => (
-                    <Grid item key={menuItem.id} xs={12} md={6} lg={3}>
+                    <Grid item key={menuItem.family_id} xs={12} md={6} lg={3}>
                         <ItemCard item={menuItem} addItem={addItemToOrder} />
                     </Grid>
                 ))}

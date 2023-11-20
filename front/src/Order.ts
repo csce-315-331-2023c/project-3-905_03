@@ -35,7 +35,8 @@ export class Order {
   }
 
   removeItem(removing: Item): this {
-    for (let i = this.receipt.length - 1; i >= 0; i++) {
+    
+    for (let i = 0; i < this.receipt.length; i++) {
       if (this.receipt[i] === removing) {
         this.receipt.splice(i, 1);
         break;

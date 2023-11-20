@@ -1,3 +1,4 @@
+import axios from "axios";
 
 export interface Item {
   id: number;
@@ -5,6 +6,7 @@ export interface Item {
   price: number;
   category: string;
   description?: string;
+  note?: string;
 }
 
 export class Order {
@@ -17,6 +19,7 @@ export class Order {
 
   constructor(order?: Order) {
     if (order) {
+      this.sender_id = order.sender_id;
       this.receipt = [...order.receipt];
       this.total = order.total;
       this.split = order.split;
@@ -84,6 +87,10 @@ export class Order {
 
   checkout(): void {
     // implementation for checkout
-    // axios.post('/submitOrder', { });
+    console.log("checkout ! ! !");
+    console.log(this);
+
+    axios.post('/submitOrder', this)
+      .catch(err => console.log(err));
   }
 }

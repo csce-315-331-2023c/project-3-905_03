@@ -50,6 +50,8 @@ const Customer = () => {
     };
 
     const handleCheckout = () => {
+        // id of logged in user
+        currOrder.sender_id = 0;
         currOrder.checkout();
         setCurrOrder(new Order());
 

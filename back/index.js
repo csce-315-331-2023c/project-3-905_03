@@ -608,7 +608,7 @@ app.post('/submitOrder', async (req, res) => {
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
         let newOrderItemId = maxOrderItemId + 1;
 
-        for (const item of item_list) {
+        for (const item of receipt) {
             await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [neworderId, item.id, newOrderItemId]);
 
             const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [item.id]);

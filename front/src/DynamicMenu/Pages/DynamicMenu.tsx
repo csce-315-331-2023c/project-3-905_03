@@ -62,7 +62,6 @@ const DynamicMenu: React.FC = () => {
                 interval={10000}
                 animation="slide"
                 duration={500}
-                swipe={true}
                 navButtonsAlwaysInvisible={true}
                 indicators={false}
             >

@@ -576,13 +576,7 @@ app.post('/submitOrder', async (req, res) => {
     let client;
 
     try {
-        let { order } = req.body;
-
-        let receipt = order.receipt;
-        let sender_id = order.sender_id;
-        let total = order.total;
-        let split = order.split;
-        let dineIn = order.dineIn;
+        let { receipt, total, sender_id, split, dineIn, tax } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -602,13 +596,15 @@ app.post('/submitOrder', async (req, res) => {
         const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
         const dateTime = formattedDate + ' ' + formattedTime;
 
-        await client.query('INSERT INTO orders (sender_id, order_id, order_total, takeout, split, order_date) VALUES ($1, $2, $3, $4, $5, $6)', [sender_id, neworderId, order_total, takeout, split, dateTime]);
+        let dineInInt = dineIn ? 1 : 0;
+        let splitInt = split ? 1 : 0;
+        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, split, order_date) VALUES ($1, $2, $3, $4, $5, $6)', [sender_id, neworderId, total, dineInInt, splitInt, dateTime]);
 
         const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
         let newOrderItemId = maxOrderItemId + 1;
 
-        for (const item of item_list) {
+        for (const item of receipt) {
             await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [neworderId, item.id, newOrderItemId]);
 
             const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [item.id]);

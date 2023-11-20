@@ -1,3 +1,4 @@
+import axios from 'axios';
 
 export interface Item {
   id: number;
@@ -83,6 +84,7 @@ export class Order {
 
   checkout(): void {
     // implementation for checkout
-    // axios.post('/submitOrder', { });
+    axios.post('/submitOrder', this)
+    .catch(err => console.log(err));
   }
 }

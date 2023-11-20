@@ -1,69 +1,90 @@
+import axios from 'axios';
 
 export interface Item {
   id: number;
   name: string;
   price: number;
-  quantity : number;
-  category : string;
-  description ?: string;
+  category: string;
+  description?: string;
 }
 
 export class Order {
-  private receipt: Item[] = [];
+  public receipt: Item[] = [];
+  public total: number = 0;
+  public sender_id: number = 0;
+  public split: boolean = false;
+  public dineIn: boolean = false;
+  private tax = 0.07;
 
-  constructor() {}
-
-  addItem(id: number, name: string, price: number, quantity: number, category: string): void {
-    const existingItem = this.receipt.find((item) => item.id === id);
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      const item: Item = { id, name, price, quantity, category };
-      this.receipt.push(item);
+  constructor(order?: Order) {
+    if (order) {
+      this.receipt = [...order.receipt];
+      this.total = order.total;
+      this.split = order.split;
+      this.dineIn = order.dineIn;
+      this.tax = order.tax;
     }
   }
-  
-    removeItem(id: number): void {
-      const existingItem = this.receipt.find((item) => item.id === id);
-      if (existingItem) {
-        existingItem.quantity -= 1;
-        if (existingItem.quantity === 0) {
-          this.receipt = this.receipt.filter((item) => item.id !== id);
-        }
+  // 
+
+  // change object
+
+  addItem(adding: Item): this {
+    this.receipt.push(adding);
+    this.total += adding.price;
+    // add price of add ons
+    return this;
+  }
+
+  removeItem(removing: Item): this {
+    for (let i = this.receipt.length - 1; i >= 0; i++) {
+      if (this.receipt[i] === removing) {
+        this.receipt.splice(i, 1);
+        break;
       }
     }
 
-    deleteItem(id: number): void {
-      this.receipt = this.receipt.filter((item) => item.id !== id);
-    }
-
-    getOrderTotal(): string {
-      const orderTotal = this.receipt.reduce((total, item) => total + item.price * item.quantity, 0);
-      return orderTotal.toFixed(2);
-    }
-
-    splitOrder(): string {
-      const orderTotal = this.receipt.reduce((total, item) => total + item.price * item.quantity, 0);
-      return (orderTotal / 2).toFixed(2);
-    }
-  
-    cancel(): void {
-      this.receipt = [];
-    }
-  
-    checkout(): void {
-      // implementation for checkout
-    }
-  
-    getReceipt(): string {
-      return JSON.stringify(this.receipt);
-    }
-
-    getReceipt2(): Item[] {
-        return this.receipt;
-    }
-
-    setReceipt(receipt: Item[]): void {
-        this.receipt = receipt;
-    }
+    this.total -= removing.price;
+    // remove price of add ons
+    return this;
   }
+
+  undo(): this {
+    return this.removeItem(this.receipt[this.receipt.length - 1]);
+  }
+
+  setDineIn(isDineIn: boolean): this {
+    this.dineIn = isDineIn;
+    return this;
+  }
+
+  // get info
+
+  getOrderTotal(): string {
+    return this.total.toFixed(2);
+  }
+
+  splitOrder(): string {
+    return (this.total / 2).toFixed(2);
+  }
+
+  getReceiptString(): string {
+    return JSON.stringify(this.receipt);
+  }
+
+  setReceipt(receipt: Item[]): void {
+    this.receipt = receipt;
+  }
+
+  // complete order
+
+  cancel(): void {
+    this.receipt = [];
+  }
+
+  checkout(): void {
+    // implementation for checkout
+    axios.post('/submitOrder', this)
+    .catch(err => console.log(err));
+  }
+}

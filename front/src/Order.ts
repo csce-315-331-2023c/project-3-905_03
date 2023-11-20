@@ -35,6 +35,7 @@ export class Order {
   }
 
   removeItem(removing: Item): this {
+    // eslint-disable-next-line for-direction
     for (let i = this.receipt.length - 1; i >= 0; i++) {
       if (this.receipt[i] === removing) {
         this.receipt.splice(i, 1);

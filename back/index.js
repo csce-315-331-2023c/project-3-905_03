@@ -66,7 +66,7 @@ app.get('/getEntreeItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'entree' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'entree' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -95,7 +95,7 @@ app.get('/getW&TItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'w&t' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'w&t' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -124,7 +124,7 @@ app.get('/getSideItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'side' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'side' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -153,7 +153,7 @@ app.get('/getDrinkItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'drink' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'drink' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -182,7 +182,37 @@ app.get('/getSpecialItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'special' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'special' ORDER BY family_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return served items in family given family id
+ */
+app.post('/getServedItemsInFamily', (req, res) => {
+    let { family_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('select * from served_items where family_id = $1', [family_id], (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -564,7 +594,7 @@ app.post('/deleteStockItem', (req, res) => {
 });
 
 /**
- * given employee_id (for now assume is given to you), a list of item ids, order total, takeout, and split, submit the order to the database
+ * given sender_id (for now assume is given to you), a list of item ids, order total, takeout, and split, submit the order to the database
  * get max order id
  * get the date
  * add to orders table
@@ -576,7 +606,7 @@ app.post('/submitOrder', async (req, res) => {
     let client;
 
     try {
-        let { item_list, employee_id, order_total, takeout, split } = req.body;
+        let { receipt, total, sender_id, split, dineIn, tax } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -596,16 +626,18 @@ app.post('/submitOrder', async (req, res) => {
         const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
         const dateTime = formattedDate + ' ' + formattedTime;
 
-        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, split, order_date) VALUES ($1, $2, $3, $4, $5, $6)', [employee_id, neworderId, order_total, takeout, split, dateTime]);
+        let dineInInt = dineIn ? 1 : 0;
+        let splitInt = split ? 1 : 0;
+        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, split, order_date) VALUES ($1, $2, $3, $4, $5, $6)', [sender_id, neworderId, total, dineInInt, splitInt, dateTime]);
 
         const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
         let newOrderItemId = maxOrderItemId + 1;
 
-        for (const item of item_list) {
-            await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [neworderId, item, newOrderItemId]);
+        for (const item of receipt) {
+            await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [neworderId, item.id, newOrderItemId]);
 
-            const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [item]);
+            const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [item.id]);
             const stock_ids_used = stock_ids_usedResult.rows;
 
             for (const stock_id of stock_ids_used) {

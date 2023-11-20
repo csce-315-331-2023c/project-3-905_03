@@ -65,6 +65,7 @@ const LoginPage = () => {
 
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
+    console.log(`OAuth request origin: ${window.location.href}`);
 
     try {
       const decoded: CustomJwtPayload = jwtDecode(idToken);

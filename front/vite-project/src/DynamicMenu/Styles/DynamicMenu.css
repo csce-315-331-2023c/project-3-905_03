@@ -1,0 +1,11 @@
+.dynamic-menu-container {
+    display: flex;
+}
+
+.lhs {
+    width: 40%;
+}
+
+.rhs {
+    width: 60%;
+}

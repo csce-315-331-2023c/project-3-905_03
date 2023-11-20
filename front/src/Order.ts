@@ -10,6 +10,7 @@ export interface Item {
 export class Order {
   public receipt: Item[] = [];
   public total: number = 0;
+  public sender_id: number = 0;
   public split: boolean = false;
   public dineIn: boolean = false;
   private tax = 0.07;

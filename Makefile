@@ -24,11 +24,9 @@ run-back:
 	cd $(BACK_DIR) && node index.js
 
 start: 
-	@echo "Installing Root Dependencies..."
-	@echo "Installing Front Dependencies..."
-	cd $(FRONT_DIR) && npm install && npm run dev &
-	@echo "Installing Back Dependencies..."
-	cd $(BACK_DIR) && npm install && node index.js
+	@echo "Starting front and back..."
+	cd $(FRONT_DIR) && npm run dev &
+	cd $(BACK_DIR) && node index.js
 
 .PHONY: all install-front build-front install-back run-back
 

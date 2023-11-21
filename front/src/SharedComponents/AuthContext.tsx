@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface User {
   email?: string;
   firstName?: string;
   lastName?: string;
-  role?: 'Manager' | 'Cashier'; 
+  role?: 'Manager' | 'Cashier'; // Add role here
   isAuthenticated: boolean;
 }
 

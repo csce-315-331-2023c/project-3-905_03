@@ -30,7 +30,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
             {showErrorModal && (
                 <ErrorModal
                     isOpen={showErrorModal}
-                    errorMessage="You do not have permission to access this page."
+                    errorMessage="Please sign in to access this page."
                     onClose={handleClose}
                 />
             )}

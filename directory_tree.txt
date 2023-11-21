@@ -30,9 +30,7 @@ Directory Tree:
   ├── front/
     ├── tsconfig.node.json
     ├── index.html
-    ├── .DS_Store
     ├── .eslintrc.cjs
-    ├── reactOpenWeather.d.ts
     ├── README.md
     ├── .gitignore
     ├── package-lock.json
@@ -40,56 +38,35 @@ Directory Tree:
     ├── .env
     ├── tsconfig.json
     ├── vite.config.ts
-    ├── dist/
-      ├── index.html
-      ├── vite.svg
-      ├── assets/
-        ├── logo-a0c5f698.png
-        ├── index-06243080.js
-        ├── messLogo-cea97696.jpg
-        ├── index-bbc430df.css
     ├── public/
       ├── vite.svg
     ├── src/
       ├── App.tsx
       ├── main.tsx
-      ├── ViewOrderModal.tsx
-      ├── .DS_Store
-      ├── OrdersTable2.tsx
-      ├── reactOpenWeather.d.ts
-      ├── MenuTable.tsx
       ├── vite-env.d.ts
-      ├── Order.ts
-      ├── InventoryTable.tsx
-      ├── AddInventoryModal.tsx
       ├── DynamicMenu/
         ├── Styles/
           ├── SeasonalItems.css
-          ├── messLogo.jpg
           ├── DynamicMenu.css
           ├── MenuItem.css
         ├── Components/
-          ├── SpecialItems.tsx
-          ├── Weather.tsx
-          ├── EntreeItems.tsx
-          ├── WandTItems.tsx
-          ├── SideItems.tsx
-          ├── DrinkItems.tsx
+          ├── SeasonalItems.tsx
+          ├── MenuItems.tsx
         ├── Pages/
           ├── DynamicMenu.tsx
+      ├── tests/
+        ├── example-test.jsx
       ├── SharedComponents/
         ├── ErrorModal.tsx
         ├── ProtectedRoute.tsx
         ├── Login.tsx
-        ├── LanguageModal.tsx
-        ├── AccessModal.tsx
+        ├── User.tsx
         ├── AuthContext.tsx
-        ├── AccessibilityModal.tsx
         ├── SettingsModal.tsx
-        ├── itemFormattingUtils.ts
         ├── Styles/
           ├── Login.css
           ├── ErrorModal.css
+          ├── SettingsModal.css
       ├── ManagerUI/
         ├── vite-env.d.ts
         ├── Styles/
@@ -101,17 +78,14 @@ Directory Tree:
           ├── Manager.css
         ├── Components/
           ├── Manager-Menu.tsx
-          ├── ExcessInventoryChart.tsx
+          ├── ViewOrderModal.tsx
+          ├── OrdersTable2.tsx
           ├── SearchDataModal.tsx
-          ├── RestockChart.tsx
-          ├── InventoryUsageChart.tsx
           ├── AddMenuModal.tsx
-          ├── SalesPerformanceChart.tsx
           ├── MenuTable.tsx
           ├── Manager-Inventory.tsx
-          ├── FreqPairsChart.tsx
           ├── Menu.tsx
-          ├── ReportTypes.ts
+          ├── SalesReport.tsx
           ├── Orders.tsx
           ├── InventoryTable.tsx
           ├── AddInventoryModal.tsx
@@ -123,8 +97,6 @@ Directory Tree:
       ├── CashierUI/
         ├── Styles/
           ├── Cashier.css
-        ├── Components/
-          ├── ItemCard.tsx
         ├── Pages/
           ├── Cashier.tsx
       ├── styles/
@@ -132,30 +104,9 @@ Directory Tree:
         ├── index.css
       ├── CustomerUI/
         ├── Styles/
-          ├── ItemComponent.css
-          ├── CustomerKiosk.css
-        ├── Components/
-          ├── ItemComponent.tsx
+          ├── Customer.css
         ├── Pages/
-          ├── CustomerKiosk.tsx
+          ├── Customer.tsx
       ├── assets/
-        ├── upcluckaway.jpg
-        ├── gluten-free.png
-        ├── brisketmac.jpg
-        ├── mess-white.png
-        ├── .DS_Store
-        ├── chickenSandwich.jpg
-        ├── unknown.jpg
-        ├── eggsandwich.jpg
-        ├── vegan.png
-        ├── ogfrenchtoast.jpg
-        ├── nutellafrenchtoast.jpg
-        ├── messBreakfast.jpg
-        ├── bag.svg
-        ├── cajunmac.jpg
-        ├── nutellaparfait.jpg
-        ├── reesespbjwaffle.jpg
-        ├── anitastoast.jpg
-        ├── nutellawaffle.jpg
-        ├── cookiebutterwaffle.jpg
-        ├── chicken&waffle.jpg
+        ├── logo.png
+        ├── react.svg

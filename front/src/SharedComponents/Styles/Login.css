@@ -12,6 +12,7 @@ body {
     background-color: var(--color-bg-dark);
     color: var(--font-color);
     font-size: var(--font-size-base);
+    /* background-color: rgb(96, 101, 103); */
 }
 
 .login-container {
@@ -19,17 +20,10 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow-y: hidden;
-}
-
-.logo-container {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    padding-top: 10%;
 }
 
 .login-top {
-    margin-top: 5%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -42,12 +36,7 @@ body {
     justify-content: flex-end;
     align-items: flex-end;
     flex-direction: column;
-    height: 10%;
-}
-.google-auth {
-    margin-top: 2rem;
-    background-color: #1a1a1a;
-    border-radius: 8px;
+    height: 20%;
 }
 
 .guest-options,
@@ -58,18 +47,76 @@ body {
     width: calc(50% - 2%);
 }
 
+h1 {
+    color: var(--font-color);
+    text-align: center;
+    width: 100%;
+    padding-top: 2%;
+}
 
+input[type="text"] {
+    border: 2px solid var(--color-input-border);
+    background-color: rgb(65, 68, 69);
+    color: var(--color-input-text);
+    padding: 0.8em;
+    margin-bottom: .5rem;
+    width: 60%;
+    border-radius: 8px;
+
+}
+
+button,
+.qJTHM {
+    background-color: rgb(57, 58, 59);
+    color: var(--color-button-text);
+    padding: 0.6em;
+    width: 60%;
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+
+button:hover {
+    background-color: var(--button-hover-background);
+}
+
+.google-auth {
+    margin-top: 2rem;
+    background-color: #1a1a1a;
+    ;
+}
+
+.qJTHM {
+    background-color: #dcdcdc;
+    color: purple;
+}
+
+.google-auth button {
+    padding: 16px;
+    font-size: 18px;
+}
+
+iframe {
+    border: none;
+}
 
 .vertical-divider {
     align-self: stretch;
-    width: 1.5px;
-    background-color: #1a1a1a;
-    opacity: 0.4;
+    width: 1px;
+    background-color: #ddd;
+    opacity: 0.7;
     height: 80%;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
+.settings-button {
+    max-width: 128px;
+    max-height: 128px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
 @media (max-width: 768px) {
     .login-container {
@@ -79,19 +126,4 @@ body {
     .login-header {
         font-size: var(--font-size-base);
     }
-}
-
-.login-bottom {
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: row;
-    
-}
-
-.mui-icon-button:hover {
-    background-color: transparent;
-    transform: scale(1.2);
 }

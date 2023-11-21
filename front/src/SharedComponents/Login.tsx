@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext';
 import ErrorModal from './ErrorModal';
 import AccessibilityModal from './AccessibilityModal';
 
-import logo from '../assets/mess-white.png';
+
 
 import IconButton from '@mui/material/IconButton';
 import TranslateIcon from '@mui/icons-material/Translate';
@@ -110,12 +110,10 @@ const LoginPage = () => {
     setShowAccessibilityModal(!showAccessibilityModal);
   }
 
-  const handleAccessKiosk = () => {
-    navigate('/customer-kiosk');
-  };
+  
 
-  const handleAccessMenu = () => {
-    navigate('/dynamic-menu');
+  const handleGuestAccess = () => {
+    navigate('/customer-kiosk');
   };
 
   return (
@@ -144,10 +142,8 @@ const LoginPage = () => {
             <button className="login-button" onClick={() => handleManualLoginSubmit()}>
               Submit
             </button>
-
             <div className="google-auth">
               <GoogleLogin
-
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
@@ -157,20 +153,17 @@ const LoginPage = () => {
                 logo_alignment='center'
                 width={220}
               />
-
             </div>
           </div>
           <div className="vertical-divider" />
           <div className="guest-options">
             <h1>Continue as Guest</h1>
-            <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
-            <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
+            <button className="kiosk-button" onClick={handleGuestAccess}>Customer Kiosk</button>
           </div>
         </div>
 
-
         <div className="login-bottom">
-          <IconButton className="mui-icon-button" onClick={handleAccessKiosk}>
+          <IconButton className="mui-icon-button">
             <TranslateIcon />
           </IconButton>
           <IconButton className="mui-icon-button" onClick={handleAccessibilityModal}>

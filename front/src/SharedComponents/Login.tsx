@@ -5,6 +5,13 @@ import { jwtDecode } from "jwt-decode";
 import { useAuth } from './AuthContext';
 import ErrorModal from './ErrorModal';
 
+import logo from '../assets/mess-white.png';
+
+import IconButton from '@mui/material/IconButton';
+import TranslateIcon from '@mui/icons-material/Translate';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
+
+
 import './Styles/Login.css';
 
 const authorizedManagers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu',  'ryanwtree@gmail.com', 'rwt@tamu.edu'];
@@ -95,14 +102,20 @@ const LoginPage = () => {
     setAuthErrorMessage(oAuthFailureMessage);
   };
 
-  const handleGuestAccess = () => {
+  const handleAccessKiosk = () => {
     navigate('/customer-kiosk');
+  };
+
+  const handleAccessMenu = () => {
+    navigate('/dynamic-menu');
   };
 
   return (
     <>
       <div className={`login-container ${authError ? 'blur-background' : ''}`}>
-
+        <div className="logo-container">
+          <img src={logo} alt="Logo" />
+        </div>
         <div className='login-top'>
           <div className="manual-login">
             <h1>Sign In</h1>
@@ -122,8 +135,10 @@ const LoginPage = () => {
             <button className="login-button" onClick={() => handleManualLoginSubmit()}>
               Submit
             </button>
+
             <div className="google-auth">
               <GoogleLogin
+
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
@@ -131,25 +146,27 @@ const LoginPage = () => {
                 theme='filled_black'
                 size='large'
                 logo_alignment='center'
+                width={250}
               />
+
             </div>
           </div>
 
-          <div className='vertical-divider'></div>
-
           <div className="guest-options">
             <h1>Continue as Guest</h1>
-            <button className="kiosk-button" onClick={handleGuestAccess}>Customer Kiosk</button>
+            <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
+            <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
           </div>
         </div>
 
+
         <div className="login-bottom">
-          <button className="settings-button" onClick={handleGuestAccess}>
-            Language
-          </button>
-          <button className="settings-button" onClick={handleGuestAccess}>
-            Accessibility
-          </button>
+          <IconButton className="mui-icon-button language" onClick={handleAccessKiosk}>
+            <TranslateIcon />
+          </IconButton>
+          <IconButton className="mui-icon-button" onClick={handleAccessKiosk}>
+            <AccessibilityIcon />
+          </IconButton>
         </div>
 
       </div>

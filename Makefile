@@ -25,7 +25,6 @@ run-back:
 
 start: 
 	@echo "Installing Root Dependencies..."
-	npm install -g concurrently
 	@echo "Installing Front Dependencies..."
 	cd $(FRONT_DIR) && npm install && npm run dev &
 	@echo "Installing Back Dependencies..."

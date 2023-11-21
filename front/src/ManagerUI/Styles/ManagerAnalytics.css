@@ -53,13 +53,14 @@ body {
 }
 
 .report-display-container {
+    display: flex;
+    width: fit-content;
     background-color: #565A5D;
     border-radius: 5px;
     min-height: 500px;
     margin-top: 30px;
     margin-bottom: 30px;
-    height: 800px;
-    width: 1440px;
+
     color: black;
 }
 

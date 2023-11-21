@@ -3,7 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from './AuthContext';
+
 import ErrorModal from './ErrorModal';
+import AccessibilityModal from './AccessibilityModal';
+
+import logo from '../assets/mess-white.png';
+
+import IconButton from '@mui/material/IconButton';
+import TranslateIcon from '@mui/icons-material/Translate';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
+
 
 import './Styles/Login.css';
 
@@ -24,14 +33,16 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const { setUser } = useAuth();
+
   const [authError, setAuthError] = useState(false);
   const [authErrorMessage, setAuthErrorMessage] = useState('');
 
+  const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
 
   useEffect(() => {
     const body = document.querySelector('body');
     if (!body) return;
-    if (authError) {
+    if (authError ) {
       body.style.overflow = 'hidden';
     } else {
       body.style.overflow = 'auto';
@@ -95,14 +106,25 @@ const LoginPage = () => {
     setAuthErrorMessage(oAuthFailureMessage);
   };
 
-  const handleGuestAccess = () => {
+  const handleAccessibilityModal = () => {
+    setShowAccessibilityModal(!showAccessibilityModal);
+  }
+
+  const handleAccessKiosk = () => {
     navigate('/customer-kiosk');
+  };
+
+  const handleAccessMenu = () => {
+    navigate('/dynamic-menu');
   };
 
   return (
     <>
       <div className={`login-container ${authError ? 'blur-background' : ''}`}>
-
+        <div className="logo-container">
+          {/* <img src={logo} alt="Mess Waffles" width={200} height={75}/> */}
+          <h1>Mess Waffles</h1>
+        </div>
         <div className='login-top'>
           <div className="manual-login">
             <h1>Sign In</h1>
@@ -122,8 +144,10 @@ const LoginPage = () => {
             <button className="login-button" onClick={() => handleManualLoginSubmit()}>
               Submit
             </button>
+
             <div className="google-auth">
               <GoogleLogin
+
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
@@ -131,25 +155,31 @@ const LoginPage = () => {
                 theme='filled_black'
                 size='large'
                 logo_alignment='center'
+                width={220}
               />
+
             </div>
           </div>
-
-          <div className='vertical-divider'></div>
-
+          <div className="vertical-divider" />
           <div className="guest-options">
             <h1>Continue as Guest</h1>
-            <button className="kiosk-button" onClick={handleGuestAccess}>Customer Kiosk</button>
+            <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
+            <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
           </div>
         </div>
 
+
         <div className="login-bottom">
-          <button className="settings-button" onClick={handleGuestAccess}>
-            Language
-          </button>
-          <button className="settings-button" onClick={handleGuestAccess}>
-            Accessibility
-          </button>
+          <IconButton className="mui-icon-button" onClick={handleAccessKiosk}>
+            <TranslateIcon />
+          </IconButton>
+          <IconButton className="mui-icon-button" onClick={handleAccessibilityModal}>
+            <AccessibilityIcon />
+            <AccessibilityModal
+              isOpen={showAccessibilityModal}
+              onClose={() => setShowAccessibilityModal(false)}
+            />
+          </IconButton>
         </div>
 
       </div>
@@ -158,6 +188,7 @@ const LoginPage = () => {
         errorMessage={authErrorMessage}
         onClose={() => setAuthError(false)}
       />
+
     </>
   );
 };

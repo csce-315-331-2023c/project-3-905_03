@@ -1,210 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    --color-divider: #343a40;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-primary);
+    background-color: var(--color-bg-dark);
+    color: var(--font-color);
+    font-size: var(--font-size-base);
+}
+
 .login-container {
     display: flex;
     flex-direction: column;
-<<<<<<< Updated upstream
     height: 100vh;
-    align-items: center;
-<<<<<<< Updated upstream
-    justify-content: space-around;
-    /* Evenly spaced */
-    padding: 20px;
-    background-color: var(--secondary-bg-color);
-    overflow-y: scroll;
-    /* Allows scrolling if content exceeds viewport height */
-    width: 350px;
-    /* Fixed width */
+    overflow-y: hidden;
 }
 
 .logo-container {
-    text-align: center;
-
-}
-
-.manual-login,
-.guest-options,
-.google-auth {
-    width: 100%;
+    margin-top: 1rem;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.manual-login h1,
-.guest-options h1 {
-    margin-bottom: 15px;
-}
-
-.login-input,
-.login-button,
-.google-auth button {
-    width: 100%;
-    margin-bottom: 10px;
-=======
-    justify-content: flex-start;
-    /* Adjust to start from the top */
-    padding: 2%;
-    background-color: var(--secondary-bg-color);
-    border-radius: var(--border-radius);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    overflow-y: auto;
-    margin: 0;
-    width: auto;
-}
-
-.logo-container {
-    width: 120px;
-    height: auto;
-    margin-bottom: 30px;
-    /* Increased spacing below the logo */
->>>>>>> Stashed changes
-}
-
-.section {
-    width: 100%;
-    text-align: center;
-    padding: 20px;
-    margin-bottom: 20px;
-    /* Consistent spacing between sections */
-}
-
-.section>h1 {
-    margin-bottom: 15px;
-    /* Spacing below each heading */
-}
-
-.google-auth,
-.guest-options,
-.login-bottom {
-    display: flex;
-<<<<<<< Updated upstream
+    flex-direction: row;
     justify-content: center;
-    width: 100%;
-}
-
-.mui-icon-button {
-    color: #fff;
-    margin: 0 10px;
-}
-
-/* Adjustments for Material-UI button sizes if needed */
-.google-auth button {
-    /* Style adjustments for Google OAuth button */
-=======
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.input-field,
-.login-button,
-.kiosk-button,
-.menu-button {
-    width: 100%;
-    margin-bottom: 10px;
-    /* Consistent spacing between form elements */
-}
-
-.mui-icon-button {
-    color: #FFFFFF;
-    /* Make icons white */
-    margin: 0 10px;
-    transform: scale(1.1);
-    transition: transform 0.2s, color 0.2s;
-}
-
-.mui-icon-button:hover {
-    transform: scale(1.3);
->>>>>>> Stashed changes
-}
-
-@media (max-width: 768px) {
-    .login-container {
-        width: 100%;
-<<<<<<< Updated upstream
-        /* Full width on smaller screens */
-        padding: 20px;
-=======
-        border-radius: 0;
-    }
-
-    .section {
-        width: 90%;
-        /* Adjust width for smaller screens */
->>>>>>> Stashed changes
-=======
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    padding: 2%;
 }
 
 .login-top {
+    margin-top: 5%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-evenly;
-    align-items: stretch;
-    /* Align items stretch to fill the height */
-    width: 100%;
     height: 80%;
-    /* Minimum 80% of login-container height */
+    justify-content: space-between;
 }
 
-.manual-login,
-.guest-options {
+.login-bottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    height: 10%;
+}
+.google-auth {
+    margin-top: 2rem;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+}
+
+.guest-options,
+.manual-login {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 40%;
-    height: 100%;
-    background-color: var(--bg-color);
-    border-radius: var(--border-radius);
-    padding: 2rem;
+    width: calc(50% - 2%);
 }
 
-h1 {
-    align-self: center;
+
+
+.vertical-divider {
+    align-self: stretch;
+    width: 1.5px;
+    background-color: #1a1a1a;
+    opacity: 0.4;
+    height: 80%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.google-auth {
-    margin-top: 1rem;
-}
 
 @media (max-width: 768px) {
-    .login-top {
+    .login-container {
         flex-direction: column;
     }
 
-    .vertical-divider {
-        width: 80%;
-        height: 1px;
-        margin: 2rem 0;
+    .login-header {
+        font-size: var(--font-size-base);
     }
 }
 
 .login-bottom {
     position: fixed;
-    bottom: 20px;
+    bottom: 10px;
     right: 20px;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+    
 }
 
-.mui-icon-button {
-    margin-left: 10px;
-}
-
-@media (max-width: 768px) {
-    .login-top {
-        flex-direction: column;
-        align-items: center;
-        height: auto;
-
-    }
-
-    .login-bottom {
-        right: 10px;
->>>>>>> Stashed changes
-    }
+.mui-icon-button:hover {
+    background-color: transparent;
+    transform: scale(1.2);
 }

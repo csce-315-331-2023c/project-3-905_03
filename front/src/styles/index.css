@@ -8,11 +8,11 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
     --background-color: #BDBFBF;
-    --text-color: #ffffff;
-    --primary-color: #007aff;
+    --text-color: #575858;
+    --primary-color: #575858;
     --secondary-bg-color: #757575;
     --border-color: #d1d1d6;
-    --h1-color: #f3f4f6;
+    --h1-color: #1a1a1a;
     --input-background: #ffffff;
     --button-hover-color: #005ecb;
     --border-radius: 8px;
@@ -29,38 +29,38 @@ body {
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2.75rem;
     font-weight: 300;
     line-height: 1.2;
     text-align: center;
     color: var(--h1-color);
-    margin: 0.5em 0;
+    margin: 1.5rem 0;
 }
 
 input[type="text"] {
-    height: 40px;
-    width: 70%;
+    height: 35px;
+    width: 50%;
     border-radius: var(--border-radius);
-    padding: 0.8em 1em;
-    font-size: 1rem;
-    border: 1px solid var(--border-color);
-    background-color: var(--input-background);
-    color: var(--text-color);
+    padding: 0.6em 1em;
+    font-size: .8rem;
+    border: 1px solid var(--background-color);
 
-    margin-bottom: 5px;
+    color: var(--text-color);
+    margin-bottom: 7.5px;
     box-sizing: border-box;
 }
 
 button {
     border-radius: var(--border-radius);
     padding: 0.6em 1em;
-    font-size: 1rem;
+    font-size: .8rem;
     border: none;
-    background-color: var(--primary-color);
+    background-color: var(--h1-color);
     color: #ffffff;
     cursor: pointer;
     transition: background-color 0.25s, transform 0.1s;
-    width: 40%;
+    width: 35%;
+    margin-top: 7.5px;
 }
 
 button:hover, button:focus {

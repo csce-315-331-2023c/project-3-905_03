@@ -7,6 +7,14 @@ export interface Item {
   category: string;
   description?: string;
   note?: string;
+  toppings?: Topping[];
+}
+
+export interface Topping {
+  id: number;
+  name: string;
+  price: number;
+  chosen: boolean; 
 }
 
 export class Order {

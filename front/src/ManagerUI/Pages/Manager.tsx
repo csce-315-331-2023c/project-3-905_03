@@ -3,6 +3,7 @@ import ManagerNav from '../Components/ManagerNav';
 import MenuTable from '../Components/MenuTable';
 import InventoryTable from '../Components/InventoryTable';
 import OrdersTable from '../Components/OrdersTable';
+import OrdersTable2 from '../Components/OrdersTable2';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
 
 import '../Styles/Manager.css';
@@ -13,7 +14,7 @@ const ManagerGUI: React.FC = () => {
   const componentMapping: { [key: string]: React.FC } = {
     Menu: MenuTable,
     Inventory: InventoryTable,
-    Orders: OrdersTable,
+    Orders: OrdersTable2,
     Analytics: ManagerAnalytics,
   };
 

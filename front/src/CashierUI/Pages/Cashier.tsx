@@ -27,13 +27,6 @@ const Cashier = () => {
     const fetchData = (url: string) => {
         axios.get(url)
             .then(res => {
-                // const data: Data = res.data;
-                // const modifiedData = data.data.map(item => ({
-                //     ...item,
-                //     served_item: dropLastWord(item.name)
-                // }));
-                // const uniqueItemsMap = new Map(modifiedData.map(item => [item.name, item]));
-                // setItems(Array.from(uniqueItemsMap.values()));
                 console.log(res.data);
                 const items: displayItem[] = res.data.data.map((itemData: { family_id: number, family_name: string, family_category: string ,family_description: string}, index: number) => {
                     const { family_id, family_name, family_category, family_description } = itemData;
@@ -50,8 +43,8 @@ const Cashier = () => {
     const displayDrinks = () => fetchData('/getDrinkItems');
     const displaySpecialItems = () => fetchData('/getSpecialItems');
 
-    const addItemToOrder = (item: displayItem) => {
-        //setOrder(order.addItem(item));
+    const addItemToOrder = (item: Item) => {
+        setOrder(order.addItem(item));
         setRows(order.getReceipt());
         upd(a => !a);
     };
@@ -63,15 +56,15 @@ const Cashier = () => {
     };
 
     const submitOrder = () => {
-        axios.post('/submitOrder', {
-            order: order.getReceipt(),
-            takeout: takeout,
-            split: split
-        })
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => console.log(err));
+        // axios.post('/submitOrder', {
+        //     order: order.getReceipt(),
+        //     takeout: takeout,
+        //     split: split
+        // })
+        //     .then(res => {
+        //         console.log(res);
+        //     })
+        //     .catch(err => console.log(err));
     };
 
     useEffect(() => {

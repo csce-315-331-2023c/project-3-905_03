@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import DataTable, {TableColumn} from 'react-data-table-component';
 import axios from 'axios';
-import "./Table.css";
+import "../Styles/Table.css"
 import {BsFillTrashFill, BsEyeFill} from 'react-icons/bs'
 
 function OrdersTable2() {
@@ -80,7 +80,7 @@ function OrdersTable2() {
     const firstIndex = lastIndex - recordsPerPage;
 
     useEffect(() => {
-        axios.get('http://localhost:8080/getRecentOrders')
+        axios.get('/getRecentOrders')
         .then(res => {
             const data: Data = res.data;
             const items: Row[] = data.data;
@@ -95,13 +95,16 @@ function OrdersTable2() {
     
     return (
         <div className='table-container'>
-            <DataTable columns={columns} data={rows} 
-            fixedHeader
-            pagination
-            highlightOnHover
-            pointerOnHover
-            theme='default'
-            responsive/>
+            <DataTable 
+                columns={columns} 
+                data={rows} 
+                fixedHeader
+                pagination
+                highlightOnHover
+                pointerOnHover
+                theme='default'
+                responsive
+            />
         </div>
     )
 }

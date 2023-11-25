@@ -9,7 +9,6 @@ import SpecialItems from '../Components/SpecialItems';
 import Weather from '../Components/Weather';
 
 import Carousel from 'react-material-ui-carousel'
-import { Paper, Button } from '@mui/material'
 
 const DynamicMenu: React.FC = () => {
     return (
@@ -17,63 +16,46 @@ const DynamicMenu: React.FC = () => {
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
+                <Weather />
             </div>
 
-            <Carousel className ="mainCarousel"
+            <Carousel className ="Carousel"
                 autoPlay={true}
                 interval={10000}
                 animation="slide"
                 duration={500}
-                swipe={true}
+                swipe={false}
                 navButtonsAlwaysInvisible={true}
                 indicators={false}
-            >
-                <div className="WandTContainer">
-                    <h1>Waffles And Toast</h1>
-                    {<WandTItems />}  
+            > 
+                <div className="slide">
+                    <div className="WandTContainer">
+                        <h1>Waffles And Toast</h1>
+                        {<WandTItems />}  
+                    </div>
+                    <div className="bottomLeftContainer">
+                        <h1>Sides</h1>
+                        {<SideItems />}  
+                    </div>
+                    <div className="bottomRightContainer">
+                        <h1>Drinks</h1>
+                        {<DrinkItems />}  
+                    </div>
                 </div>
-                <div className="entreeContainer">
-                    <h1>Entrees</h1>
-                    {<EntreeItems />}  
+                <div className="slide">
+                    <div className="entreeContainer">
+                        <h1>Entrees</h1>
+                        {<EntreeItems />}  
+                    </div>
+                    <div className="bottomLeftContainer">
+                        <h1>Specials</h1>
+                        {<SpecialItems />}
+                    </div>
+                    <div className="bottomRightContainer">
+                        <h1>FOTM</h1>
+                    </div>
                 </div>
-            </Carousel>
-
-            <Carousel className ="bottomLeftCarousel"
-                autoPlay={true}
-                interval={10000}
-                animation="slide"
-                duration={500}
-                swipe={true}
-                navButtonsAlwaysInvisible={true}
-                indicators={false}
-            >
-                <div className="sidesContainer">
-                    <h1>Sides</h1>
-                    {<SideItems />}  
-                </div>
-                <div className="drinkContainer">
-                    <h1>Drinks</h1>
-                    {<DrinkItems />}  
-                </div>
-            </Carousel>
-
-            <Carousel className ="bottomRightCarousel"
-                autoPlay={true}
-                interval={10000}
-                animation="slide"
-                duration={500}
-                navButtonsAlwaysInvisible={true}
-                indicators={false}
-            >
-                <div className="weatherContainer">
-                    <h1>Weather</h1>
-                    <Weather />
-                </div>
-                <div className="specialsContainer">
-                    <h1>Specials</h1>
-                    {<SpecialItems />}  
-                </div>
-            </Carousel>
+                </Carousel>
         </div>
     );
 };

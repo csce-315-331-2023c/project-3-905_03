@@ -1,7 +1,9 @@
 import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
 import { Item } from '../../Order.ts';
+import "../Styles/ItemComponent.css";
 
+import { Paper } from '@mui/material';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 
@@ -23,7 +25,6 @@ export const ItemComponent: React.FC<Props> = ({ item, key, hand, parentSelected
     backgroundColor: 'lightblue',
     color: 'white',
     fontWeight: 'bold',
-    border: '1px solid black',
     padding: '10px',
     margin: '10px',
     display: 'inline-block',
@@ -32,33 +33,28 @@ export const ItemComponent: React.FC<Props> = ({ item, key, hand, parentSelected
   const [itemStyle, setItemStyle] = useState({});
 
   useEffect(() => {
-    if (item.id === hand) {
-      setItemStyle({ ...baseStyle, backgroundColor: 'red' });
-    } else {
-      setItemStyle({ ...baseStyle, backgroundColor: 'lightblue' });
-    }
+    setMyItem(item);
   }, [baseStyle, hand, item]);
-
+  
   return (
-    <div style={itemStyle} onClick={() => parentSelected(myItem)}>
-      <div className='name'>{item.name}</div>
-      <div className='price'>$ {item.price}</div>
-      <div className='description'>Description: {item.description}</div>
-      {/* <div className='toppings'>
-        {item.options.map((option, index) => (
-          <div key={index}>{option}</div>
-        ))}
-      </div> */}
-      <div className='toppings'>
-        {
-          item.toppings.map((topping, index) => (
-            <>
-              <div className='toppingName' key={index}>{topping.name}</div>
-              <div className='toppingPrice' key={index}>{topping.price}</div>
-            </>
-          ))
-        }
-      </div>
-    </div>
+    <Paper elevation={3 + 10 * Number(item.id == hand)} className='item' style={itemStyle} onClick={() => parentSelected(myItem)}>
+      {/* <div className='item' style={itemStyle} onClick={() => parentSelected(myItem)}> */}
+        <div className='name'>{item.name}</div>
+        <div className='price'>$ {item.price}</div>
+        
+        {/* <div className='description'>Description: {item.description}</div> */}
+        {/* options */}
+        {/* <div className='toppings'>
+          {
+            item.toppings.map((topping, index) => (
+              <>
+                <div className='toppingName' key={index}>{topping.name}</div>
+                <div className='toppingPrice' key={index}>{topping.price}</div>
+              </>
+            ))
+          }
+        </div> */}
+      {/* </div> */}
+    </Paper>
   );
 };

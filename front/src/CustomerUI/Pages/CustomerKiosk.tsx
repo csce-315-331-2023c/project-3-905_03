@@ -7,7 +7,7 @@ import { ItemComponent } from '../Components/ItemComponent';
 
 import mess from '../../assets/mess.jpg';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, IconButton, Switch } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch, Paper } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
 
 const Customer = () => {
@@ -68,12 +68,12 @@ const Customer = () => {
     };
 
     const getItems = async () => {
-        axios.get('/getServedItems')
+        axios.get('/getServedItemsFamily')
             .then((res) => {
                 console.log(res.data);
-                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_category: string }, index: number) => {
-                    const { served_item, item_price, item_category } = itemData;
-                    return { id: index, name: served_item, price: item_price, category: item_category };
+                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number/*, item_category: string*/ }, index: number) => {
+                    const { served_item, item_price/*, item_category*/ } = itemData;
+                    return { id: index, name: served_item, price: item_price/*, category: item_category*/ };
                 });
                 setItems(items);
                 console.log("items");
@@ -82,6 +82,10 @@ const Customer = () => {
             .catch((error) => {
                 console.log(error);
             });
+
+        // for (let i = 0; i < items.length; i++) {
+        //     axios.post('/getServedItemsInFamily' items[i].family_id)
+        // }
     };
 
     useEffect(() => {
@@ -167,10 +171,10 @@ const Customer = () => {
                 >
                     {currOrder.receipt.length} items
                 </Button>
-                <Button className='undo' variant="outlined" startIcon={<Undo />}>
+                <Button className='undo' variant="outlined" startIcon={<Undo />} onClick={() => handleUndo()}>
                     Undo
                 </Button>
-                <Button className='add' variant="outlined" startIcon={<Add />}>
+                <Button className='add' variant="outlined" startIcon={<Add />} onClick={() => handleAdd()}>
                     Add
                 </Button>
                 <FormControl className='dinein' component='fieldset'>
@@ -194,12 +198,12 @@ const Customer = () => {
                 <div className="displayedItems">
                     <div>hand: {hand}</div>
                     {items
-                        .map((item, index) => ({ ...item, index }))
+                        // .map((item, index) => ({ ...item, index }))
                         // .filter((item) => item.category === formvalue)
                         .map((item, index) => (
                             <ItemComponent
                                 item={item}
-                                key={item.index}
+                                key={index}
                                 hand={hand}
                                 parentSelected={setSelected}
                             />

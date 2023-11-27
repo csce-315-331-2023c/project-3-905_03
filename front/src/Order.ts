@@ -8,6 +8,7 @@ export interface Item {
   description?: string;
   note?: string;
   toppings: Topping[];
+  size?: string;
 }
 
 export interface Topping {

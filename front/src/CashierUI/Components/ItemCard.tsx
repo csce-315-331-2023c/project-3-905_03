@@ -42,6 +42,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
     const [state, upd] = useState(false);
     const [sizes, setSizes] = useState<Items[]>([]);
     const [isClicked, setIsClicked] = useState<boolean>(false);
+    const [toppingModal, setToppingModal] = useState<boolean>(false);
 
     const getSizes = (id: number) => {
         axios.post('/getServedItemsInFamily', {family_id: id})
@@ -72,12 +73,12 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
 
     return (
         <Box justifyContent="center">
-            {!isClicked ? (
-                <Card variant='outlined' square onClick={() => {getSizes(item.family_id); setIsClicked(!isClicked); upd(a => !a);}}>
+            {isClicked === false ? (
+                <Card elevation={13} variant='outlined' square onClick={() => {getSizes(item.family_id); setIsClicked(!isClicked); upd(a => !a);}}>
                     <CardActionArea>
                         <CardHeader
                             title={
-                                <Typography variant="h6" align="center" style={{color: "black"}}>
+                                <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
                                     {item.family_name}
                                 </Typography>
                             }
@@ -87,11 +88,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
                     </CardActionArea>
                 </Card>
             ) : (
-                <Card variant='outlined' square>
+                <Card variant='outlined' square elevation={13}>
                     <CardActionArea>
                         <CardHeader
                             title={
-                                <Typography variant="h6" align="center" style={{color: "black"}}>
+                                <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
                                     {item.family_name}
                                 </Typography>
                             }
@@ -106,11 +107,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
                                 };
                                 return (
                                     <Box sx={{ '&:hover': { backgroundColor: 'lightgrey' } }}>
-                                        <Card variant='outlined' square onClick={() => { addItem(sizeItem); setIsClicked(!isClicked); }}>
+                                        <Card elevation={13} variant='outlined' square onClick={() => { addItem(sizeItem); setIsClicked(!isClicked); }}>
                                             <CardActionArea>
                                                 <CardHeader
                                                     title={
-                                                        <Typography variant="h6" align="center" style={{color: "black"}}>
+                                                        <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
                                                             {size.size}
                                                         </Typography>
                                                     }

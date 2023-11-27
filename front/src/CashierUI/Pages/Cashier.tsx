@@ -46,6 +46,7 @@ const Cashier = () => {
     const addItemToOrder = (item: Item) => {
         setOrder(order.addItem(item));
         setRows(order.getReceipt());
+        console.log(order.getReceiptString());
         upd(a => !a);
     };
 
@@ -67,68 +68,82 @@ const Cashier = () => {
         //     .catch(err => console.log(err));
     };
 
+    const takeoutAction = () => {
+        if (takeout === 0){
+            setOrder(order.setDineIn(false));
+        }else{
+            setOrder(order.setDineIn(true));
+        }
+        setRows(order.getReceipt());
+        upd(a => !a);
+    }
+
     useEffect(() => {
         displayEntrees();
     }, []);
 
     return (
-        <Container style={{ height: '100vh', width: '100%' }}>
-            <div className="button-container">
-                <button onClick={displayEntrees}>Entrees</button>
-                <button onClick={displayWT}>Waffles & Toasts</button>
-                <button onClick={displaySides}>Sides</button>
-                <button onClick={displayDrinks}>Drinks</button>
-                <button onClick={displaySpecialItems}>Special Items</button>
-            </div>
-            <Grid container>
-                {items.map((menuItem) => (
-                    <Grid item key={menuItem.family_id} xs={12} md={6} lg={3}>
-                        <ItemCard item={menuItem} addItem={addItemToOrder} />
-                    </Grid>
-                ))}
-            </Grid>
-            <table className='table'>
-                <thead>
-                    <tr>
-                        <th>Item ID</th>
-                        <th>Item Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.id}</td>
-                            <td>{row.name}</td>
-                            <td>{row.price}</td>
-                            <td>
-                                <span className="actions">
-                                    <BsFillTrashFill onClick={() => deleteItemFromOrder(row)} />
-                                </span>
-                            </td>
-                        </tr>
+        <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative'}}>
+            <div>
+                <div className="button-container" style={{ display: 'flex', marginTop: '5%'}}>
+                    <button onClick={displayEntrees}>Entrees</button>
+                    <button onClick={displayWT}>Waffles & Toasts</button>
+                    <button onClick={displaySides}>Sides</button>
+                    <button onClick={displayDrinks}>Drinks</button>
+                    <button onClick={displaySpecialItems}>Special Items</button>
+                </div>
+                <Grid container className="grid-container" style={{ display: 'flex', marginRight: '5%'}}>
+                    {items.map((menuItem) => (
+                        <Grid item key={menuItem.family_id} xs={12} md={6} lg={3}>
+                            <ItemCard item={menuItem} addItem={addItemToOrder}/>
+                        </Grid>
                     ))}
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Total: </td>
-                        <td>{split === 0 ? order.getOrderTotal() : order.splitOrder()}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div className="button-container">
-                <button onClick={submitOrder}>Submit Order</button>
-                <button onClick={() => setTakeout(takeout === 0 ? 1 : 0)}
-                    style={{ backgroundColor: takeout === 1 ? 'green' : '#1a1a1a' }}>
-                    Takeout
-                    {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
-                </button>
-                <button onClick={() => setSplit(split === 0 ? 1 : 0)}
-                    style={{ backgroundColor: split === 1 ? 'green' : '#1a1a1a' }}>
-                    Split
-                    {split === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
-                </button>
+                </Grid>
+            </div>
+            <div>
+                <table className='table' style={{ }}>
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows.map((row, index) => (
+                            <tr key={index}>
+                                <td>{row.id}</td>
+                                <td>{row.name}</td>
+                                <td>{row.price}</td>
+                                <td>
+                                    <span className="actions">
+                                        <BsFillTrashFill onClick={() => deleteItemFromOrder(row)} />
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Total: </td>
+                            <td>{split === 0 ? order.getOrderTotal() : order.splitOrder()}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div className="button-container" style={{ display: 'flex', width: '80%', marginLeft: '10%', marginTop: '3%'}}>
+                    <button onClick={submitOrder}>Submit Order</button>
+                    <button onClick={() => {setTakeout(takeout === 0 ? 1 : 0); takeoutAction()}}
+                        style={{ backgroundColor: takeout === 1 ? 'green' : '#1a1a1a' }}>
+                        Takeout
+                        {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
+                    </button>
+                    <button onClick={() => setSplit(split === 0 ? 1 : 0)}
+                        style={{ backgroundColor: split === 1 ? 'green' : '#1a1a1a' }}>
+                        Split
+                        {split === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
+                    </button>
+                </div>
             </div>
         </Container>
     );

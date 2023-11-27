@@ -24,7 +24,7 @@ export class Order {
   public sender_id: number = 0;
   public split: boolean = false;
   public dineIn: boolean = false;
-  private tax = 0.07;
+  private tax: number = 0.07;
 
   constructor(order?: Order) {
     if (order) {
@@ -36,7 +36,6 @@ export class Order {
       this.tax = order.tax;
     }
   }
-  // 
 
   // change object
 

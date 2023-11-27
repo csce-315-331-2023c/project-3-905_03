@@ -7,7 +7,7 @@ export interface Item {
   category: string;
   description?: string;
   note?: string;
-  toppings?: Topping[];
+  toppings: Topping[];
 }
 
 export interface Topping {

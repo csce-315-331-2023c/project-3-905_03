@@ -1,8 +1,77 @@
 
-.front {
-  border: 1px solid blue;
+.top {
+  display: grid;
+  justify-items: center;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 30px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+.top > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  min-height: 20px;   
+  min-width: 20px; 
+  max-width: 100%; 
+  
+}
+
+.bagview {
+  grid-column: 1 / 7;
+  grid-row: 1 / 4;
+}
+
+.title {
+  grid-column: 7 / 12;
+  grid-row: 1;
+  max-width: 100%; 
+  height: 100px;
+}
+
+.profile {
+  grid-column: 1 / 3;
+  grid-row: 3;
+}
+
+.accesibility {
+  grid-column: 1 / 3;
+  grid-row: 4;
 }
 
 .sections {
-  margin: 10px;
+  grid-column: 1 / 4;
+  grid-row: 2 / 4;
+}
+
+.filters {
+  grid-column: 4 / 7;
+  grid-row: 2 / 4;
+}
+
+.bag {
+  grid-column: 7 / 11;
+  grid-row: 2;
+}
+
+.undo {
+  grid-column: 7 / 9;
+  grid-row: 3;
+}
+
+.add {
+  grid-column: 9 / 11;
+  grid-row: 3;
+}
+
+.dinein {
+  grid-column: 11 / 13;
+  grid-row: 2;
+}
+
+.checkout {
+  grid-column: 11 / 13;
+  grid-row: 3;
+  width: auto;
 }

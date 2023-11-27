@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Item, Order } from '../../Order.ts';
 
 import "../Styles/CustomerKiosk.css";
-// how tf do u get css in react
-
+import { Item, Order } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, IconButton } from '@mui/material';
+import mess from '../../assets/mess.jpg';
+
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Stack, Button, IconButton, Switch } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
 
 const Customer = () => {
     const [state, upd] = useState(false);
+    const [currOrder, setCurrOrder] = useState<Order>(new Order());
+
     const [bagView, setBagView] = useState(false);
     const [items, setItems] = useState<Item[]>([]);
-    const [formvalue, setFormValue] = React.useState('w&t');
-    
+    const [formValue, setFormValue] = useState('w&t');
+    const [filters, setFilters] = useState({ gf: false, vegan: false });
+
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Item | undefined>(undefined);
 
-    const [currOrder, setCurrOrder] = useState<Order>(new Order());
-
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setHand(-1);
         setFormValue(event.target.value);
+    };
+
+    const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFilters({ ...filters, [event.target.name]: event.target.checked });
     };
 
     const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +76,8 @@ const Customer = () => {
                     return { id: index, name: served_item, price: item_price, category: item_category };
                 });
                 setItems(items);
+                console.log("items");
+                console.log(items);
             })
             .catch((error) => {
                 console.log(error);
@@ -88,78 +96,115 @@ const Customer = () => {
 
     return (
         <>
-            <h1>Customer</h1>
+            <div>-</div>
             <div className="top">
+                <img className='title' src={mess} alt="mess" />
                 {bagView ? (
                     <>
-                        <h1>bagview</h1>
-                        <div className="displayedItems">
-                            {currOrder.receipt.map((item, index) => (
-                                <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
-                            ))}
+
+                        <div className="bagview">
+                            <h1>bagview</h1>
+                            <div className='displayedItems'>
+                                {currOrder.receipt.map((item, index) => (
+                                    <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
+                                ))}
+                            </div>
                         </div>
                     </>
                 ) : (
                     <>
-                        <FormControl className='sections'>
-                            <FormLabel id="demo-controlled-radio-buttons-group">Sections</FormLabel>
+                        <FormControl className='sections' component='fieldset'>
+                            <FormLabel component="legend">Sections</FormLabel>
                             <RadioGroup
                                 aria-labelledby="demo-controlled-radio-buttons-group"
                                 name="controlled-radio-buttons-group"
-                                value={formvalue}
+                                value={formValue}
                                 defaultValue="w&t"
                                 onChange={handleSections}
                             >
-                                <FormControlLabel value="w&t" control={<Radio />} label="Waffles & French Toast" />
+                                <FormControlLabel value="w&t" control={<Radio />} label="Waffles & Toast" />
                                 <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
                                 <FormControlLabel value="side" control={<Radio />} label="Sides" />
                                 <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
                             </RadioGroup>
                         </FormControl>
+                        <FormControl className='filters'>
+                            <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
+                            <FormControlLabel
+                                control={<Switch name="gf" onChange={handleFilters} />}
+                                label="Gluten Free"
+                            />
+                            <FormControlLabel
+                                control={<Switch name="vegan" onChange={handleFilters} />}
+                                label="Vegan"
+                            />
+                        </FormControl>
                     </>
                 )}
-                <div className="bag-controls">
-                    <Stack spacing={2} direction="column">
-                        <IconButton className="control" onClick={() => setBagView(!bagView)}>
-                            {bagView ? (
-                                <ShoppingBag />
-                            ) : (
-                                <ShoppingBagOutlined />
-                            )}
-                            {currOrder.receipt.length}
-                        </IconButton>
-                        <IconButton className="control" onClick={() => handleUndo()}>
-                            <Undo />
-                        </IconButton>
-                        <IconButton className="control" onClick={() => handleAdd()}>
-                            <Add />
-                        </IconButton>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">Dine-in or Take-out?</FormLabel>
-                            <RadioGroup aria-label="dine-in-or-take-out" name="dine-in-or-take-out" value={currOrder.dineIn ? 'dine-in' : 'take-out'} onChange={handleDineIn}>
-                                <FormControlLabel value="dine-in" control={<Radio />} label="Dine-in" />
-                                <FormControlLabel value="take-out" control={<Radio />} label="Take-out" />
-                            </RadioGroup>
-                        </FormControl>
-                        <Button variant="contained" onClick={() => handleCheckout()}>
-                            Checkout
-                        </Button>
-                    </Stack>
-                </div>
+                {/* <IconButton className="bg" onClick={() => setBagView(!bagView)}>
+                    {bagView ? (
+                        <ShoppingBag />
+                    ) : (
+                        <ShoppingBagOutlined />
+                    )}
+                    {currOrder.receipt.length}
+                </IconButton> */}
+                {/* <IconButton className="undo" onClick={() => handleUndo()}>
+                    <Undo />
+                </IconButton>
+                <IconButton className="add" onClick={() => handleAdd()}>
+                    <Add />
+                </IconButton> */}
+                <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
+                    startIcon=
+                    {
+                        bagView ? (
+                            <ShoppingBag />
+                        ) : (
+                            <ShoppingBagOutlined />
+                        )
+                    }
+                >
+                    {currOrder.receipt.length} items
+                </Button>
+                <Button className='undo' variant="outlined" startIcon={<Undo />}>
+                    Undo
+                </Button>
+                <Button className='add' variant="outlined" startIcon={<Add />}>
+                    Add
+                </Button>
+                <FormControl className='dinein' component='fieldset'>
+                    <FormLabel component="legend">Seating</FormLabel>
+                    <RadioGroup
+                        aria-label="dine-in-or-take-out"
+                        name="dine-in-or-take-out"
+                        defaultValue="dine-in"
+                        value={currOrder.dineIn ? 'dine-in' : 'take-out'}
+                        onChange={handleDineIn}
+                    >
+                        <FormControlLabel value="dine-in" control={<Radio />} label="Dine-in" />
+                        <FormControlLabel value="take-out" control={<Radio />} label="Take-out" />
+                    </RadioGroup>
+                </FormControl>
+                <Button className='checkout' variant="contained" onClick={() => handleCheckout()}>
+                    Checkout
+                </Button>
             </div>
-
-            <div className="displayedItems">
-                {items
-                    .map((item, index) => ({ ...item, index }))
-                    .filter((item) => item.category === formvalue)
-                    .map((item, index) => (
-                        <ItemComponent
-                            item={item}
-                            key={item.index}
-                            hand={hand}
-                            parentSelected={setSelected}
-                        />
-                    ))}
+            <div className='sectionDisplay'>
+                <div className="displayedItems">
+                    <div>hand: {hand}</div>
+                    {items
+                        .map((item, index) => ({ ...item, index }))
+                        // .filter((item) => item.category === formvalue)
+                        .map((item, index) => (
+                            <ItemComponent
+                                item={item}
+                                key={item.index}
+                                hand={hand}
+                                parentSelected={setSelected}
+                            />
+                        ))}
+                </div>
             </div>
         </>
     );

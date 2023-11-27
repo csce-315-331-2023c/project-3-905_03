@@ -1,14 +1,14 @@
 import React from 'react';
 import '../Styles/DynamicMenu.css';
-import logo from '../Styles/messLogo-removebg.png';
-import nuttellaWaffle from '../Styles/nuttellaWaffle.jpg';
-import originalFrenchToast from '../Styles/originalFrenchToast.jpg';
-import cookieButterWaffle from '../Styles/cookieButterWaffle.jpg';
-import chickenSandwich from '../Styles/chickenSandwich.jpg';
-import chickenAndWaffle from '../Styles/chickenAndWaffle.jpg';
-import brisketMac from '../Styles/brisketMac.jpg';
-import cajunMacAndCheese from '../Styles/cajunMacAndCheese.jpg';
-import eggSandwich from '../Styles/eggSandwich.jpg';
+import logo from '../../assets/messLogo-removebg.png';
+import nuttellaWaffle from '../../assets/nuttellaWaffle.jpg';
+import originalFrenchToast from '../../assets/originalFrenchToast.jpg';
+import cookieButterWaffle from '../../assets/cookieButterWaffle.jpg';
+import chickenSandwich from '../../assets/chickenSandwich.jpg';
+import chickenAndWaffle from '../../assets/chickenAndWaffle.jpg';
+import brisketMac from '../../assets/brisketMac.jpg';
+import cajunMacAndCheese from '../../assets/cajunMacAndCheese.jpg';
+import eggSandwich from '../../assets/eggSandwich.jpg';
 
 
 import EntreeItems from '../Components/EntreeItems';

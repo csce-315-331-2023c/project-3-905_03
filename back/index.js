@@ -66,7 +66,7 @@ app.get('/getEntreeItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'entree' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'entree' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -95,7 +95,7 @@ app.get('/getW&TItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'w&t' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'w&t' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -124,7 +124,7 @@ app.get('/getSideItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'side' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'side' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -153,7 +153,7 @@ app.get('/getDrinkItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'drink' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'drink' ORDER BY family_id`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -182,7 +182,37 @@ app.get('/getSpecialItems', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT * FROM served_items WHERE item_category = 'special' ORDER BY item_id`, (err, result) => {
+    client.query(`SELECT * FROM served_items_family WHERE family_category = 'special' ORDER BY family_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return served items in family given family id
+ */
+app.post('/getServedItemsInFamily', (req, res) => {
+    let { family_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('select * from served_items where family_id = $1', [family_id], (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows

@@ -9,7 +9,7 @@ export function formatCamelCase(str: string): string {
     return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-const approvedSizes = ['Snack', 'Regular', 'Plus', 'One', 'Two', 'Three', 'Large', 'Single', 'Double', 'Single', 'Carafe'];
+const approvedSizes = ['Snack', 'Regular', 'Plus', 'One', 'Two', 'Three', 'Large', 'Single', 'Double', 'Single', 'Carafe', 'Lavender', 'Raspberry', 'Original'];
 
 export function dropLastWord(str: string): string {
     const words = str.match(/[a-z]+|[A-Z][a-z]*/g);

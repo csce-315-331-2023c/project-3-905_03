@@ -1,6 +1,16 @@
 import React from 'react';
 import '../Styles/DynamicMenu.css';
-import logo from '../Styles/messLogo.jpg';
+import logo from '../Styles/messLogo-removebg.png';
+import nuttellaWaffle from '../Styles/nuttellaWaffle.jpg';
+import originalFrenchToast from '../Styles/originalFrenchToast.jpg';
+import cookieButterWaffle from '../Styles/cookieButterWaffle.jpg';
+import chickenSandwich from '../Styles/chickenSandwich.jpg';
+import chickenAndWaffle from '../Styles/chickenAndWaffle.jpg';
+import brisketMac from '../Styles/brisketMac.jpg';
+import cajunMacAndCheese from '../Styles/cajunMacAndCheese.jpg';
+import eggSandwich from '../Styles/eggSandwich.jpg';
+
+
 import EntreeItems from '../Components/EntreeItems';
 import WandTItems from '../Components/WandTItems';
 import SideItems from '../Components/SideItems';
@@ -9,7 +19,6 @@ import SpecialItems from '../Components/SpecialItems';
 import Weather from '../Components/Weather';
 
 import Carousel from 'react-material-ui-carousel'
-import { Paper, Button } from '@mui/material'
 
 const DynamicMenu: React.FC = () => {
     return (
@@ -17,63 +26,59 @@ const DynamicMenu: React.FC = () => {
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
+                
             </div>
 
-            <Carousel className ="mainCarousel"
+            <Carousel className ="Carousel"
                 autoPlay={true}
-                interval={10000}
+                interval={7500}
                 animation="slide"
                 duration={500}
-                swipe={true}
+                swipe={false}
                 navButtonsAlwaysInvisible={true}
                 indicators={false}
-            >
-                <div className="WandTContainer">
-                    <h1>Waffles And Toast</h1>
-                    {<WandTItems />}  
+            > 
+                <div className="slide">
+                    <div className="WandTContainer">
+                        <h1>Waffles And Toast</h1>
+                        {<WandTItems />}  
+                    </div>
+                    <div className="pictureContainer">
+                        <img src={originalFrenchToast} alt="Original French Toast" />
+                        <img src={nuttellaWaffle} alt="Nuttella Waffles" />
+                        <img src={cookieButterWaffle} alt="Reeses PB&J Waffle" />
+                    </div>
+                    <div className="bottomLeftContainer">
+                        <h1>Sides</h1>
+                        {<SideItems />}  
+                    </div>
+                    <div className="bottomRightContainer">
+                        <h1>Drinks</h1>
+                        {<DrinkItems />}  
+                    </div>
                 </div>
-                <div className="entreeContainer">
-                    <h1>Entrees</h1>
-                    {<EntreeItems />}  
+                <div className="slide">
+                    <div className="entreeContainer">
+                        <h1>Entrees</h1>
+                        {<EntreeItems />}  
+                    </div>
+                    <div className="pictureContainer">
+                        <img src={chickenAndWaffle} alt="Chicken And Waffles" />
+                        <img src={chickenSandwich} alt="Chicken Sandwich" />
+                        <img src={brisketMac} alt="Brisket Mac" />
+                        <img src={cajunMacAndCheese} alt="Cajun Mac And Cheese" />
+                        <img src={eggSandwich} alt="Egg Sandwich" />
+                    </div>
+                    <div className="bottomLeftContainer">
+                        <h1>Specials</h1>
+                        {<SpecialItems />}
+                    </div>
+                    <div className="bottomRightContainer">
+                        <h1>Weather</h1>
+                        <Weather />
+                    </div>
                 </div>
-            </Carousel>
-
-            <Carousel className ="bottomLeftCarousel"
-                autoPlay={true}
-                interval={10000}
-                animation="slide"
-                duration={500}
-                swipe={true}
-                navButtonsAlwaysInvisible={true}
-                indicators={false}
-            >
-                <div className="sidesContainer">
-                    <h1>Sides</h1>
-                    {<SideItems />}  
-                </div>
-                <div className="drinkContainer">
-                    <h1>Drinks</h1>
-                    {<DrinkItems />}  
-                </div>
-            </Carousel>
-
-            <Carousel className ="bottomRightCarousel"
-                autoPlay={true}
-                interval={10000}
-                animation="slide"
-                duration={500}
-                navButtonsAlwaysInvisible={true}
-                indicators={false}
-            >
-                <div className="weatherContainer">
-                    <h1>Weather</h1>
-                    <Weather />
-                </div>
-                <div className="specialsContainer">
-                    <h1>Specials</h1>
-                    {<SpecialItems />}  
-                </div>
-            </Carousel>
+                </Carousel>
         </div>
     );
 };

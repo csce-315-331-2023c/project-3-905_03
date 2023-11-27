@@ -16,7 +16,8 @@
     "@vitejs/plugin-react-swc": "^3.4.1",
     "dotenv": "^16.3.1",
     "jwt-decode": "^4.0.0",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "react-spinners": "^0.13.8"
   },
   "devDependencies": {
     "@types/jwt-decode": "^3.1.0",

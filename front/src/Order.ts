@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export interface Item {
   id: number;
@@ -6,6 +6,15 @@ export interface Item {
   price: number;
   category: string;
   description?: string;
+  note?: string;
+  toppings?: Topping[];
+}
+
+export interface Topping {
+  id: number;
+  name: string;
+  price: number;
+  chosen: boolean; 
 }
 
 export class Order {
@@ -18,6 +27,7 @@ export class Order {
 
   constructor(order?: Order) {
     if (order) {
+      this.sender_id = order.sender_id;
       this.receipt = [...order.receipt];
       this.total = order.total;
       this.split = order.split;
@@ -37,7 +47,8 @@ export class Order {
   }
 
   removeItem(removing: Item): this {
-    for (let i = this.receipt.length - 1; i >= 0; i++) {
+    
+    for (let i = 0; i < this.receipt.length; i++) {
       if (this.receipt[i] === removing) {
         this.receipt.splice(i, 1);
         break;
@@ -65,7 +76,12 @@ export class Order {
   }
 
   splitOrder(): string {
+    this.split = true;
     return (this.total / 2).toFixed(2);
+  }
+
+  getReceipt(): Item[] {  
+    return this.receipt;
   }
 
   getReceiptString(): string {
@@ -84,7 +100,10 @@ export class Order {
 
   checkout(): void {
     // implementation for checkout
+    console.log("checkout ! ! !");
+    console.log(this);
+
     axios.post('/submitOrder', this)
-    .catch(err => console.log(err));
+      .catch(err => console.log(err));
   }
 }

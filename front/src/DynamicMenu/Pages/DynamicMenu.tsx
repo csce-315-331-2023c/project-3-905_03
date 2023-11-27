@@ -1,6 +1,16 @@
 import React from 'react';
 import '../Styles/DynamicMenu.css';
-import logo from '../Styles/messLogo.jpg';
+import logo from '../Styles/messLogo-removebg.png';
+import nuttellaWaffle from '../Styles/nuttellaWaffle.jpg';
+import originalFrenchToast from '../Styles/originalFrenchToast.jpg';
+import cookieButterWaffle from '../Styles/cookieButterWaffle.jpg';
+import chickenSandwich from '../Styles/chickenSandwich.jpg';
+import chickenAndWaffle from '../Styles/chickenAndWaffle.jpg';
+import brisketMac from '../Styles/brisketMac.jpg';
+import cajunMacAndCheese from '../Styles/cajunMacAndCheese.jpg';
+import eggSandwich from '../Styles/eggSandwich.jpg';
+
+
 import EntreeItems from '../Components/EntreeItems';
 import WandTItems from '../Components/WandTItems';
 import SideItems from '../Components/SideItems';
@@ -16,12 +26,12 @@ const DynamicMenu: React.FC = () => {
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
-                <Weather />
+                
             </div>
 
             <Carousel className ="Carousel"
                 autoPlay={true}
-                interval={10000}
+                interval={7500}
                 animation="slide"
                 duration={500}
                 swipe={false}
@@ -32,6 +42,11 @@ const DynamicMenu: React.FC = () => {
                     <div className="WandTContainer">
                         <h1>Waffles And Toast</h1>
                         {<WandTItems />}  
+                    </div>
+                    <div className="pictureContainer">
+                        <img src={originalFrenchToast} alt="Original French Toast" />
+                        <img src={nuttellaWaffle} alt="Nuttella Waffles" />
+                        <img src={cookieButterWaffle} alt="Reeses PB&J Waffle" />
                     </div>
                     <div className="bottomLeftContainer">
                         <h1>Sides</h1>
@@ -47,12 +62,20 @@ const DynamicMenu: React.FC = () => {
                         <h1>Entrees</h1>
                         {<EntreeItems />}  
                     </div>
+                    <div className="pictureContainer">
+                        <img src={chickenAndWaffle} alt="Chicken And Waffles" />
+                        <img src={chickenSandwich} alt="Chicken Sandwich" />
+                        <img src={brisketMac} alt="Brisket Mac" />
+                        <img src={cajunMacAndCheese} alt="Cajun Mac And Cheese" />
+                        <img src={eggSandwich} alt="Egg Sandwich" />
+                    </div>
                     <div className="bottomLeftContainer">
                         <h1>Specials</h1>
                         {<SpecialItems />}
                     </div>
                     <div className="bottomRightContainer">
-                        <h1>FOTM</h1>
+                        <h1>Weather</h1>
+                        <Weather />
                     </div>
                 </div>
                 </Carousel>

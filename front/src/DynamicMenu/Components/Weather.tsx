@@ -22,11 +22,15 @@ const Weather: React.FC = () => {
     
     return (
         <div className="weather">
-            {icon && <img className = "weatherIcon" src={`http://openweathermap.org/img/w/${icon}.png`} alt="Weather icon" />}
-            {temp?.toFixed(1)} &#176;F
-            {temp && temp < 60 ? <p>It's cold outside!</p> : null}
-            {temp && temp > 90 ? <p>It's hot outside!</p> : null}
-            {temp && temp >= 60 && temp <= 90 ? <p>It's nice outside!</p> : null}
+            <div className="weather-info">
+                {icon && <img className="weatherIcon" src={`http://openweathermap.org/img/w/${icon}.png`} alt="Weather icon" />}
+                {temp?.toFixed(1)} &#176;F
+            </div>
+            <div className="weather-message">
+                {temp && temp < 60 ? <p>It's too cold to eat outside!</p> : null}
+                {temp && temp > 90 ? <p>It's too hot to eat outside!</p> : null}
+                {temp && temp >= 60 && temp <= 90 ? <p>Its great weather to enjoy our outdoor seating!</p> : null}
+            </div>
         </div>
     );
 };

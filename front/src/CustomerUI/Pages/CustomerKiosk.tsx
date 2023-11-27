@@ -5,7 +5,7 @@ import "../Styles/CustomerKiosk.css";
 import { Item, Order } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
 
-import mess from '../../assets/mess.jpg';
+import mess from '../../assets/messLogo-cropped.png';
 
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch, Paper } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';

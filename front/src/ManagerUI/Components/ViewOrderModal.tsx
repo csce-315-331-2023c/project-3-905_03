@@ -23,14 +23,16 @@ const ViewOrderModal: React.FC<ViewOrderModalProps> = ({closeModal, order_id}) =
     const [rows, setRows] = useState<any []>([]);
 
     useEffect(() => {
-        axios.post('http://localhost:8080/getOrderItems', {order_id: order_id})
+        axios.post('/getOrderItems', {order_id: order_id})
         .then(res => {
             const data: Data = res.data;
             const items: Row[] = data.data;
+            console.log(res.data);
             setRows(items);
+            console.log(items);
         })
         .catch(er => console.log(er));
-    }, []);
+    }, [order_id]);
 
     return (
         <div className='modal-container' 

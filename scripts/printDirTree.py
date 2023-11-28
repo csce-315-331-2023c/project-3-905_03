@@ -1,6 +1,5 @@
 import os
 
-
 def find_target(startpath, target):
     if not os.path.isdir(startpath):
         return None
@@ -37,20 +36,28 @@ def generate_tree(startpath):
             tree.append(f"{sub_indent}├── {f}")
 
     tree_str = '\n'.join(tree)
+    output_dir = os.path.join(startpath, "scripts", "outputs")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
-    # Save to a .txt file
-    with open('directory_tree.txt', 'w') as f:
+    # Save to a .txt file in the specified output directory
+    output_path = os.path.join(output_dir, 'directory_tree.txt')
+    with open(output_path, 'w') as f:
         f.write(tree_str)
 
     return tree_str
 
 
 current_dir = os.getcwd()
-target_dir = input("Enter the root of the directory tree (e.g., front): ")
+target_dir = input("Enter the root of the directory tree (default is project-3-905-03): ")
+target_dir = target_dir.strip()
+
+if not target_dir:
+    target_dir = "project-3-905-03"
 
 target_full_path = find_target(current_dir, target_dir)
 if target_full_path:
     print(generate_tree(target_full_path))
-    print("Directory tree has been saved to 'directory_tree.txt'.")
+    print(f"Directory tree has been saved to '{os.path.join(target_full_path, 'scripts', 'outputs', 'directory_tree.txt')}'.")
 else:
     print(f"Target {target_dir} not found in '{current_dir}'.")

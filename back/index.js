@@ -5,20 +5,19 @@ const PORT = 8080;
 
 var cors = require('cors');
 const authRoutes = require('./authRoutes'); // Assuming authRoutes is a .js file in the same directory.
-
+const manualAuthRoutes = require('./manualAuth');
 const bodyParser = require('body-parser');
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use('/auth', authRoutes);
+app.use('/auth/sign-in-with-Google', authRoutes);
+app.use('/auth/sign-in-with-credentials', manualAuthRoutes);
 app.use(cors());
 
 const { Client } = require('pg')
 
-// FOR SERVER
 app.use(express.static(path.join(__dirname, '../front/dist')));
 
-// test route
 app.get('/test', (req, res) => {
     res.status(200).send('success!');
 });
@@ -77,7 +76,7 @@ app.get('/getEntreeItems', (req, res) => {
             console.log(err.message);
             res.status(500).send(err.message);
         }
-        client.end();  // Ensure the client connection is closed
+        client.end();  
     });
 });
 

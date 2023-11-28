@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './Styles/ErrorModal.css';
+import './Styles/Modal.css';
 
 interface AccessibilityModalProps {
     isOpen: boolean;

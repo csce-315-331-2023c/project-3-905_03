@@ -10,6 +10,7 @@ Directory Tree:
   ├── tsconfig.json
   ├── back/
     ├── database.js
+    ├── manualAuth.js
     ├── authRoutes.js
     ├── googleOAuth.js
     ├── index.js
@@ -44,10 +45,9 @@ Directory Tree:
       ├── index.html
       ├── vite.svg
       ├── assets/
-        ├── logo-a0c5f698.png
-        ├── index-06243080.js
+        ├── index-fb5173c4.js
+        ├── index-4d421eef.css
         ├── messLogo-cea97696.jpg
-        ├── index-bbc430df.css
     ├── public/
       ├── vite.svg
     ├── src/
@@ -83,13 +83,14 @@ Directory Tree:
         ├── Login.tsx
         ├── LanguageModal.tsx
         ├── AccessModal.tsx
+        ├── RoleSelectionModal.tsx
         ├── AuthContext.tsx
         ├── AccessibilityModal.tsx
         ├── SettingsModal.tsx
         ├── itemFormattingUtils.ts
         ├── Styles/
           ├── Login.css
-          ├── ErrorModal.css
+          ├── Modal.css
       ├── ManagerUI/
         ├── vite-env.d.ts
         ├── Styles/
@@ -97,7 +98,6 @@ Directory Tree:
           ├── ManagerAnalytics.css
           ├── ManagerNav.css
           ├── Table.css
-          ├── SalesReport.css
           ├── Manager.css
         ├── Components/
           ├── Manager-Menu.tsx

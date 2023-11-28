@@ -1,22 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
-
 import ErrorModal from './ErrorModal';
 import AccessibilityModal from './AccessibilityModal';
-
-
 
 import IconButton from '@mui/material/IconButton';
 import TranslateIcon from '@mui/icons-material/Translate';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
-
-
 import './Styles/Login.css';
 
-const authorizedManagers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu',  'ryanwtree@gmail.com', 'rwt@tamu.edu'];
+
+const authorizedManagers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
 const authorizedCashiers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ry4ntr1@gmail.com', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
 
 interface CustomJwtPayload {
@@ -28,21 +24,19 @@ interface CustomJwtPayload {
 const oAuthFailureMessage = "You are not authorized to access this application.";
 
 const LoginPage = () => {
-  const [name, setName] = useState('');
-  const [id, setId] = useState('');
-  const navigate = useNavigate();
-
-  const { setUser } = useAuth();
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState(false);
   const [authErrorMessage, setAuthErrorMessage] = useState('');
-
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
   const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
+
 
   useEffect(() => {
     const body = document.querySelector('body');
     if (!body) return;
-    if (authError ) {
+    if (authError) {
       body.style.overflow = 'hidden';
     } else {
       body.style.overflow = 'auto';
@@ -53,26 +47,33 @@ const LoginPage = () => {
     };
   }, [authError]);
 
-  const handleManualLoginSubmit = () => {
-    let role: 'Manager' | 'Cashier' | undefined;
-
-    if (role) {
-      setUser({
-        firstName: name,
-        role: role,
-        isAuthenticated: true
+  const handleManualLoginSubmit = async () => {
+    try {
+      const response = await fetch('/auth/manual/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
       });
 
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
 
-      setAuthError(false);
-      navigate(`/${role.toLowerCase()}`);
+      const { token, user } = await response.json();
+      localStorage.setItem('token', token);
+      setUser({ ...user, isAuthenticated: true });
 
-    } else {
-      console.log('Manual Login Failed');
+      navigate(`/${user.role.toLowerCase()}`);
+    } catch (error) {
+      console.error('Login error:', error);
       setAuthErrorMessage('Invalid credentials. Please try again.');
       setAuthError(true);
     }
   };
+
+  const handleAccessKiosk = () => {
+    navigate('/customer-kiosk');
+  }
 
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
@@ -80,6 +81,7 @@ const LoginPage = () => {
 
     try {
       const decoded: CustomJwtPayload = jwtDecode(idToken);
+      console.log(decoded);
       const role = authorizedManagers.includes(decoded.email) ? 'Manager'
         : authorizedCashiers.includes(decoded.email) ? 'Cashier'
           : undefined;
@@ -110,10 +112,8 @@ const LoginPage = () => {
     setShowAccessibilityModal(!showAccessibilityModal);
   }
 
-  
-
-  const handleGuestAccess = () => {
-    navigate('/customer-kiosk');
+  const handleAccessMenu = () => {
+    navigate('/dynamic-menu');
   };
 
   return (
@@ -127,23 +127,24 @@ const LoginPage = () => {
           <div className="manual-login">
             <h1>Sign In</h1>
             <input
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              type="text"
-              className="login-input"
-              placeholder="ID"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="login-button" onClick={() => handleManualLoginSubmit()}>
+            <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit
             </button>
+
             <div className="google-auth">
               <GoogleLogin
+
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
@@ -153,14 +154,17 @@ const LoginPage = () => {
                 logo_alignment='center'
                 width={220}
               />
+
             </div>
           </div>
           <div className="vertical-divider" />
           <div className="guest-options">
             <h1>Continue as Guest</h1>
-            <button className="kiosk-button" onClick={handleGuestAccess}>Customer Kiosk</button>
+            <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
+            <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
           </div>
         </div>
+
 
         <div className="login-bottom">
           <IconButton className="mui-icon-button">

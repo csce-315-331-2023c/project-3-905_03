@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import ErrorModal from './ErrorModal';
@@ -12,31 +12,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     const navigate = useNavigate();
     const [showErrorModal, setShowErrorModal] = useState(false);
 
-    const isAuthorized = user && user.isAuthenticated && allowedRoles.includes(user.role || '');
-
     useEffect(() => {
+        const isAuthorized = user && user.isAuthenticated && allowedRoles.includes(user.role);
+
         if (!isAuthorized) {
             setShowErrorModal(true);
         }
-    }, [isAuthorized]);
+    }, [user, allowedRoles]);
 
-    const handleClose = () => {
-        setShowErrorModal(false);
-        navigate('/');
-    };
+    if (showErrorModal) {
+        return (
+            <ErrorModal
+                isOpen={showErrorModal}
+                errorMessage="You do not have access to this page."
+                onClose={() => navigate('/login')}
+            />
+        );
+    }
 
-    return (
-        <>
-            {showErrorModal && (
-                <ErrorModal
-                    isOpen={showErrorModal}
-                    errorMessage="Please sign in to access this page."
-                    onClose={handleClose}
-                />
-            )}
-            {isAuthorized && <Outlet />}
-        </>
-    );
+    return user && allowedRoles.includes(user.role) ? <Outlet /> : null;
 };
 
 export default ProtectedRoute;

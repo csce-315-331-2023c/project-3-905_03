@@ -57,22 +57,21 @@ const Cashier = () => {
     };
 
     const submitOrder = () => {
-        // axios.post('/submitOrder', {
-        //     order: order.getReceipt(),
-        //     takeout: takeout,
-        //     split: split
-        // })
-        //     .then(res => {
-        //         console.log(res);
-        //     })
-        //     .catch(err => console.log(err));
+        order.checkout();
+        const newOrder = new Order();
+        setOrder(newOrder);
+        setRows(newOrder.getReceipt());
+        setTakeout(0);
+        setSplit(0);
+        upd(a => !a);
+
     };
 
     const takeoutAction = () => {
         if (takeout === 0){
-            setOrder(order.setDineIn(false));
-        }else{
             setOrder(order.setDineIn(true));
+        }else{
+            setOrder(order.setDineIn(false));
         }
         setRows(order.getReceipt());
         upd(a => !a);

@@ -14,7 +14,7 @@ const ManagerGUI: React.FC = () => {
   const componentMapping: { [key: string]: React.FC } = {
     Menu: MenuTable,
     Inventory: InventoryTable,
-    Orders: OrdersTable2,
+    Orders: OrdersTable,
     Analytics: ManagerAnalytics,
   };
 

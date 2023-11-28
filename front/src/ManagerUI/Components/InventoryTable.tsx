@@ -3,51 +3,8 @@ import axios from 'axios';
 import "../Styles/Table.css";
 import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import AddInventoryModal from './AddInventoryModal';
-import { DataGrid, GridColDef, GridRenderEditCellParams } from '@mui/x-data-grid';
-import { Edit } from '@mui/icons-material';
 
 function InventoryTable() {
-    const columns: GridColDef[] = [
-        {
-            field: "stock_id",
-            headerName: "Stock ID",
-            filterable: false,
-            sortable: true,
-        },
-        {
-            field: "stock_item",
-            headerName: "Stock Item",
-            filterable: false,  
-            sortable: true,
-        },
-        {
-            field: "cost",
-            headerName: "Cost",
-            filterable: false,
-            sortable: true,
-        },
-        {
-            field: "stock_quantity",
-            headerName: "Stock Quantity",
-            filterable: false,
-            sortable: true,
-        },
-        {
-            field: "max_amount",
-            headerName: "Maximum Amount",
-            filterable: false,
-            sortable: true,
-        },
-        {
-            field: "actions",
-            headerName: "Actions",
-            filterable: false,
-            sortable: false,
-            renderEditCell: (params: GridRenderEditCellParams) => (
-                <Edit onClick={() => handleEditRow(params.id as number)} />
-            ),
-        }
-    ]
     interface Row {
         stock_id: number;
         stock_item: string;
@@ -128,17 +85,47 @@ function InventoryTable() {
 
     return (
         <div className='table-container'>
-            <DataGrid className='table'
-                rows={rows}
-                columns={columns}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
-                    },
-                }}
-                pageSizeOptions={[10, 20, 30]}
-                getRowId={(row) => row.stock_id}
-            />
+            <table className='table'>
+                <thead>
+                    <tr>
+                        <th>Stock ID</th>
+                        <th className='expand'>Stock Item</th>
+                        <th>Cost</th>
+                        <th>Quantity</th>
+                        <th>Max Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        rows.map((row, idx) => (
+                            row.stock_id === editId ?
+                                <tr key={idx}>
+                                    <td>{row.stock_id}</td>
+                                    <td><input type="text" value={name} onChange={e => setName(e.target.value)} /></td>
+                                    <td><input type="number" value={cost || ''} onChange={e => setCost(e.target.valueAsNumber)} /></td>
+                                    <td><input type="number" value={quantity || ''} onChange={e => setQuantity(e.target.valueAsNumber)} /></td>
+                                    <td><input type="number" value={maxAmount || ''} onChange={e => setMaxAmount(e.target.valueAsNumber)} /></td>
+                                    <td><button onClick={handleUpdate}>Update</button></td>
+                                </tr>
+                                :
+                                <tr key={idx}>
+                                    <td>{row.stock_id}</td>
+                                    <td className='expand'>{row.stock_item}</td>
+                                    <td>{row.cost}</td>
+                                    <td>{row.stock_quantity}</td>
+                                    <td>{row.max_amount}</td>
+                                    <td>
+                                        <span className='actions'>
+                                            <BsFillPencilFill className="edit-btn" onClick={() => handleEditRow(row.stock_id)} />
+                                            <BsFillTrashFill className="delete-btn" onClick={() => handleDeleteRow(idx)} />
+                                        </span>
+                                    </td>
+                                </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
             <button className='btn' onClick={() => setModalOpen(true)}>Add New Inventory</button>
             {modalOpen && <AddInventoryModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
         </div>
@@ -146,4 +133,3 @@ function InventoryTable() {
 }
 
 export default InventoryTable;
-

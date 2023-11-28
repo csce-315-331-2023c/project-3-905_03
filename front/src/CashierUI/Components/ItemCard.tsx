@@ -74,7 +74,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
     return (
         <Box justifyContent="center">
             {isClicked === false ? (
-                <Card elevation={13} variant='outlined' square onClick={() => {getSizes(item.family_id); setIsClicked(!isClicked); upd(a => !a);}}>
+                <Card elevation={13} variant='outlined' square onClick={() => {getSizes(item.family_id); setIsClicked(true); upd(a => !a);}}>
                     <CardActionArea>
                         <CardHeader
                             title={
@@ -107,7 +107,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
                                 };
                                 return (
                                     <Box sx={{ '&:hover': { backgroundColor: 'lightgrey' } }}>
-                                        <Card elevation={13} variant='outlined' square onClick={() => { addItem(sizeItem); setIsClicked(!isClicked); }}>
+                                        <Card elevation={13} variant='outlined' square onClick={() => { addItem(sizeItem); setIsClicked(false); }}>
                                             <CardActionArea>
                                                 <CardHeader
                                                     title={

@@ -72,7 +72,8 @@ export class Order {
   // get info
 
   getOrderTotal(): string {
-    return this.total.toFixed(2);
+    const orderTotal: number = this.total * (1 + this.tax);
+    return orderTotal.toFixed(2);
   }
 
   splitOrder(): string {
@@ -103,7 +104,7 @@ export class Order {
     console.log("checkout ! ! !");
     console.log(this);
 
-    axios.post('/submitOrder', this)
+    axios.post('/submitOrder', {receipt: this.getReceiptString(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
       .catch(err => console.log(err));
   }
 }

@@ -606,7 +606,7 @@ app.post('/submitOrder', async (req, res) => {
     let client;
 
     try {
-        let { receipt, total, sender_id, split, dineIn, tax } = req.body;
+        let { receipt, total, sender_id, split, dineIn } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',

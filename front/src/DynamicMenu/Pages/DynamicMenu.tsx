@@ -16,7 +16,7 @@ import WandTItems from '../Components/WandTItems';
 import SideItems from '../Components/SideItems';
 import DrinkItems from '../Components/DrinkItems';
 import SpecialItems from '../Components/SpecialItems';
-import Weather from '../Components/Weather';
+import Weather from '../../SharedComponents/Weather';
 
 import Carousel from 'react-material-ui-carousel'
 

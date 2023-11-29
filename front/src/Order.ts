@@ -1,13 +1,30 @@
 import axios from "axios";
 
+export interface Family {
+  options: Item[];
+  toppings: Topping[];
+
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+
+  price: number;
+  note?: string;
+}
+
 export interface Item {
   id: number;
   name: string;
   price: number;
+
+  chosen: boolean;
+  toppings?: Topping[];
+
   category: string;
   description?: string;
+
   note?: string;
-  toppings?: Topping[];
   size?: string;
 }
 
@@ -119,12 +136,14 @@ export class Order {
     this.receipt = [];
   }
 
-  checkout(): void {
+  checkout(): number {
     // implementation for checkout
     console.log("checkout ! ! !");
     console.log(this);
 
     axios.post('/submitOrder', {receipt: this.getReceiptString(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
       .catch(err => console.log(err));
+
+    return this.total; // shuold be order id 
   }
 }

@@ -1,10 +1,17 @@
 
-.item {
+.itemComp {
   /* display: grid;
   justify-items: center;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   grid-auto-rows: minmax(100px, auto); */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+  margin: 10px;
+  padding: 10px;
+  width: 20%;
 }
 /* 
 .item > * {

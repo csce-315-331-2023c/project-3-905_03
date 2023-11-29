@@ -142,7 +142,14 @@ export class Order {
     console.log(this);
 
     axios.post('/submitOrder', {receipt: this.getReceiptString(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
-      .catch(err => console.log(err));
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+        return res.data.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
     return this.total; // shuold be order id 
   }

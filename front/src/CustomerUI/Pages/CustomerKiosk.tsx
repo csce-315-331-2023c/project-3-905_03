@@ -89,7 +89,6 @@ const Customer = () => {
             const res = await axios.get('/getFamilyItems');
             console.log("res.data fam");
             console.log(res.data);
-
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
@@ -130,7 +129,21 @@ const Customer = () => {
     };
 
     const getToppings = async (familyId: number) => {
-
+        try {
+            const res = await axios.post('/getToppingsInFamily', { family_id: familyId });
+            const retToppings: Topping[] = res.data.data.map((toppingData: { topping_name: string, topping_price: number }, index: number) => {
+                const { topping_name, topping_price } = toppingData;
+                return {
+                    id: index,
+                    name: topping_name,
+                    price: topping_price
+                };
+            })
+            return retToppings;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
     }
 
 

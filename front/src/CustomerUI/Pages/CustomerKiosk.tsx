@@ -231,13 +231,16 @@ const Customer = () => {
                     Checkout
                 </Button>
             </div>
+
+
+
             <div>hand: {hand}</div>
             <div>selected:  {selected?.id} name {selected?.name}</div>
             <div className="displayedItems">
                 {
                     fams
-                        .map((item, index) => ({ ...item, index }))
-                        .filter((item) => item.category === formValue)
+                        // .map((family, index) => ({ ...family, index }))
+                        .filter((family) => family.category === formValue)
                         .map((family, index) => (
                             <ItemComponent
                                 family={family}

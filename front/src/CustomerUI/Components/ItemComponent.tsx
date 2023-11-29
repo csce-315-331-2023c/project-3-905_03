@@ -19,7 +19,7 @@ interface Props {
 
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
   const [myFamily, setMyFamily] = useState<Family>(family);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMyFamily({ ...myFamily, option: event.target.value });
@@ -40,7 +40,7 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
         <RadioGroup
           aria-labelledby=""
           name="controlled-radio-buttons-group"
-          value={myFamily.option}
+          value={myFamily.options[0]}
           onChange={handleOptions}
         >
           {

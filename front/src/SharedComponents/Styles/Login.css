@@ -29,7 +29,7 @@ body {
 }
 
 h1 {
-    font-size: 2.75rem;
+    font-size: 3rem;
     font-weight: 300;
     line-height: 1.2;
     text-align: center;
@@ -45,7 +45,7 @@ h1 {
 
 input[type="text"] {
     height: 35px;
-    width: 50%;
+    width: 40%;
     border-radius: var(--border-radius);
     padding: 0.6em 1em;
     font-size: .8rem;
@@ -58,13 +58,13 @@ input[type="text"] {
 button {
     border-radius: var(--border-radius);
     padding: 0.6em 1em;
-    font-size: .8rem;
+    font-size: 1rem;
     border: none;
     background-color: var(--text-color);
     color: #ffffff;
     cursor: pointer;
     transition: background-color 0.25s, transform 0.1s;
-    width: 35%;
+    width: 30%;
     margin-top: 7.5px;
 }
 
@@ -88,7 +88,7 @@ button:focus {
 }
 
 .login-top {
-    margin-top: 5%;
+    margin-top: 2.5%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;

@@ -5,12 +5,12 @@ import { jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
 import ErrorModal from './ErrorModal';
 import AccessibilityModal from './AccessibilityModal';
-
+import RoleSelectionModal from './RoleSelectionModal';
 import IconButton from '@mui/material/IconButton';
 import TranslateIcon from '@mui/icons-material/Translate';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import './Styles/Login.css';
-
+import axios from 'axios';
 
 const authorizedManagers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
 const authorizedCashiers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ry4ntr1@gmail.com', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
@@ -31,7 +31,7 @@ const LoginPage = () => {
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
-
+  const [showRoleModal, setShowRoleModal] = useState(false);
 
   useEffect(() => {
     const body = document.querySelector('body');
@@ -47,26 +47,67 @@ const LoginPage = () => {
     };
   }, [authError]);
 
+  useEffect(() => {
+    if (showAccessibilityModal) {
+      console.log('Accessibility Modal is open');
+    }
+    else if (!showAccessibilityModal) {
+      console.log('Accessibility Modal is closed');
+    }
+  }, [showAccessibilityModal]);
+
+  useEffect(() => {
+    if (showRoleModal) {
+      console.log('Role Selection Modal is open');
+    }
+    else if (!showRoleModal) {
+      console.log('Role Selection Modal is closed');
+    }
+  }, [showRoleModal]);
+
+  useEffect(() => {
+    if (authError) {
+      console.log('Error Modal is open');
+    }
+    else if (!authError) {
+      console.log('AuthError Modal is closed');
+    }
+  }, [authError]);
+
+
   const handleManualLoginSubmit = async () => {
     try {
-      const response = await fetch('/auth/manual/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
+      const errors = validateForm();
+      if (errors.email || errors.password) {
+        setAuthErrorMessage(errors.email || errors.password);
+        setAuthError(true);
+        return;
       }
 
-      const { token, user } = await response.json();
+      const response = await axios.post('/auth/manual/login', { email, password });
+
+      if (response.status == 200) {
+        console.log("Client Received 200 OK");
+        console.log("response.data: ", response.data);
+      }
+
+      const { token, user } = response.data;
       localStorage.setItem('token', token);
       setUser({ ...user, isAuthenticated: true });
 
-      navigate(`/${user.role.toLowerCase()}`);
-    } catch (error) {
-      console.error('Login error:', error);
-      setAuthErrorMessage('Invalid credentials. Please try again.');
+      if (user.role === 'c') {
+        console.log("user.role === 'c'");
+        navigate('/cashier');
+        console.log("user.role === 'm'");
+      } else if (user.role === 'm') {
+        navigate('/manager');
+      } else if (user.role === 'f') {
+        console.log("user.role === 'f'");
+        setShowRoleModal(true);
+      }
+
+    } catch (error: any) {
+      setAuthErrorMessage(error.response?.data || 'Invalid credentials. Please try again.');
       setAuthError(true);
     }
   };
@@ -116,6 +157,23 @@ const LoginPage = () => {
     navigate('/dynamic-menu');
   };
 
+  const validateForm = () => {
+    const errors = { email: '', password: '' };
+    if (!email) errors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(email)) errors.email = 'Email is invalid';
+    if (!password) errors.password = 'Password is required';
+    return errors;
+  };
+
+  const handleRoleSelect = (selectedRole: string) => {
+    if (selectedRole === 'cashier') {
+      navigate('/cashier');
+    } else if (selectedRole === 'manager') {
+      navigate('/manager');
+    }
+    setShowRoleModal(false);
+  };
+
   return (
     <>
       <div className={`login-container ${authError ? 'blur-background' : ''}`}>
@@ -127,13 +185,13 @@ const LoginPage = () => {
           <div className="manual-login">
             <h1>Sign In</h1>
             <input
-              type="email"
+              type="text"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              type="password"
+              type="text"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -185,7 +243,10 @@ const LoginPage = () => {
         errorMessage={authErrorMessage}
         onClose={() => setAuthError(false)}
       />
-
+      <RoleSelectionModal
+        isOpen={showRoleModal}
+        onClose={() => setShowRoleModal(false)}
+      />
     </>
   );
 };

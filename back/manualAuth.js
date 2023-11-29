@@ -1,38 +1,54 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const { Client } = require('pg');
 
 const router = express.Router();
 
+const dbConfig = {
+    host: 'csce-315-db.engr.tamu.edu',
+    user: 'csce315_905_03user',
+    password: '90503',
+    database: 'csce315_905_03db'
+};
+
 router.post('/auth/manual/login', async (req, res) => {
     const { email, password } = req.body;
-    const client = new Client({
-        host: 'csce-315-db.engr.tamu.edu',
-        user: 'csce315_905_03user',
-        password: '90503',
-        database: 'csce315_905_03db'
-    });
-
+    console.log("email: ", email);
+    console.log("password: ", password);
+    const client = new Client(dbConfig);
     try {
         await client.connect();
-        const userResult = await client.query('SELECT password, roles FROM employees WHERE email = $1', [email]);
 
-        if (userResult.rows.length === 0) {
-            throw new Error('User not found');
+        const query = 'SELECT * FROM employees WHERE email = $1';
+        const dbRes = await client.query(query, [email]);
+        const user = dbRes.rows[0];
+        console.log("user.email: ",user.email);
+        console.log("email: ", email);
+        console.log("user.password: ", user.password);
+        console.log("password: ", password);
+       
+        
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        
+        console.log("password comparison ", passwordMatch);
+        if (user && passwordMatch) {
+
+            res.status(200).json({
+                message: 'Login successful',
+                user: {
+                    email: user.email,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    role: user.roles,
+                    profilePic: user.profile_pic,
+                    profileComplete: user.profile_complete
+                }
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid Credentials' });
         }
-
-        const user = userResult.rows[0];
-        const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) {
-            throw new Error('Invalid credentials');
-        }
-
-        const token = jwt.sign({ email: user.email, roles: user.roles }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token, user: { email, roles: user.roles } });
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(401).json({ message: 'Login failed' });
+        res.status(500).json({ message: 'Internal server error' });
     } finally {
         client.end();
     }

@@ -10,7 +10,7 @@ import { AuthProvider } from './SharedComponents/AuthContext';
 
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-  console.log(googleClientId);
+  
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId={googleClientId}>
@@ -20,10 +20,10 @@ function App() {
             <Route path="/customer-kiosk" element={<CustomerKiosk />} />
             <Route path="/dynamic-menu" element={<DynamicMenu />} />
             <Route path="/cashier2" element={<Cashier />} />
-            <Route element={<ProtectedRoute allowedRoles={['Manager']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['manager','f']} />}>
               <Route path="/manager" element={<ManagerGUI />} />
             </Route>
-            <Route element={<ProtectedRoute allowedRoles={['Cashier']} />}>
+            <Route element={<ProtectedRoute allowedRoles={['cashier','f']} />}>
               <Route path="/cashier" element={<Cashier />} />
             </Route>
             <Route path="*" element={<LoginPage />} />

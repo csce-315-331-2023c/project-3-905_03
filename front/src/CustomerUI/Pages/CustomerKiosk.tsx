@@ -2,27 +2,16 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import "../Styles/CustomerKiosk.css";
-import { Item, Topping, Order } from '../../Order.ts';
+import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch} from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
 
-interface Family {
-    options: Item[];
-    toppings: Topping[];
 
-    id: number;
-    name: string;
-    category: string;
-    description: string;
-
-    price: number;
-    note?: string;
-}
 
 const Customer = () => {
     const [state, upd] = useState(false);
@@ -76,8 +65,16 @@ const Customer = () => {
     };
 
     const handleCheckout = () => {
-        // id of logged in user
-        currOrder.sender_id = 0;
+        //make the order
+        fams.forEach((family) => {
+            console.log(family);
+            const chosenItem = family.options.find((option) => option.chosen === true);
+            if (chosenItem) {
+                currOrder.receipt.push(chosenItem);
+            }
+        });
+
+        currOrder.sender_id = 0; // id of logged in user
         currOrder.checkout();
         setCurrOrder(new Order());
 
@@ -139,7 +136,7 @@ const Customer = () => {
 
     useEffect(() => {
         console.log("fams updated:", fams);
-    }, [fams]); 
+    }, [fams]);
 
     useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);

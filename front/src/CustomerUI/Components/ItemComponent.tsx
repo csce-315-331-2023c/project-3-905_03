@@ -19,10 +19,17 @@ interface Props {
 
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
   const [myFamily, setMyFamily] = useState<Family>(family);
-  // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMyFamily({ ...myFamily, option: event.target.value });
+    for (let i = 0; i < family.options.length; i++) {
+      if (family.options[i])
+        if (getSize(family.options[i].name) === event.target.value) {
+          family.options[i].selected = true;
+        } else {
+          family.options[i].selected = false;
+        }
+    }
+    setMyFamily(family);
   }
 
   // onClick={() => parentSelected((family.id == hand) ? -1 : myFamily)}>
@@ -35,21 +42,29 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
       <div className='price'>$ {family.price}</div>
 
       {/* <div className='description'>Description: {myFamily.description}</div> */}
-      <FormControl className='options' component='fieldset'>
-        <FormLabel component="legend">Options</FormLabel>
-        <RadioGroup
-          aria-labelledby=""
-          name="controlled-radio-buttons-group"
-          value={myFamily.options[0]}
-          onChange={handleOptions}
-        >
-          {
-            myFamily.options.map((option: Item, index: number) => (
-              <FormControlLabel key={index} value={option} control={<Radio />} label={getSize(option.name)} />
-            ))
-          }
-        </RadioGroup>
-      </FormControl>
+      {
+        myFamily.options.length > 1 ? (
+          <FormControl className='options' component='fieldset'>
+            <FormLabel component="legend">Options</FormLabel>
+            <RadioGroup
+              aria-labelledby=""
+              name="controlled-radio-buttons-group"
+              // value={getSize(myFamily.options[0])}
+              onChange={handleOptions}
+            >
+              {
+                myFamily.options.map((option: Item, index: number) => (
+                  <FormControlLabel key={index} value={getSize(option.name)} control={<Radio />} label={getSize(option.name)} />
+                ))
+              }
+            </RadioGroup>
+          </FormControl>
+        ) : (
+          <div className='options'>
+            {getSize(myFamily.options[0].name)}
+          </div>
+        )
+      }
       {/* <div className='toppings'>
           {
             item.toppings.map((topping, index) => (

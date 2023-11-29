@@ -4,11 +4,12 @@ export interface Item {
   id: number;
   name: string;
   price: number;
-  category: string;
-  description?: string;
-  note?: string;
-  toppings: Topping[];
-  size?: string;
+
+  chosen: boolean;
+  toppings?: Topping[];
+  category: string; // dprc
+  description?: string; // dprc
+  note?: string; // dprc
 }
 
 export interface Topping {

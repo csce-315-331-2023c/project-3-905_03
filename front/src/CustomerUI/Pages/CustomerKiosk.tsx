@@ -2,28 +2,45 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import "../Styles/CustomerKiosk.css";
-import { Item, Order } from '../../Order.ts';
+import { Item, Topping, Order } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
+import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch, Paper } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch} from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
+
+interface Family {
+    options: Item[];
+    toppings: Topping[];
+
+    id: number;
+    name: string;
+    category: string;
+    description: string;
+
+    price: number;
+    note?: string;
+}
 
 const Customer = () => {
     const [state, upd] = useState(false);
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
 
     const [bagView, setBagView] = useState(false);
-    const [items, setItems] = useState<Item[]>([]);
+    const [bag, setBag] = useState<Family[]>([]);
+
     const [formValue, setFormValue] = useState('w&t');
     const [filters, setFilters] = useState({ gf: false, vegan: false });
+    const [fams, setFams] = useState<Family[]>([]);
 
     const [hand, setHand] = useState(0);
-    const [selected, setSelected] = useState<Item | undefined>(undefined);
+    const [selected, setSelected] = useState<Family | undefined>(undefined);
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setHand(-1);
+        // setHand(-1);
+        setSelected(undefined);
         setFormValue(event.target.value);
     };
 
@@ -38,17 +55,20 @@ const Customer = () => {
 
     const handleAdd = () => {
         if (selected) {
-            setCurrOrder(currOrder.addItem(selected));
+            setSelected({ ...selected, id: selected.id + 1000 });
+            setBag([...bag, selected]);
+            // setCurrOrder(currOrder.addItem(selected));
+            setSelected(undefined);
             upd(a => !a);
         }
-    }
+    };
 
     const handleRemove = () => {
         if (selected) {
-            setCurrOrder(currOrder.removeItem(selected));
+            //setCurrOrder(currOrder.removeItem(selected));
             upd(a => !a);
         }
-    }
+    };
 
     const handleUndo = () => {
         setCurrOrder(currOrder.undo());
@@ -67,50 +87,80 @@ const Customer = () => {
         upd(a => !a);
     };
 
-    const getItems = async () => {
-        axios.get('/getServedItemsFamily')
-            .then((res) => {
-                console.log(res.data);
-                const items: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number/*, item_category: string*/ }, index: number) => {
-                    const { served_item, item_price/*, item_category*/ } = itemData;
-                    return { id: index, name: served_item, price: item_price/*, category: item_category*/ };
-                });
-                setItems(items);
-                console.log("items");
-                console.log(items);
-            })
-            .catch((error) => {
-                console.log(error);
+    const getFams = async () => {
+        try {
+            const res = await axios.get('/getFamilyItems');
+            console.log("res.data fam");
+            console.log(res.data);
+
+            const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
+                const { family_id, family_name, family_category, family_description } = familyData;
+                const options = await getSizes(family_id);
+                return {
+                    id: family_id,
+                    name: family_name,
+                    category: family_category,
+                    description: family_description,
+                    options: options,
+                    toppings: [],
+                    price: 0
+                };
             });
 
-        // for (let i = 0; i < items.length; i++) {
-        //     axios.post('/getServedItemsInFamily' items[i].family_id)
-        // }
+            const families = await Promise.all(familiesPromises);
+            setFams(families);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
+    const getSizes = async (familyId: number) => {
+        try {
+            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId });
+            const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number }, index: number) => {
+                const { served_item, item_price } = itemData;
+                return {
+                    id: index,
+                    name: served_item,
+                    price: item_price
+                };
+            })
+            return retItems;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    };
+
+
     useEffect(() => {
-        getItems();
+        getFams();
     }, []);
+
+    useEffect(() => {
+        console.log("fams updated:", fams);
+    }, [fams]); 
 
     useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
     // ask krish about loading animation
+    const imgClick = () => {
+        console.log(fams);
+    };
 
     return (
         <>
-            <div>-</div>
             <div className="top">
-                <img className='title' src={mess} alt="mess" />
+                <img className='title' src={mess} alt="mess" onClick={imgClick} />
                 {bagView ? (
                     <>
-
                         <div className="bagview">
                             <h1>bagview</h1>
                             <div className='displayedItems'>
-                                {currOrder.receipt.map((item, index) => (
-                                    <ItemComponent item={item} key={index} hand={hand} parentSelected={setSelected} />
+                                {bag.map((family, index) => (
+                                    <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
                                 ))}
                             </div>
                         </div>
@@ -145,20 +195,7 @@ const Customer = () => {
                         </FormControl>
                     </>
                 )}
-                {/* <IconButton className="bg" onClick={() => setBagView(!bagView)}>
-                    {bagView ? (
-                        <ShoppingBag />
-                    ) : (
-                        <ShoppingBagOutlined />
-                    )}
-                    {currOrder.receipt.length}
-                </IconButton> */}
-                {/* <IconButton className="undo" onClick={() => handleUndo()}>
-                    <Undo />
-                </IconButton>
-                <IconButton className="add" onClick={() => handleAdd()}>
-                    <Add />
-                </IconButton> */}
+
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
                     startIcon=
                     {
@@ -194,21 +231,22 @@ const Customer = () => {
                     Checkout
                 </Button>
             </div>
-            <div className='sectionDisplay'>
-                <div className="displayedItems">
-                    <div>hand: {hand}</div>
-                    {items
-                        // .map((item, index) => ({ ...item, index }))
-                        // .filter((item) => item.category === formvalue)
-                        .map((item, index) => (
+            <div>hand: {hand}</div>
+            <div>selected:  {selected?.id} name {selected?.name}</div>
+            <div className="displayedItems">
+                {
+                    fams
+                        .map((item, index) => ({ ...item, index }))
+                        .filter((item) => item.category === formValue)
+                        .map((family, index) => (
                             <ItemComponent
-                                item={item}
+                                family={family}
                                 key={index}
                                 hand={hand}
                                 parentSelected={setSelected}
                             />
-                        ))}
-                </div>
+                        ))
+                }
             </div>
         </>
     );

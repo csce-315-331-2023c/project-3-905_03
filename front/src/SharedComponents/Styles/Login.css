@@ -10,7 +10,7 @@ body {
     height: 100%;
     font-family: var(--font-primary);
     background-color: var(--color-bg-dark);
-    color: var(--font-color);
+    /* color: var(--font-color); */
     font-size: var(--font-size-base);
 }
 

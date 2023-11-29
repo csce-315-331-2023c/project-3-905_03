@@ -55,6 +55,35 @@ app.get('/getServedItems', (req, res) => {
 /**
  * return entree items in json form
  */
+app.get('/getFamilyItems', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items_family ORDER BY family_id`, (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
+ * return entree items in json form
+ */
 app.get('/getEntreeItems', (req, res) => {
 
     const client = new Client({

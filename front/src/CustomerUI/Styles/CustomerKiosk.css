@@ -5,6 +5,8 @@
   grid-template-columns: repeat(12, 1fr);
   gap: 30px;
   grid-auto-rows: minmax(100px, auto);
+
+  height: 35%;
 }
 
 .top > * {
@@ -74,7 +76,15 @@
   width: auto;
 }
 
-.item {
+/* menu */
+
+.displayedItems {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.itemFamily {
   display: flex;
   justify-content: center;
   align-items: center;

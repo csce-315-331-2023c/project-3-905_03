@@ -100,6 +100,19 @@ export class Order {
     this.receipt = receipt;
   }
 
+  getItemPrice(item: Item): string {
+    let totalPrice: number = item.price;
+    if (item.toppings){
+      for (let i = 0; i < item.toppings.length; i++) {
+        if (item.toppings[i].chosen) {
+          totalPrice += item.toppings[i].price;
+        }
+      }
+    }
+
+    return totalPrice.toFixed(2);
+  }
+
   // complete order
 
   cancel(): void {

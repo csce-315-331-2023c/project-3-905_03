@@ -129,8 +129,8 @@ const Cashier = () => {
                             <tr key={index}>
                                 <td>{row.id}</td>
                                 <td>{row.name}</td>
-                                <td>{row.toppings?.map(topping => topping.name).join(', ')}</td>
-                                <td>{row.price}</td>
+                                <td>{row.toppings?.filter(topping => topping.chosen).map(topping => topping.name).join(', ')}</td>
+                                <td>{order.getItemPrice(row)}</td>
                                 <td>
                                     <span className="actions">
                                         <BsFillTrashFill onClick={() => deleteItemFromOrder(row)} />

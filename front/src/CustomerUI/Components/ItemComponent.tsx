@@ -24,9 +24,9 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
     for (let i = 0; i < family.options.length; i++) {
       if (family.options[i])
         if (getSize(family.options[i].name) === event.target.value) {
-          family.options[i].selected = true;
+          family.options[i].chosen = true;
         } else {
-          family.options[i].selected = false;
+          family.options[i].chosen = false;
         }
     }
     setMyFamily(family);

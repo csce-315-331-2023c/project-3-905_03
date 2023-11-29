@@ -228,6 +228,36 @@ app.post('/getServedItemsInFamily', (req, res) => {
 });
 
 /**
+ * return served item's corresponding add-ons in family given family id
+ */
+app.post('/getToppingsInFamily', (req, res) => {
+    let { family_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('select * from served_items_topping where family_id = $1', [family_id], (err, result) => {
+        if (!err) {
+            res.status(200).send({
+                data: result.rows
+            });
+      
+        }
+        else {
+            console.log(err.message);
+            res.status(500).send(err.message);
+        }
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
  * return stock items in json form
  */
 app.get('/getStockItems', (req, res) => {
@@ -297,7 +327,7 @@ app.post('/getOrdersBetweenDates', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2 by order_date`, [start_date, end_date], (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders WHERE order_date BETWEEN $1 AND $2 ORDER by order_date`, [start_date, end_date], (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -633,6 +663,8 @@ app.post('/submitOrder', async (req, res) => {
         const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
         let newOrderItemId = maxOrderItemId + 1;
+
+        receipt = JSON.parse(receipt);
 
         for (const item of receipt) {
             await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [neworderId, item.id, newOrderItemId]);

@@ -43,6 +43,13 @@ export class Order {
     this.receipt.push(adding);
     this.total += adding.price;
     // add price of add ons
+    if (adding.toppings){
+      for (let i = 0; i < adding.toppings.length; i++) {
+        if (adding.toppings[i].chosen) {
+          this.total += adding.toppings[i].price;
+        }
+      }
+    }
     return this;
   }
 

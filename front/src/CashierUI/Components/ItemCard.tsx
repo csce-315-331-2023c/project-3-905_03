@@ -5,9 +5,10 @@ import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Item } from '../../Order.ts';
+import { Item, Topping } from '../../Order.ts';
 import axios from 'axios';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
+import AddToppingModal from './AddToppingModal.tsx';
 
 interface displayItem {
     family_id: number;
@@ -36,13 +37,16 @@ interface Data2 {
 interface ItemCardProps {
     item: displayItem;
     addItem: (item: Item) => void;
+    addTopping: (toppings: Topping[], item: Item) => void;
 }
 
-const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
     const [state, upd] = useState(false);
     const [sizes, setSizes] = useState<Items[]>([]);
     const [isClicked, setIsClicked] = useState<boolean>(false);
     const [toppingModal, setToppingModal] = useState<boolean>(false);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [sizeItem, setSizeItem] = useState<Item>({id: 0, name: "", price: 0, category: ""});
 
     const getSizes = (id: number) => {
         axios.post('/getServedItemsInFamily', {family_id: id})
@@ -55,7 +59,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
                         size: getSize(sItem.served_item)
                     }));
                     setSizes(sizes);
-                    upd(a => !a);
+                    setIsClicked(true);
                 }else{
                     const tempItem: Item = {
                         id: data.data[0].item_id,
@@ -63,69 +67,86 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem }) => {
                         price: data.data[0].item_price,
                         category: item.family_category,
                     }
-                    addItem(tempItem);
-                    upd(a => !a);
+                    setIsClicked(false);
+                    setSizeItem(tempItem);
+                    setModalOpen(true);
                 }
                 
             })
             .catch(err => console.log(err));
     };
 
+    const handleSizeClick = (item: Item) => {
+        setSizeItem(item);
+        setIsClicked(false);
+        setModalOpen(true);
+    };
+
     return (
-        <Box justifyContent="center">
-            {isClicked === false ? (
-                <Card elevation={13} variant='outlined' square onClick={() => {getSizes(item.family_id); setIsClicked(true); upd(a => !a);}}>
-                    <CardActionArea>
-                        <CardHeader
-                            title={
-                                <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
-                                    {item.family_name}
-                                </Typography>
-                            }
-                        />
-                        <CardContent>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-            ) : (
-                <Card variant='outlined' square elevation={13}>
-                    <CardActionArea>
-                        <CardHeader
-                            title={
-                                <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
-                                    {item.family_name}
-                                </Typography>
-                            }
-                        />
-                        <CardContent>
-                            {sizes.map(size => {
-                                const sizeItem: Item = {
-                                    id: size.item_id,
-                                    name: size.served_item,
-                                    price: size.item_price,
-                                    category: size.category,
-                                };
-                                return (
-                                    <Box sx={{ '&:hover': { backgroundColor: 'lightgrey' } }}>
-                                        <Card elevation={13} variant='outlined' square onClick={() => { addItem(sizeItem); setIsClicked(false); }}>
-                                            <CardActionArea>
-                                                <CardHeader
-                                                    title={
-                                                        <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
-                                                            {size.size}
-                                                        </Typography>
-                                                    }
-                                                />
-                                            </CardActionArea>
-                                        </Card>
-                                    </Box>
-                                );
-                            })}
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-            )}
-        </Box>
+        <div>
+            <Box justifyContent="center">
+                {isClicked === false ? (
+                    <Box sx={{ '&:hover': { backgroundColor: 'lightgrey' } }}>
+                        <Card elevation={13} variant='outlined' square onClick={() => {getSizes(item.family_id);}}>
+                            <CardActionArea>
+                                <CardHeader
+                                    title={
+                                        <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
+                                            {item.family_name}
+                                        </Typography>
+                                    }
+                                />
+                                <CardContent>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                        {modalOpen && <AddToppingModal key={item.family_id} closeModal={() => (
+                        setModalOpen(false)
+                        )} item={item} sizeItem={sizeItem} addTopping={addTopping} addItem={addItem}/>}
+                    </Box>
+                ) : (
+                    <Card variant='outlined' square onClick={() => {setIsClicked(false)}} elevation={13}>
+                        <CardActionArea>
+                            <CardHeader
+                                title={
+                                    <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
+                                        {item.family_name}
+                                    </Typography>
+                                }
+                            />
+                            <CardContent>
+                                {sizes.map(size => {
+                                    const sizeItem2: Item = {
+                                        id: size.item_id,
+                                        name: size.served_item,
+                                        price: size.item_price,
+                                        category: size.category,
+                                    };
+                                    return (
+                                        <Box sx={{ '&:hover': { backgroundColor: 'lightgrey' } }}>
+                                            <Card elevation={13} variant='outlined' square onClick={() => { handleSizeClick(sizeItem2) }}>
+                                                <CardActionArea>
+                                                    <CardHeader
+                                                        title={
+                                                            <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
+                                                                {size.size}
+                                                            </Typography>
+                                                        }
+                                                    />
+                                                </CardActionArea>
+                                            </Card>
+                                            {modalOpen && <AddToppingModal key={item.family_id} closeModal={() => (
+                                            setModalOpen(false)
+                                            )} item={item} sizeItem={sizeItem} addTopping={addTopping} addItem={addItem}/>}
+                                        </Box>
+                                    );
+                                })}
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                )}
+            </Box>
+        </div>
     );
 }
 

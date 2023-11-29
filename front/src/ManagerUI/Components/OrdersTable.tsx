@@ -32,7 +32,7 @@ function OrdersTable() {
     const recordsPerPage = 10;
     const lastIndex = currentPage * recordsPerPage;
     const firstIndex = lastIndex - recordsPerPage;
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState<number | null>(null);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
@@ -91,9 +91,9 @@ function OrdersTable() {
                                 <td className='expand'>{row.formatted_order_date}</td>
                                 <td>
                                     <span className='actions'>
-                                        <BsEyeFill className="view-btn" onClick={() => setModalOpen(true)}/>
-                                        {modalOpen && <ViewOrderModal closeModal={() => (
-                                            setModalOpen(false)
+                                        <BsEyeFill className="view-btn" onClick={() => setModalOpen(row.order_id)}/>
+                                        {modalOpen === row.order_id && <ViewOrderModal key={row.order_id} closeModal={() => (
+                                            setModalOpen(null)
                                         )} order_id={row.order_id}/>}
                                     </span>
                                 </td>

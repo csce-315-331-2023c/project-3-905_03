@@ -1,13 +1,30 @@
 import axios from "axios";
 
+export interface Family {
+  options: Item[];
+  toppings: Topping[];
+
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+
+  price: number;
+  note?: string;
+}
+
 export interface Item {
   id: number;
   name: string;
   price: number;
+
+  chosen: boolean;
+  toppings?: Topping[];
+
   category: string;
   description?: string;
+
   note?: string;
-  toppings: Topping[];
   size?: string;
 }
 
@@ -43,6 +60,13 @@ export class Order {
     this.receipt.push(adding);
     this.total += adding.price;
     // add price of add ons
+    if (adding.toppings){
+      for (let i = 0; i < adding.toppings.length; i++) {
+        if (adding.toppings[i].chosen) {
+          this.total += adding.toppings[i].price;
+        }
+      }
+    }
     return this;
   }
 
@@ -93,18 +117,33 @@ export class Order {
     this.receipt = receipt;
   }
 
+  getItemPrice(item: Item): string {
+    let totalPrice: number = item.price;
+    if (item.toppings){
+      for (let i = 0; i < item.toppings.length; i++) {
+        if (item.toppings[i].chosen) {
+          totalPrice += item.toppings[i].price;
+        }
+      }
+    }
+
+    return totalPrice.toFixed(2);
+  }
+
   // complete order
 
   cancel(): void {
     this.receipt = [];
   }
 
-  checkout(): void {
+  checkout(): number {
     // implementation for checkout
     console.log("checkout ! ! !");
     console.log(this);
 
     axios.post('/submitOrder', {receipt: this.getReceiptString(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
       .catch(err => console.log(err));
+
+    return this.total; // shuold be order id 
   }
 }

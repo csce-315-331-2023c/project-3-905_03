@@ -692,7 +692,7 @@ app.post('/submitOrder', async (req, res) => {
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
         let newOrderItemId = maxOrderItemId + 1;
 
-        receipt = JSON.parse(receipt);
+        //receipt = JSON.parse(receipt);
 
         for (const item of receipt) {
             await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [neworderId, item.id, newOrderItemId]);
@@ -704,21 +704,25 @@ app.post('/submitOrder', async (req, res) => {
                 await client.query('UPDATE stock_items SET stock_quantity = stock_quantity - 1 WHERE stock_id = $1', [stock_id.stock_id]);
             }
 
-            const maxOrderServedItemToppingIdResult = await client.query('SELECT MAX(order_served_item_topping_id) FROM orderserveditemtopping');
+            const maxOrderServedItemToppingIdResult = await client.query('SELECT MAX(order_served_item_topping_id) FROM order_served_item_topping');
             let maxOrderServedItemToppingId = maxOrderServedItemToppingIdResult.rows[0].max || 0;
-            let newOrderServedItemToppingId = maxOrderItemId + 1;
+            let newOrderServedItemToppingId = maxOrderServedItemToppingId + 1;
 
             // toppings = item.toppings;
             // toppings = JSON.parse(toppings);
-            toppings = JSON.parse(item.toppings);
-            for (const topping of toppings) {
-                if (topping.chosen == true) {
-                    await client.query('INSERT INTO orderserveditemtopping (order_served_item_topping_id, order_item_id, topping_id) VALUES ($1, $2, $3)', [newOrderServedItemToppingId, newOrderItemId, topping.id]);
-                    newOrderServedItemToppingId++;
+            console.log(item.toppings);
+            if (item.toppings && Array.isArray(item.toppings)) {
+                for (const topping of item.toppings) {
+                    if (topping.chosen == true) {
+                        await client.query('INSERT INTO order_served_item_topping (order_served_item_topping_id, order_served_item_id, topping_id) VALUES ($1, $2, $3)', [newOrderServedItemToppingId, newOrderItemId, topping.id]);
+                        newOrderServedItemToppingId++;
+                    }
+                    else {
+                        continue;
+                    }
                 }
+                newOrderItemId++;
             }
-
-            newOrderItemId++;
         }
 
         res.status(200).json({ message: 'success!', OrderId: neworderId });

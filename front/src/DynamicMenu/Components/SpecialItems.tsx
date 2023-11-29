@@ -18,7 +18,7 @@ const SpecialItems: React.FC = () => {
 
     useEffect(() => {
     
-        axios.post('http://localhost:8080/getServedItemsInFamily', { "family_id" : 37 })
+        axios.post('/getServedItemsInFamily', { "family_id" : 37 })
         .then(res => {
             const data: Data = res.data;
             setItems(data.data);

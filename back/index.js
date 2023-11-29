@@ -721,8 +721,8 @@ app.post('/submitOrder', async (req, res) => {
                         continue;
                     }
                 }
-                newOrderItemId++;
             }
+            newOrderItemId++;
         }
 
         res.status(200).json({ message: 'success!', OrderId: neworderId });

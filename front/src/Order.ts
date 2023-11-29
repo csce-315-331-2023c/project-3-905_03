@@ -141,7 +141,7 @@ export class Order {
     console.log("checkout ! ! !");
     console.log(this);
 
-    axios.post('/submitOrder', {receipt: this.getReceiptString(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
+    axios.post('/submitOrder', {receipt: this.getReceipt(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
       .then(res => {
         console.log(res);
         console.log(res.data);

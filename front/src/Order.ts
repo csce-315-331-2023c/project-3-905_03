@@ -7,7 +7,7 @@ export interface Item {
   category: string;
   description?: string;
   note?: string;
-  toppings: Topping[];
+  toppings?: Topping[];
   size?: string;
 }
 
@@ -43,6 +43,13 @@ export class Order {
     this.receipt.push(adding);
     this.total += adding.price;
     // add price of add ons
+    if (adding.toppings){
+      for (let i = 0; i < adding.toppings.length; i++) {
+        if (adding.toppings[i].chosen) {
+          this.total += adding.toppings[i].price;
+        }
+      }
+    }
     return this;
   }
 
@@ -91,6 +98,19 @@ export class Order {
 
   setReceipt(receipt: Item[]): void {
     this.receipt = receipt;
+  }
+
+  getItemPrice(item: Item): string {
+    let totalPrice: number = item.price;
+    if (item.toppings){
+      for (let i = 0; i < item.toppings.length; i++) {
+        if (item.toppings[i].chosen) {
+          totalPrice += item.toppings[i].price;
+        }
+      }
+    }
+
+    return totalPrice.toFixed(2);
   }
 
   // complete order

@@ -18,7 +18,7 @@ export interface Item {
   name: string;
   price: number;
 
-  chosen: boolean;
+  chosen?: boolean;
   toppings?: Topping[];
 
   category: string;

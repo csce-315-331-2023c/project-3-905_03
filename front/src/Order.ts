@@ -20,9 +20,12 @@ export interface Item {
 
   chosen: boolean;
   toppings?: Topping[];
-  category: string; // dprc
-  description?: string; // dprc
-  note?: string; // dprc
+
+  category: string;
+  description?: string;
+
+  note?: string;
+  size?: string;
 }
 
 export interface Topping {
@@ -57,6 +60,13 @@ export class Order {
     this.receipt.push(adding);
     this.total += adding.price;
     // add price of add ons
+    if (adding.toppings){
+      for (let i = 0; i < adding.toppings.length; i++) {
+        if (adding.toppings[i].chosen) {
+          this.total += adding.toppings[i].price;
+        }
+      }
+    }
     return this;
   }
 
@@ -86,7 +96,8 @@ export class Order {
   // get info
 
   getOrderTotal(): string {
-    return this.total.toFixed(2);
+    const orderTotal: number = this.total * (1 + this.tax);
+    return orderTotal.toFixed(2);
   }
 
   splitOrder(): string {
@@ -117,7 +128,7 @@ export class Order {
     console.log("checkout ! ! !");
     console.log(this);
 
-    axios.post('/submitOrder', this)
+    axios.post('/submitOrder', {receipt: this.getReceiptString(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
       .catch(err => console.log(err));
 
     return this.total; // shuold be order id 

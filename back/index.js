@@ -4,15 +4,14 @@ const app = express();
 const PORT = 8080;
 
 var cors = require('cors');
-const authRoutes = require('./authRoutes'); // Assuming authRoutes is a .js file in the same directory.
-const manualAuthRoutes = require('./manualAuth');
+const authRoutes = require('./authRoutes'); 
+const manualAuth= require('./manualAuth');
 const bodyParser = require('body-parser');
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use('/auth/sign-in-with-Google', authRoutes);
-app.use('/auth/sign-in-with-credentials', manualAuthRoutes);
 app.use(cors());
+app.use(manualAuth);
 
 const { Client } = require('pg')
 

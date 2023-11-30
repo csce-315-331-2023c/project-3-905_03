@@ -7,6 +7,7 @@ import { ItemComponent } from '../Components/ItemComponent';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
+import wafflebite from '../../assets/wafflebite.png';
 
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
@@ -15,6 +16,7 @@ import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material
 
 const Customer = () => {
     const [state, upd] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
 
     const [bagView, setBagView] = useState(false);
@@ -152,7 +154,11 @@ const Customer = () => {
     }, []);
 
     useEffect(() => {
+        console.log(loading);
         console.log("fams updated:", fams);
+        // loading animation
+        setLoading(false);
+        console.log(loading);
     }, [fams]);
 
     useEffect(() => {
@@ -252,17 +258,21 @@ const Customer = () => {
             <div>selected:  {selected?.id} name {selected?.name}</div>
             <div className="displayedItems">
                 {
-                    fams
-                        // .map((family, index) => ({ ...family, index }))
-                        .filter((family) => family.category === formValue)
-                        .map((family, index) => (
-                            <ItemComponent
-                                family={family}
-                                key={index}
-                                hand={hand}
-                                parentSelected={setSelected}
-                            />
-                        ))
+                    (!loading) ? (
+                        fams
+                            // .map((family, index) => ({ ...family, index }))
+                            .filter((family) => family.category === formValue)
+                            .map((family, index) => (
+                                <ItemComponent
+                                    family={family}
+                                    key={index}
+                                    hand={hand}
+                                    parentSelected={setSelected}
+                                />
+                            ))
+                    ) : (
+                        <div>loading</div>
+                    )
                 }
             </div>
         </>

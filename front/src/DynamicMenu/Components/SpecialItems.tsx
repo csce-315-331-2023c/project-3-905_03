@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ItemsInFamily from './ItemsInFamily.tsx';
+import {formatCamelCase} from '../../SharedComponents/itemFormattingUtils.ts';
+
+interface Row {
+    item_id: number;
+    served_item: string;
+    item_price: number;
+    family_id: 0;
+}
+
+interface Data {
+    data: Row[];
+}
 
 const SpecialItems: React.FC = () => {
-    interface Row {
-        family_id: number;
-        family_name: string;
-        family_category: string;
-        family_description: string;
-    }
+    const [items, setItems] = useState<Row[]>([]);
 
-    interface Data {
-        data: Row[];
-    }
-
-    const [rows, setRows] = useState<Row[]>([]); // Use Row[] instead of any[]
-
-    const fetchSpecialItems = () => {
-        axios.get('/getSpecialItems')
-            .then(res => {
-                const data: Data = res.data;
-                setRows(data.data);
-            })
-            .catch(err => console.log(err));
-    };
-    
     useEffect(() => {
-        fetchSpecialItems();
-    }, []);
     
+        axios.post('/getServedItemsInFamily', { "family_id" : 37 })
+        .then(res => {
+            const data: Data = res.data;
+            setItems(data.data);
+        })
+        .catch(err => {
+            console.log('Error:', err); // Log any errors from the axios.get call
+        });
+    });
+
     return (
-        <div className = "items">
-            {rows.map((row, index) => (
-                <div key={index} className="item">
-                    <span>{row.family_name} <ItemsInFamily family_id={row.family_id}/></span>
-                    <div className = "itemDescription">{row.family_description}</div>
+        <span>
+            {items && items.map((item, index) => (
+            <div className = "menuItems" key={item.item_id}>
+                <div className="menuItem">
+                    {formatCamelCase(item.served_item)} : {item.item_price}
                 </div>
-            ))}
-        </div>
+            </div>
+        ))}
+        </span>
     );
 };
 

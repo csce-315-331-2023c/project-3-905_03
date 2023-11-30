@@ -91,17 +91,17 @@
     text-decoration-thickness: 4px;
 }
 
-.items {
+.menuItems {
     padding-left: 15px;
     font-size: 24px;
 }
 
-.itemDescription {
+.menuItemDescription {
     font-size: .75rem;
     font-size: 18px;
 }
 
-.item {
+.menuItem {
     margin-bottom: 10px;
 }
 

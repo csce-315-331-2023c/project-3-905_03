@@ -30,11 +30,11 @@ const SideItems: React.FC = () => {
     }, []);
     
     return (
-        <div className = "items">
+        <div className = "menuItems">
             {rows.map((row, index) => (
-                <div key={index} className="item">
+                <div key={index} className="menuItem">
                     <span>{row.family_name} <ItemsInFamily family_id={row.family_id}/></span>
-                    <div className = "itemDescription">{row.family_description}</div>
+                    <div className = "menuItemDescription">{row.family_description}</div>
                 </div>
             ))}
         </div>

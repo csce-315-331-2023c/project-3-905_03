@@ -1,50 +1,71 @@
 import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
-import { Item } from '../../Order.ts';
+import { Item, Topping, Family } from '../../Order.ts';
+import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
+
 import "../Styles/ItemComponent.css";
 
-import { Paper } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Paper } from '@mui/material';
+
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 
 interface Props {
-  item: Item;
+  family: Family;
   key: number;
   hand: number;
   parentSelected: any;
 }
 
-export const ItemComponent: React.FC<Props> = ({ item, key, hand, parentSelected }) => {
-  const [myItem, setMyItem] = useState<Item>(item);
-  const [myWidth, setMyWidth] = useState<number>(200);
-  const [myHeight, setMyHeight] = useState<number>(100);
+export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
+  const [myFamily, setMyFamily] = useState<Family>(family);
 
-  const baseStyle = useMemo(() => ({
-    width: `${myWidth}px`,
-    height: `${myHeight}px`,
-    backgroundColor: 'lightblue',
-    color: 'white',
-    fontWeight: 'bold',
-    padding: '10px',
-    margin: '10px',
-    display: 'inline-block',
-  }), [myWidth, myHeight]);
+  const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
+    for (let i = 0; i < family.options.length; i++) {
+      if (family.options[i])
+        if (getSize(family.options[i].name) === event.target.value) {
+          family.options[i].chosen = true;
+        } else {
+          family.options[i].chosen = false;
+        }
+    }
+    setMyFamily(family);
+  }
 
-  const [itemStyle, setItemStyle] = useState({});
-
-  useEffect(() => {
-    setMyItem(item);
-  }, [baseStyle, hand, item]);
-  
+  // onClick={() => parentSelected((family.id == hand) ? -1 : myFamily)}>
   return (
-    <Paper elevation={3 + 10 * Number(item.id == hand)} className='item' style={itemStyle} onClick={() => parentSelected(myItem)}>
-      {/* <div className='item' style={itemStyle} onClick={() => parentSelected(myItem)}> */}
-        <div className='name'>{item.name}</div>
-        <div className='price'>$ {item.price}</div>
-        
-        {/* <div className='description'>Description: {item.description}</div> */}
-        {/* options */}
-        {/* <div className='toppings'>
+    <Paper
+      elevation={3 + 10 * Number(family.id == hand)}
+      className='itemComp'
+      onClick={() => parentSelected(myFamily)}>
+      <div className='name'>{family.name}</div>
+      <div className='price'>$ {family.price}</div>
+
+      {/* <div className='description'>Description: {myFamily.description}</div> */}
+      {
+        myFamily.options.length > 1 ? (
+          <FormControl className='options' component='fieldset'>
+            <FormLabel component="legend">Options</FormLabel>
+            <RadioGroup
+              aria-labelledby=""
+              name="controlled-radio-buttons-group"
+              // value={getSize(myFamily.options[0])}
+              onChange={handleOptions}
+            >
+              {
+                myFamily.options.map((option: Item, index: number) => (
+                  <FormControlLabel key={index} value={getSize(option.name)} control={<Radio />} label={getSize(option.name)} />
+                ))
+              }
+            </RadioGroup>
+          </FormControl>
+        ) : (
+          <div className='options'>
+            {getSize(myFamily.options[0].name)}
+          </div>
+        )
+      }
+      {/* <div className='toppings'>
           {
             item.toppings.map((topping, index) => (
               <>
@@ -54,7 +75,6 @@ export const ItemComponent: React.FC<Props> = ({ item, key, hand, parentSelected
             ))
           }
         </div> */}
-      {/* </div> */}
     </Paper>
   );
 };

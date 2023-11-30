@@ -9,6 +9,8 @@ import { Item, Topping } from '../../Order.ts';
 import axios from 'axios';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 import AddToppingModal from './AddToppingModal.tsx';
+import { IoInformationCircleOutline } from "react-icons/io5";
+
 
 interface displayItem {
     family_id: number;
@@ -82,6 +84,10 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
         setModalOpen(true);
     };
 
+    const displayInfo = () => {
+        alert(item.family_description);
+    }
+
     return (
         <div>
             <Box justifyContent="center">
@@ -93,6 +99,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
                                     title={
                                         <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
                                             {item.family_name}
+                                            <IoInformationCircleOutline onClick={(e: React.MouseEvent<SVGSVGElement>) => {displayInfo(); e.stopPropagation();}}></IoInformationCircleOutline>
                                         </Typography>
                                     }
                                 />
@@ -111,6 +118,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
                                 title={
                                     <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
                                         {item.family_name}
+                                        <IoInformationCircleOutline onClick={() => {displayInfo()}}></IoInformationCircleOutline>
                                     </Typography>
                                 }
                             />

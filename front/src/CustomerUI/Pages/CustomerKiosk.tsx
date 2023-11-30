@@ -7,7 +7,7 @@ import { ItemComponent } from '../Components/ItemComponent';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
-import wafflebite from '../../assets/wafflebite.png';
+import wafflebite from '../../assets/wafflebite.gif';
 
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
@@ -94,13 +94,14 @@ const Customer = () => {
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
+                const toppings = await getToppings(family_id);
                 return {
                     id: family_id,
                     name: family_name,
                     category: family_category,
                     description: family_description,
                     options: options,
-                    toppings: [],
+                    toppings: toppings,
                     price: 0
                 };
             });
@@ -153,12 +154,11 @@ const Customer = () => {
         getFams();
     }, []);
 
+    // loading animation
     useEffect(() => {
-        console.log(loading);
-        console.log("fams updated:", fams);
-        // loading animation
-        setLoading(false);
-        console.log(loading);
+        if (fams.length > 0) {
+            setLoading(false);
+        }
     }, [fams]);
 
     useEffect(() => {
@@ -260,7 +260,7 @@ const Customer = () => {
                 {
                     (!loading) ? (
                         fams
-                            // .map((family, index) => ({ ...family, index }))
+                            .map((family, index) => ({ ...family, index }))
                             .filter((family) => family.category === formValue)
                             .map((family, index) => (
                                 <ItemComponent
@@ -271,7 +271,7 @@ const Customer = () => {
                                 />
                             ))
                     ) : (
-                        <div>loading</div>
+                        <img src={wafflebite} alt="wafflebite" />
                     )
                 }
             </div>

@@ -1,39 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './Styles/Modal.css';
+import Button from '@mui/material/Button';
+import CloseButton from '@mui/icons-material/CloseTwoTone';
+import './Styles/RoleSelectionModal.css';
+import { useModal } from './ModalContext'
 import { useNavigate } from 'react-router-dom';
 
 interface RoleSelectionModalProps {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: (role?: string) => void;
 }
 
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
+    const {  showRoleSelectionModal, setShowRoleSelectionModal} = useModal();
+    const navigate = useNavigate();
+    if (!showRoleSelectionModal) {
+        return null;
+    }
 
     const modalRoot = document.getElementById('modal-root');
-    if (!modalRoot) return null;
-
-    var navigate = useNavigate();
-
-    const navigateToCashier = () => {
-        navigate("/cashier");
-        onClose();
+    if (!modalRoot) {
+        return null;
     }
 
-    const navigateToManager = () => {  
-        navigate("/manager");
-        onClose();
-    }
+    const handleRoleSelect = (role: string) => {
+        setTimeout(() => setShowRoleSelectionModal(false), 3); 
+        navigate(`/${role}`)
+    };
+
 
     return ReactDOM.createPortal(
-        <div className="error-modal-backdrop">
-            <div className="error-modal">
+        <div className="modal-backdrop">
+            <div className="modal">
+                <Button
+                    id="modalCloseButton"
+                    variant="outlined"
+                    startIcon={<CloseButton />}
+                    onClick={() => onClose()}
+                    className="close-modal-button"
+                />
                 <h2>Proceed As ... </h2>
-                <button className='role-button' onClick={navigateToCashier}>Cashier</button>
-                <button className='role-button' onClick={navigateToManager}>Manager</button>
+                <div className='role-options'>
+                    <button className='role-button' onClick={() => handleRoleSelect('cashier')}>Cashier</button>
+                    <button className='role-button' onClick={() => handleRoleSelect('manager')}>Manager</button>
+                </div>
             </div>
-            <button className='close-modal' onClick={onClose}>Close</button>
         </div>,
         modalRoot
     );

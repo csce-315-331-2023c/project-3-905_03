@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
+import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
 import AccessibilityModal from './AccessibilityModal';
 import RoleSelectionModal from './RoleSelectionModal';
@@ -11,9 +12,6 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import './Styles/Login.css';
 import axios from 'axios';
-
-const authorizedManagers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
-const authorizedCashiers = ['samuel.cole@tamu.edu', 'revmya09@tamu.edu', 'kotda@tamu.edu', 'ry4ntr1@gmail.com', 'ryanwtree@gmail.com', 'rwt@tamu.edu'];
 
 interface CustomJwtPayload {
   email: string;
@@ -26,61 +24,30 @@ const oAuthFailureMessage = "You are not authorized to access this application."
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authError, setAuthError] = useState(false);
-  const [authErrorMessage, setAuthErrorMessage] = useState('');
+
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
-  const [showRoleModal, setShowRoleModal] = useState(false);
+  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, authErrorMessage, setAuthErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
+  const [selectedRole, setSelectedRole] = useState('');
 
   useEffect(() => {
-    const body = document.querySelector('body');
-    if (!body) return;
-    if (authError) {
-      body.style.overflow = 'hidden';
-    } else {
-      body.style.overflow = 'auto';
+    console.log("Modal state changed:", showRoleSelectionModal);
+    if (!showRoleSelectionModal && selectedRole) {
+      console.log("Navigating to:", `/${selectedRole}`);
+      navigate(`/${selectedRole}`);
+      setSelectedRole('');
     }
+  }, [showRoleSelectionModal, selectedRole, navigate]);
 
-    return () => {
-      body.style.overflow = 'auto';
-    };
-  }, [authError]);
 
-  useEffect(() => {
-    if (showAccessibilityModal) {
-      console.log('Accessibility Modal is open');
-    }
-    else if (!showAccessibilityModal) {
-      console.log('Accessibility Modal is closed');
-    }
-  }, [showAccessibilityModal]);
-
-  useEffect(() => {
-    if (showRoleModal) {
-      console.log('Role Selection Modal is open');
-    }
-    else if (!showRoleModal) {
-      console.log('Role Selection Modal is closed');
-    }
-  }, [showRoleModal]);
-
-  useEffect(() => {
-    if (authError) {
-      console.log('Error Modal is open');
-    }
-    else if (!authError) {
-      console.log('AuthError Modal is closed');
-    }
-  }, [authError]);
-
+  
 
   const handleManualLoginSubmit = async () => {
     try {
       const errors = validateForm();
       if (errors.email || errors.password) {
         setAuthErrorMessage(errors.email || errors.password);
-        setAuthError(true);
+        setShowErrorModal(true);
         return;
       }
 
@@ -93,55 +60,59 @@ const LoginPage = () => {
 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
-      setUser({ ...user, isAuthenticated: true });
+      setUser({ ...user, role: user.role, isAuthenticated: true });
 
-      if (user.role === 'c') {
-        console.log("user.role === 'c'");
+      if (user.role === 'cashier') {
         navigate('/cashier');
-        console.log("user.role === 'm'");
-      } else if (user.role === 'm') {
+      } else if (user.role === 'manager') {
         navigate('/manager');
-      } else if (user.role === 'f') {
-        console.log("user.role === 'f'");
-        setShowRoleModal(true);
+      } else if (user.role === 'admin') {
+        setShowRoleSelectionModal(true);
       }
 
     } catch (error: any) {
-      setAuthErrorMessage(error.response?.data || 'Invalid credentials. Please try again.');
-      setAuthError(true);
+      setAuthErrorMessage(error.response?.data || 'Manual Authentication Failed: Invalid Credentials');
+      setShowErrorModal(true);
     }
   };
 
-  const handleAccessKiosk = () => {
-    navigate('/customer-kiosk');
-  }
-
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
-    console.log(`OAuth request origin: ${window.location.href}`);
 
     try {
       const decoded: CustomJwtPayload = jwtDecode(idToken);
-      console.log(decoded);
-      const role = authorizedManagers.includes(decoded.email) ? 'Manager'
-        : authorizedCashiers.includes(decoded.email) ? 'Cashier'
-          : undefined;
 
-      if (role) {
-        setUser({
-          email: decoded.email,
-          firstName: decoded.given_name,
-          lastName: decoded.family_name,
-          role: role,
-          isAuthenticated: true
-        });
-        navigate(`/${role.toLowerCase()}`);
+      const userEmail = decoded.email;
+      const userFirstName = decoded.given_name;
+      const userLastName = decoded.family_name;
+
+      const response = await axios.post('/auth/google/login', { userEmail, userFirstName, userLastName});
+
+      if (response.status == 200) {
+        console.log("Client Received 200 OK");
+        console.log("response.data: ", response.data);
       } else {
+        setShowErrorModal(true);
+      }
+
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      setUser({ ...user, role: user.role, isAuthenticated: true });
+
+      if (user.role === 'cashier') {
+        navigate('/cashier');
+      } else if (user.role === 'manager') {
+        navigate('/manager');
+      } else if (user.role === 'admin') {
+        setShowRoleSelectionModal(true);
+      }
+       else {
         handleGoogleLoginError();
-        setAuthError(true);
+        setShowErrorModal(true);
       }
     } catch (error) {
-      console.error('Error decoding the JWT:', error);
+      setAuthErrorMessage('Failed Google OAuth');
+      setShowErrorModal(true);
     }
   };
 
@@ -153,9 +124,26 @@ const LoginPage = () => {
     setShowAccessibilityModal(!showAccessibilityModal);
   }
 
+  const handleErrorModal = () => {
+    setShowErrorModal(!showErrorModal);
+  }
+
+  
+
+  const handleRoleSelectionModal = (role = '') => {
+    setShowRoleSelectionModal(!showRoleSelectionModal);
+    if (role) {
+      setSelectedRole(role);
+    }
+  }
+
   const handleAccessMenu = () => {
     navigate('/dynamic-menu');
   };
+
+  const handleAccessKiosk = () => {
+    navigate('/customer-kiosk');
+  }
 
   const validateForm = () => {
     const errors = { email: '', password: '' };
@@ -165,18 +153,9 @@ const LoginPage = () => {
     return errors;
   };
 
-  const handleRoleSelect = (selectedRole: string) => {
-    if (selectedRole === 'cashier') {
-      navigate('/cashier');
-    } else if (selectedRole === 'manager') {
-      navigate('/manager');
-    }
-    setShowRoleModal(false);
-  };
-
   return (
     <>
-      <div className={`login-container ${authError ? 'blur-background' : ''}`}>
+      <div className={`login-container ${showErrorModal || showRoleSelectionModal ? 'blur-background' : ''}`}>
         <div className="logo-container">
           {/* <img src={logo} alt="Mess Waffles" width={200} height={75}/> */}
           <h1>Mess Waffles</h1>
@@ -239,13 +218,13 @@ const LoginPage = () => {
 
       </div>
       <ErrorModal
-        isOpen={authError}
+        isOpen={showErrorModal}
         errorMessage={authErrorMessage}
-        onClose={() => setAuthError(false)}
+        onClose={handleErrorModal}
       />
       <RoleSelectionModal
-        isOpen={showRoleModal}
-        onClose={() => setShowRoleModal(false)}
+        isOpen={showRoleSelectionModal}
+        onClose={handleRoleSelectionModal}
       />
     </>
   );

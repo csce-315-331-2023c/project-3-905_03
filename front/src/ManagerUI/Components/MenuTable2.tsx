@@ -4,6 +4,11 @@ import "../Styles/Table.css";
 import AddMenuModal from './AddMenuModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { Edit, Delete, Check, Close } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { TextField } from '@mui/material';
 
 interface Row {
@@ -88,14 +93,14 @@ function MenuTable() {
         { name: 'served_item', label: 'Item Name', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
-                    return <TextField name="served_item" label="Item Name" value={editData?.served_item} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                    return <TextField name="served_item" label="Item Name" value={editData?.served_item} onChange={handleInputChange} variant='outlined' sx={{ border: 'none' }}/>;
                 }
                 return value;
             }} },
         { name: 'item_price', label: 'Price', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
-                    return <TextField name="item_price" label="Price" value={editData?.item_price} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                    return <TextField name="item_price" label="Price" value={editData?.item_price} onChange={handleInputChange} variant='outlined' sx={{ border: 'none' }}/>;
                 }
                 return value;
             }} },
@@ -106,15 +111,23 @@ function MenuTable() {
                     if (editRow === tableMeta.rowIndex) {
                         return (
                             <span className='actions'>
-                                <Check onClick={handleConfirmEdit} />
-                                <Close onClick={handleCancelEdit} />
+                                <IconButton onClick={handleConfirmEdit} sx={{ marginRight: '5px' }}>
+                                    <CheckIcon />
+                                </IconButton>
+                                <IconButton onClick={handleCancelEdit}>
+                                    <CloseIcon />
+                                </IconButton>
                             </span>
                         );
                     }else{
                         return (
                             <span className='actions'>
-                                <Edit onClick={() => handleEditRow(tableMeta)} />
-                                <Delete onClick={() => handleDeleteRow(tableMeta.rowIndex)} />
+                                <IconButton onClick={() => handleEditRow(tableMeta)} sx={{ marginRight: '5px' }}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </span>
                         );
                     }

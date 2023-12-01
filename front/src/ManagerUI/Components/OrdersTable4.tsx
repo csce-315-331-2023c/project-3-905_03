@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import axios from 'axios';
 import "../Styles/Table.css";
-import { BsEyeFill } from 'react-icons/bs';
-import ViewOrderModal from '../../ViewOrderModal';
+import ViewOrderModal from './ViewOrderModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { IconButton } from '@mui/material';
 
 interface Row {
     employee_id: number;
@@ -48,6 +51,23 @@ function OrdersTable4() {
         });
     };
 
+    const refreshOrders = () => {   
+        axios.get('/getRecentOrders')
+            .then(res => {
+                const data: Row[] = res.data.data;
+                setRows(data);
+            })
+            .catch(err => console.log(err));
+    }
+
+    const deleteOrder = (order_id: number) => {
+        axios.post('/deleteOrder', {order_id: order_id})
+            .then(() => {
+                refreshOrders();
+            })
+            .catch(err => console.log(err));
+    }
+
     const columns = [
         { name: 'employee_id', label: 'Employee ID', options: { filter: true, sort: true }},
         { name: 'order_id', label: 'Order ID', options: { filter: true, sort: true, }},
@@ -61,8 +81,13 @@ function OrdersTable4() {
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     return (
                         <span className='actions'>
-                            <BsEyeFill className="view-btn" onClick={() => setModalOpen(tableMeta.rowData[1])} />
-                            {modalOpen === tableMeta.rowData[1] && <ViewOrderModal key={tableMeta.rowData[1]} closeModal={() => setModalOpen(null)} order_id={tableMeta.rowData[1]} />}
+                            <IconButton onClick={() => setModalOpen(tableMeta.rowData[1])}>
+                                <VisibilityIcon/>
+                            </IconButton>
+                            <IconButton onClick={() => deleteOrder(tableMeta.rowData[1])}>
+                                <DeleteIcon/>
+                            </IconButton>
+                            {modalOpen === tableMeta.rowData[1] && <ViewOrderModal key={tableMeta.rowData[1]} closeModal={() => setModalOpen(null)} order_id={tableMeta.rowData[1]} openParentModal={() => setModalOpen(tableMeta.rowData[1])}/>}
                         </span>
                     );
                 },
@@ -93,6 +118,9 @@ function OrdersTable4() {
                 />
             </LocalizationProvider>
             <button onClick={handleSearch}>Search</button>
+            <IconButton onClick={() => refreshOrders()}>
+                <RefreshIcon/>
+            </IconButton>
             <MUIDataTable
                 title={"Orders"}
                 data={rows}

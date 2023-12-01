@@ -2,15 +2,17 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import "../Styles/AddMenuModal.css";
 import "../Styles/Table.css"
-import { BsEyeFill } from 'react-icons/bs';
 import ViewToppingModal from './ViewToppingModal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { IconButton } from '@mui/material';
 
 interface ViewOrderModalProps {
     closeModal: () => void
     order_id: number
+    openParentModal: (order_id: number) => void
 }
 
-const ViewOrderModal: React.FC<ViewOrderModalProps> = ({closeModal, order_id}) => {
+const ViewOrderModal: React.FC<ViewOrderModalProps> = ({closeModal, order_id, openParentModal}) => {
     
     interface Row {
         item_id: number;
@@ -51,7 +53,7 @@ const ViewOrderModal: React.FC<ViewOrderModalProps> = ({closeModal, order_id}) =
                             <th>Item ID</th>
                             <th className='expand'>Item Name</th>
                             <th>Price</th>
-                            <th></th>
+                            <th>View Add Ons</th>
                         </tr>
                     </thead>
                     <tbody className='modal-body'>
@@ -61,8 +63,12 @@ const ViewOrderModal: React.FC<ViewOrderModalProps> = ({closeModal, order_id}) =
                                     <td>{row.item_id}</td>
                                     <td className='expand'>{row.served_item}</td>
                                     <td>{row.item_price}</td> 
-                                    <td><BsEyeFill onClick={() => {setModalOpen(idx)}}/></td>
-                                    {modalOpen === idx && <ViewToppingModal key={idx} closeModal={() => setModalOpen(null)} order_item_id={row.order_item_id}/>}
+                                    <td>
+                                        <IconButton onClick={() => {setModalOpen(idx)}}>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                    </td>
+                                    {modalOpen === idx && <ViewToppingModal key={idx} closeModal={() => setModalOpen(null)} order_item_id={row.order_item_id} openModal={openParentModal}/>}
                                 </tr>
                             ))
                         }

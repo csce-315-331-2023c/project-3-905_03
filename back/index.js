@@ -382,24 +382,85 @@ app.post('/getOrderItems', (req, res) => {
 
     client.connect();
 
-    client.query('SELECT item_id FROM orderServedItem WHERE order_id = $1', [order_id], (err, result) => {
+    client.query('SELECT * FROM orderServedItem WHERE order_id = $1', [order_id], (err, result) => {
         if (err) {
             res.status(400).send(err.message);
             client.end();
             return;
         } else {
-            let item_ids = result.rows.map(row => row.item_id);
+            let idMapping = {};
+
+            for (let i = 0; i < result.rows.length; i++) {
+                idMapping[result.rows[i].order_item_id] = result.rows[i].item_id;
+            }
             // Query the database for the served_items info related to the given ids
-            client.query('SELECT * FROM served_items WHERE item_id = ANY($1)', [item_ids], (err, result) => {
+            client.query('SELECT * FROM served_items WHERE item_id = ANY($1)', [Object.values(idMapping)], (err, result) => {
                 if (!err) {
-                    res.status(200).send({
-                        data: result.rows
-                    })
+                    let data = [];
+
+                    for (let row of result.rows) {
+                        for (let order_item_id in idMapping) {
+                            if (idMapping[order_item_id] === row.item_id) {
+                                data.push({
+                                    order_item_id: order_item_id,
+                                    item_id: row.item_id,
+                                    served_item: row.served_item,
+                                    item_price: row.item_price,
+                                    family_id: row.family_id
+                                });
+                            }
+                        }
+                    }
+
+                    res.status(200).send({ data });
                 } else {
                     res.status(400).send(err.message);
                 }
                 client.end();
             });
+        }
+    });
+});
+
+/**
+ * get item toppings for a given order id and item id
+ */
+app.post('/getOrderItemToppings', (req, res) => {
+    let { order_item_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    // Query the database for the served_items info related to the given ids
+    client.query('SELECT topping_id FROM order_served_item_topping WHERE order_served_item_id = $1', [order_item_id], (err, result) => {
+        if (!err) {
+            if (result.rows.length == 0) {
+                res.status(200).send({
+                    data: []
+                });
+                client.end();
+            } else {
+                let topping_ids = result.rows.map(row => row.topping_id);
+                client.query('SELECT * FROM served_items_topping WHERE topping_id = ANY($1)', [topping_ids], (err, result) => {
+                    if (!err) {
+                        res.status(200).send({
+                            data: result.rows
+                        })
+                    } else {
+                        res.status(400).send(err.message);
+                    }
+                    client.end();
+                });
+            }
+        } else {
+            res.status(400).send(err.message);
+            client.end();
         }
     });
 });

@@ -891,7 +891,7 @@ app.post('/deleteAllOfTopping', async (req, res) => {
 
 /**
  * delete a topping
- * currently this is deleting a topping from all families just by using its name
+ * deletes a specific topping using its topping_id
  */
 app.post('/deleteIndividualTopping', async (req, res) => {
     let client;
@@ -940,6 +940,127 @@ app.post('/editTopping', async (req, res) => {
         await client.connect();
 
         await client.query('UPDATE served_items_topping SET topping_price = $1, topping = $2 WHERE topping_id = $3', [ topping_price, topping, topping_id]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * get all families
+ */
+app.get('/getFamilies', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM served_items_family');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add family
+ */
+app.post('/addFamily', async (req, res) => {
+    let client;
+
+    try {
+        let {family_name, family_category, family_description } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        let maxFamily_id = await client.query('SELECT MAX(family_id) FROM served_items_family');
+        let family_id = (maxFamily_id.rows[0].max || 0) + 1;
+        await client.query('INSERT INTO served_items_family (family_id, family_name, family_category, family_description) VALUES ($1, $2, $3, $4)', [family_id, family_name, family_category, family_description]);
+       
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a family
+ * will need to look into edge case for when an item in the family exists. maybe reasign that item item to the Special family?
+ */
+app.post('/deleteFamily', async (req, res) => {
+    let client;
+
+    try {
+        let {family_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM served_items_family WHERE family_id = $1', [ family_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit a Family
+ */
+app.post('/editFamily', async (req, res) => {
+    let client;
+
+    try {
+        let {family_id, family_name, family_category, family_description} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE served_items_family SET family_name = $2, family_category = $3, family_description = $4 WHERE family_id = $1', [ family_id, family_name, family_category, family_description]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {

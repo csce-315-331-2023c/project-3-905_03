@@ -141,6 +141,12 @@ const Cashier = () => {
                         <tr>
                             <td></td>
                             <td></td>
+                            <td>Tax: </td>
+                            <td>{order.getTax()}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
                             <td>Total: </td>
                             <td>{split === 0 ? order.getOrderTotal() : order.splitOrder()}</td>
                         </tr>

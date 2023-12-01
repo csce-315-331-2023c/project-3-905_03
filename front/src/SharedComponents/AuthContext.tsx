@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface User {
+export interface User {
   email: string;
   firstName: string;
   lastName: string;
   role: string;
   isAuthenticated: boolean;
+  profilePic: string;
 }
 
 interface AuthContextProps {

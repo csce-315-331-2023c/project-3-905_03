@@ -60,7 +60,7 @@ const LoginPage = () => {
 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
-      setUser({ ...user, role: user.role, isAuthenticated: true });
+      setUser({ ...user });
 
       if (user.role === 'cashier') {
         navigate('/cashier');

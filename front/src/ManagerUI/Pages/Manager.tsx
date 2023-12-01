@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import ManagerNav from '../Components/ManagerNav';
-import MenuTable from '../Components/MenuTable';
-import InventoryTable from '../Components/InventoryTable';
-import OrdersTable from '../Components/OrdersTable';
-import OrdersTable2 from '../Components/OrdersTable2';
+import MenuTable2 from '../Components/MenuTable2';
+import InventoryTable2 from '../Components/InventoryTable2';
+import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
+import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
 
 const ManagerGUI: React.FC = () => {
@@ -12,10 +12,11 @@ const ManagerGUI: React.FC = () => {
 
 
   const componentMapping: { [key: string]: React.FC } = {
-    Menu: MenuTable,
-    Inventory: InventoryTable,
-    Orders: OrdersTable,
+    Menu: MenuTable2,
+    Inventory: InventoryTable2,
+    Orders: OrdersTable4,
     Analytics: ManagerAnalytics,
+    User: User,
   };
 
   const ActiveComponent = componentMapping[activeSection] || null;

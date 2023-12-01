@@ -1072,6 +1072,127 @@ app.post('/editFamily', async (req, res) => {
     }
 });
 
+/**
+ * get all  employees
+ */
+app.get('/getEmployees', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM employees');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add an employee
+ */
+app.post('/addEmployee', async (req, res) => {
+    let client;
+
+    try {
+        let {first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
+        let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
+        console.log(employee_id);
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+       
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete an employee
+ */
+app.post('/deleteEmployee', async (req, res) => {
+    let client;
+
+    try {
+        let {employee_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM employees WHERE employee_id = $1', [ employee_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit an employee
+ */
+app.post('/editEmployee', async (req, res) => {
+    let client;
+
+    try {
+        let {employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE employees SET first_name = $2, last_name = $3, email = $4, password = $5, roles = $6, profile_pic = $7, profile_complete = $8, created_at = $9, phone = $10, pay_rate = $11, alt_email = $12, prefered_name = $13, address = $14, emergency_contact_first_name = $15, emergency_contact_last_name = $16, emergency_contact_phone = $17 WHERE employee_id = $1', [ employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
 // TEMP TEMPLATE
 // app.get('/getToppings', async (req, res) => {
 //     let client;

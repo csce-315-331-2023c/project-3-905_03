@@ -768,8 +768,6 @@ app.post('/submitOrder', async (req, res) => {
             let maxOrderServedItemToppingId = maxOrderServedItemToppingIdResult.rows[0].max || 0;
             let newOrderServedItemToppingId = maxOrderServedItemToppingId + 1;
 
-            // toppings = item.toppings;
-            // toppings = JSON.parse(toppings);
             console.log(item.toppings);
             if (item.toppings && Array.isArray(item.toppings)) {
                 for (const topping of item.toppings) {
@@ -795,6 +793,189 @@ app.post('/submitOrder', async (req, res) => {
     }
 });
 
+/**
+ * get all toppings
+ */
+app.get('/getToppings', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM served_items_topping');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add topping
+ * family_ids is an array of family ids ex : [0,1,2] we can change this if needed
+ * I am imaging when manager is adding a topping, they will select which families it applies to similar to how 
+ * they select what ingredients are in a served_item
+ */
+app.post('/addTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {family_ids, topping, topping_price } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        let maxTopping_id = await client.query('SELECT MAX(topping_id) FROM served_items_topping');
+        let topping_id = (maxTopping_id.rows[0].max || 0) + 1;
+        for (const family_id of family_ids) {
+            await client.query('INSERT INTO served_items_topping (topping_id, family_id, topping, topping_price) VALUES ($1, $2, $3, $4)', [topping_id, family_id, topping, topping_price]);
+            topping_id++;
+        }
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a topping
+ * currently this is deleting a topping from all families just by using its name
+ */
+app.post('/deleteAllOfTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {topping} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM served_items_topping WHERE topping = $1', [ topping ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a topping
+ * currently this is deleting a topping from all families just by using its name
+ */
+app.post('/deleteIndividualTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {topping_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM served_items_topping WHERE topping_id = $1', [ topping_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit a topping
+ * currently this is editing the 
+ */
+app.post('/editTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {topping_id, topping, topping_price} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE served_items_topping SET topping_price = $1, topping = $2 WHERE topping_id = $3', [ topping_price, topping, topping_id]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+// TEMP TEMPLATE
+// app.get('/getToppings', async (req, res) => {
+//     let client;
+
+//     try {
+//         client = new Client({
+//             host: 'csce-315-db.engr.tamu.edu',
+//             user: 'csce315_905_03user',
+//             password: '90503',
+//             database: 'csce315_905_03db'
+//         });
+
+//         await client.connect();
+
+//         res.status(200).json({ message: 'success!' });
+//     } catch (error) {
+//         res.status(400).send(error.message);
+//     } finally {
+//         if (client) {
+//             client.end();
+//         }
+//     }
+// });
+
+// REPORTS
 
 { /* Managerial Analytics / Reports */ }
 app.get('/generateRestockReport', async (req, res) => {
@@ -986,7 +1167,6 @@ app.post('/generateFreqPairsReport', async (req, res) => {
         }
     }
 });
-
 
 //// SERVER
 

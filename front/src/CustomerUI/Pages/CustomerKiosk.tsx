@@ -107,7 +107,7 @@ const Customer = () => {
             });
 
             const families = await Promise.all(familiesPromises);
-            setFams(families);
+            setFams(families); console.log(families);
         } catch (err) {
             console.log(err);
         }
@@ -134,11 +134,11 @@ const Customer = () => {
     const getToppings = async (familyId: number) => {
         try {
             const res = await axios.post('/getToppingsInFamily', { family_id: familyId });
-            const retToppings: Topping[] = res.data.data.map((toppingData: { topping_name: string, topping_price: number }, index: number) => {
-                const { topping_name, topping_price } = toppingData;
+            const retToppings: Topping[] = res.data.data.map((toppingData: { topping: string, topping_price: number }, index: number) => {
+                const { topping, topping_price } = toppingData;
                 return {
                     id: index,
-                    name: topping_name,
+                    name: topping,
                     price: topping_price
                 };
             })
@@ -234,6 +234,7 @@ const Customer = () => {
                 <Button className='add' variant="outlined" startIcon={<Add />} onClick={() => handleAdd()}>
                     Add
                 </Button>
+
                 <FormControl className='dinein' component='fieldset'>
                     <FormLabel component="legend">Seating</FormLabel>
                     <RadioGroup
@@ -261,7 +262,11 @@ const Customer = () => {
                     (!loading) ? (
                         fams
                             .map((family, index) => ({ ...family, index }))
-                            .filter((family) => family.category === formValue)
+                            // .filter((family) => {
+                            //     family.category === formValue
+                            //         // && family.toppings.some(topping => topping.name === "Gluten Free")
+                            //         // && family.toppings.some(topping => topping.name === "Vegan")
+                            // })
                             .map((family, index) => (
                                 <ItemComponent
                                     family={family}

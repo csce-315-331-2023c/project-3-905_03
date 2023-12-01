@@ -5,7 +5,7 @@ import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import "../Styles/ItemComponent.css";
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Paper } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Paper, FormGroup, Checkbox } from '@mui/material';
 
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
@@ -16,6 +16,8 @@ interface Props {
   hand: number;
   parentSelected: any;
 }
+
+const assetsDir = "../../assets/";
 
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
   const [myFamily, setMyFamily] = useState<Family>(family);
@@ -41,6 +43,8 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
       <div className='name'>{family.name}</div>
       <div className='price'>$ {family.price}</div>
 
+
+      {/* <img src={assetsDir + "family.name" + ".png"} alt={assetsDir + "unknown.jpg"} className='image' /> */}
       {/* <div className='description'>Description: {myFamily.description}</div> */}
       {
         myFamily.options.length > 1 ? (
@@ -65,16 +69,24 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
           </div>
         )
       }
-      {/* <div className='toppings'>
-          {
-            item.toppings.map((topping, index) => (
-              <>
-                <div className='toppingName' key={index}>{topping.name}</div>
-                <div className='toppingPrice' key={index}>{topping.price}</div>
-              </>
-            ))
-          }
-        </div> */}
+      {
+        myFamily.toppings.length > 0 ? (
+          <div className='toppings'>
+            <FormControl  component="fieldset" variant="standard">
+              <FormLabel component="legend">Toppings</FormLabel>
+              <FormGroup>
+                {
+                  myFamily.toppings.map((topping, index) => (
+                    <FormControlLabel control={<Checkbox />} label={topping.name} />
+                  ))
+                }
+              </FormGroup>
+            </FormControl>
+          </div>
+        ) : (
+          <></>
+        )
+      }
     </Paper>
   );
 };

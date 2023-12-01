@@ -1107,7 +1107,7 @@ app.post('/addEmployee', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
+        let {first_name, last_name, email, password, roles, profile_pic, profile_complete, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1118,10 +1118,14 @@ app.post('/addEmployee', async (req, res) => {
 
         await client.connect();
 
+        const currentDate = new Date();
+        const formattedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' + currentDate.getDate().toString().padStart(2, '0');
+        const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
+        const dateTime = formattedDate + ' ' + formattedTime;
+
         let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
         let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
-        console.log(employee_id);
-        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {

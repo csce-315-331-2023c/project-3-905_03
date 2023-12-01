@@ -1,23 +1,17 @@
 import React from 'react';
+import { useAuth } from './AuthContext';
 
-// Define the expected props for the User component
-interface UserProps {
-    userInfo: {
-        name: string;
-        email: string;
-        userId: string;
-    };
-}
+const User: React.FC = () => {
+    const { user } = useAuth();
 
-// User component definition
-const User: React.FC<UserProps> = ({ userInfo }) => {
-    // Here, you would use the userInfo prop to render user details.
+    if (!user) {
+        return <div className="user-container">No user data available</div>;
+    }
+
     return (
         <div className="user-container">
             <h1>User Profile</h1>
-            <p><strong>Name:</strong> {userInfo.name}</p>
-            <p><strong>Email:</strong> {userInfo.email}</p>
-            <p><strong>User ID:</strong> {userInfo.userId}</p>
+            <p><strong>User:</strong> {JSON.stringify(user)} </p>
         </div>
     );
 };

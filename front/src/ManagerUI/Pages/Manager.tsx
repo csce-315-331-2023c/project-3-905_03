@@ -5,6 +5,7 @@ import InventoryTable from '../Components/InventoryTable';
 import OrdersTable from '../Components/OrdersTable';
 import OrdersTable2 from '../Components/OrdersTable2';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
+import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
 
 const ManagerGUI: React.FC = () => {
@@ -16,6 +17,7 @@ const ManagerGUI: React.FC = () => {
     Inventory: InventoryTable,
     Orders: OrdersTable,
     Analytics: ManagerAnalytics,
+    User: User,
   };
 
   const ActiveComponent = componentMapping[activeSection] || null;

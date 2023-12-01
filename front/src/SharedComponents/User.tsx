@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth, User } from './AuthContext';
 import { TextField, Button, Avatar, Typography, Box } from '@mui/material';
 
@@ -31,7 +31,7 @@ const User: React.FC = () => {
 
     return (
         <Box className="user-container">
-            <Typography variant="h4">Signed-In as {user.role.toUpperCase()}</Typography>
+            <Typography variant="h4">Signed-In as {user.role.charAt(0).toUpperCase()}</Typography>
             <Avatar src={user.profilePic} alt={`${user.firstName} ${user.lastName}`} />
             {editMode ? (
                 <>

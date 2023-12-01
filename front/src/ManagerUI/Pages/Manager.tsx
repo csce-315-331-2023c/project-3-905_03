@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import ManagerNav from '../Components/ManagerNav';
-import MenuTable from '../Components/MenuTable';
 import MenuTable2 from '../Components/MenuTable2';
-import InventoryTable from '../Components/InventoryTable';
 import InventoryTable2 from '../Components/InventoryTable2';
-import OrdersTable from '../Components/OrdersTable';
-import OrdersTable2 from '../Components/OrdersTable2';
 import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
 import User from '../../SharedComponents/User';

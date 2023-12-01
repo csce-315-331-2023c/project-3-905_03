@@ -130,6 +130,10 @@ export class Order {
     return totalPrice.toFixed(2);
   }
 
+  getTax(): string {
+    return (this.total * this.tax).toFixed(2);
+  }
+
   // complete order
 
   cancel(): void {

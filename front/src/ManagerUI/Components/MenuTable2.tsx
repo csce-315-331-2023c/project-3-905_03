@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
-import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import AddMenuModal from './AddMenuModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
-import { Edit, Delete } from '@mui/icons-material';
+import { Edit, Delete, Check, Close } from '@mui/icons-material';
+import { TextField } from '@mui/material';
 
 interface Row {
     item_id: number;
@@ -14,8 +14,9 @@ interface Row {
 
 function MenuTable() {
     const [rows, setRows] = useState<Row[]>([]);
-    const [editId, setEditId] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [editRow, setEditRow] = useState<number | null>(null);
+    const [editData, setEditData] = useState<Row | null>(null);
 
     useEffect(() => {
         axios.get('/getServedItems')
@@ -25,27 +26,6 @@ function MenuTable() {
             })
             .catch(err => console.log(err));
     }, []);
-
-    const columns = [
-        { name: 'item_id', label: 'Item ID', options: {sort: true, filter: false} },
-        { name: 'served_item', label: 'Item Name', options: {sort: true, filter: false} },
-        { name: 'item_price', label: 'Price', options: {sort: true, filter: false} },
-        {
-            name: 'Actions',
-            options: {
-                customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
-                    return (
-                        <span className='actions'>
-                            <Edit onClick={() => handleEditRow(tableMeta.rowData[0])} />
-                            <Delete onClick={() => handleDeleteRow(tableMeta.rowIndex)} />
-                        </span>
-                    );
-                },
-                sort: false,
-                filter: false,
-            }
-        },
-    ];
 
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('/deleteServedItem', rows[targetIndex])
@@ -57,10 +37,6 @@ function MenuTable() {
             .catch(err => console.log(err));
     };
 
-    const handleEditRow = (item_id: number) => {
-        setEditId(item_id);
-    };
-
     const handleAddRow = (newRow: Row) => {
         axios.post('/addServedItem', newRow)
             .then(() => {
@@ -68,6 +44,86 @@ function MenuTable() {
             })
             .catch(err => console.log(err));
     };
+
+    const handleEditRow = (tableMeta: MUIDataTableMeta) => {
+        setEditRow(tableMeta.rowIndex);
+        setEditData(rows[tableMeta.rowIndex]);
+    };
+
+    const handleCancelEdit = () => {
+        setEditRow(null);
+        setEditData(null);
+    };
+
+    const handleConfirmEdit = () => {
+        if (editData) {
+            axios.post('/editStockItem', editData)
+                .then(() => {
+                    const newRows = [...rows];
+                    newRows[editRow as number] = editData;
+                    setRows(newRows);
+                    setEditRow(null);
+                    setEditData(null);
+                })
+                .catch(err => console.log(err));
+        }
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEditData(prevData => {
+            if (prevData) {
+                return { ...prevData, [event.target.name]: event.target.value };
+            } else {
+                return {
+                    item_id: 0, // default value
+                    served_item: '', // default value
+                    item_price: 0, // default value
+                };
+            }
+        });
+    };
+
+    const columns = [
+        { name: 'item_id', label: 'Item ID', options: {sort: true, filter: false} },
+        { name: 'served_item', label: 'Item Name', options: {sort: true, filter: false,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return <TextField name="served_item" label="Item Name" value={editData?.served_item} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                }
+                return value;
+            }} },
+        { name: 'item_price', label: 'Price', options: {sort: true, filter: false,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return <TextField name="item_price" label="Price" value={editData?.item_price} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                }
+                return value;
+            }} },
+        {
+            name: 'Actions',
+            options: {
+                customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                    if (editRow === tableMeta.rowIndex) {
+                        return (
+                            <span className='actions'>
+                                <Check onClick={handleConfirmEdit} />
+                                <Close onClick={handleCancelEdit} />
+                            </span>
+                        );
+                    }else{
+                        return (
+                            <span className='actions'>
+                                <Edit onClick={() => handleEditRow(tableMeta)} />
+                                <Delete onClick={() => handleDeleteRow(tableMeta.rowIndex)} />
+                            </span>
+                        );
+                    }
+                },
+                sort: false,
+                filter: false,
+            }
+        },
+    ];
     
     const options = {
         filterType: 'checkbox' as const,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import axios from 'axios';
 import "../Styles/Table.css";
-import { BsFillTrashFill, BsEyeFill } from 'react-icons/bs';
+import { BsEyeFill } from 'react-icons/bs';
 import ViewOrderModal from '../../ViewOrderModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -21,7 +21,6 @@ interface Row {
 function OrdersTable4() {
     const currentDateTime = new Date();
     const oneYearAgo = new Date(currentDateTime.getFullYear() - 1, currentDateTime.getMonth(), currentDateTime.getDate());
-  
     const [startDateTime, setStartDateTime] = useState<Date>(oneYearAgo);
     const [endDateTime, setEndDateTime] = useState<Date>(currentDateTime);
     const [rows, setRows] = useState<Row[]>([]);
@@ -35,6 +34,19 @@ function OrdersTable4() {
             })
             .catch(err => console.log(err));
     }, []);
+
+    const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+        axios.post('/getOrdersBetweenDates', {start_date: startDateTime, end_date: endDateTime})
+        .then((res) => {
+            const items: Row[] = res.data.data;
+            console.log(items);
+            setRows(items);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    };
 
     const columns = [
         { name: 'employee_id', label: 'Employee ID', options: { filter: true, sort: true }},
@@ -64,19 +76,6 @@ function OrdersTable4() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
-    };
-
-    const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault()
-        axios.post('/getOrdersBetweenDates', {start_date: startDateTime, end_date: endDateTime})
-        .then((res) => {
-            const items: Row[] = res.data.data;
-            console.log(items);
-            setRows(items);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
     };
 
     return (

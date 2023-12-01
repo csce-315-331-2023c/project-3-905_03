@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
-import { BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs';
 import AddInventoryModal from './AddInventoryModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
-import { Edit, Delete } from '@mui/icons-material';
+import { Edit, Delete, Check, Close } from '@mui/icons-material';
+import { TextField } from '@mui/material';
 
 
 interface Row {
@@ -17,8 +17,9 @@ interface Row {
 
 function InventoryTable2() {
     const [rows, setRows] = useState<Row[]>([]);
-    const [editId, setEditId] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [editRow, setEditRow] = useState<number | null>(null);
+    const [editData, setEditData] = useState<Row | null>(null);
 
     useEffect(() => {
         axios.get('/getStockItems')
@@ -29,28 +30,45 @@ function InventoryTable2() {
             .catch(err => console.log(err));
     }, []);
 
-    const columns = [
-        { name: 'stock_id', label: 'Stock ID', options: {sort: true, filter: true} },
-        { name: 'stock_item', label: 'Stock Item', options: {sort: true, filter: true} },
-        { name: 'cost', label: 'Cost', options: {sort: true, filter: true} },
-        { name: 'stock_quantity', label: 'Quantity', options: {sort: true, filter: true} },
-        { name: 'max_amount', label: 'Max Amount', options: {sort: true, filter: true} },
-        {
-            name: 'Actions',
-            options: {
-                customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
-                    return (
-                        <span className='actions'>
-                            <Edit onClick={() => handleEditRow(tableMeta.rowData[0])} />
-                            <Delete onClick={() => handleDeleteRow(tableMeta.rowIndex)} />
-                        </span>
-                    );
-                },
-                sort: false,
-                filter: false,
+    const handleEditRow = (tableMeta: MUIDataTableMeta) => {
+        setEditRow(tableMeta.rowIndex);
+        setEditData(rows[tableMeta.rowIndex]);
+    };
+
+    const handleCancelEdit = () => {
+        setEditRow(null);
+        setEditData(null);
+    };
+
+    const handleConfirmEdit = () => {
+        if (editData) {
+            axios.post('/editStockItem', editData)
+                .then(() => {
+                    const newRows = [...rows];
+                    newRows[editRow as number] = editData;
+                    setRows(newRows);
+                    setEditRow(null);
+                    setEditData(null);
+                })
+                .catch(err => console.log(err));
+        }
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEditData(prevData => {
+            if (prevData) {
+                return { ...prevData, [event.target.name]: event.target.value };
+            } else {
+                return {
+                    stock_id: 0, // default value
+                    stock_item: '', // default value
+                    cost: 0, // default value
+                    stock_quantity: 0, // default value
+                    max_amount: 0, // default value
+                };
             }
-        },
-    ];
+        });
+    };
 
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('/deleteStockItem', rows[targetIndex])
@@ -62,10 +80,6 @@ function InventoryTable2() {
             .catch(err => console.log(err));
     };
 
-    const handleEditRow = (stock_id: number) => {
-        setEditId(stock_id);
-    };
-
     const handleAddRow = (newRow: Row) => {
         axios.post('/addStockItem', newRow)
             .then(() => {
@@ -73,6 +87,62 @@ function InventoryTable2() {
             })
             .catch(err => console.log(err));
     };
+    
+    const columns = [
+        { name: 'stock_id', label: 'Stock ID', options: {sort: true, filter: true} },
+        { name: 'stock_item', label: 'Stock Item', options: {sort: true, filter: true,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return <TextField name="stock_item" label="Stock Item" value={editData?.stock_item} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                }
+                return value;
+            }} },
+        { name: 'cost', label: 'Cost', options: {sort: true, filter: true,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return <TextField name="cost" label="Cost" value={editData?.cost} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                }
+                return value;
+            }} },
+        { name: 'stock_quantity', label: 'Quantity', options: {sort: true, filter: true,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return <TextField name="stock_quantity" label="Stock Quantity" value={editData?.stock_quantity} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                }
+                return value;
+            }} },
+        { name: 'max_amount', label: 'Maximum Amount', options: {sort: true, filter: true,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return <TextField name="max_amount" label="Maximum Amount" value={editData?.max_amount} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                }
+                return value;
+            }} },
+        {
+            name: 'Actions',
+            options: {
+                customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                    if (editRow === tableMeta.rowIndex) {
+                        return (
+                            <span className='actions'>
+                                <Check onClick={handleConfirmEdit} />
+                                <Close onClick={handleCancelEdit} />
+                            </span>
+                        );
+                    }else{
+                        return (
+                            <span className='actions'>
+                                <Edit onClick={() => handleEditRow(tableMeta)} />
+                                <Delete onClick={() => handleDeleteRow(tableMeta.rowIndex)} />
+                            </span>
+                        );
+                    }
+                },
+                sort: false,
+                filter: false,
+            }
+        },
+    ];
 
     const options = {
         filterType: 'checkbox' as const,

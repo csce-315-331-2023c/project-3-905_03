@@ -129,8 +129,7 @@ button:focus {
 }
 
 .mui-icon-button:hover {
-    background-color: transparent;
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 @media (max-width: 768px) {

@@ -20,19 +20,51 @@ interface Props {
 const assetsDir = "../../assets/";
 
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
+  const [state, upd] = useState(false);
   const [myFamily, setMyFamily] = useState<Family>(family);
+  const [optionPrice, setOptionPrice] = useState<number>(0);
+  const [toppingPrice, setToppingPrice] = useState<number>(0);
+
+  const [selectedOption, setSelectedOption] = useState<string>("");
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption(event.target.value);
+  }
+
+  const handleToppings = (event: React.ChangeEvent<HTMLInputElement>) => {
+    for (let i = 0; i < family.toppings.length; i++) {
+      if (family.toppings[i])
+        if (family.toppings[i].name === event.target.value) {
+          family.toppings[i].chosen = true;
+          setToppingPrice(toppingPrice + family.toppings[i].price);
+        } else {
+          family.toppings[i].chosen = false;
+        }
+    }
+    
+  }
+
+  useEffect(() => {
+    if (myFamily.options.length > 0) {
+      setSelectedOption(getSize(myFamily.options[0].name));
+    }
+  }, []);
+
+  // setPrice
+  useEffect(() => {
     for (let i = 0; i < family.options.length; i++) {
       if (family.options[i])
-        if (getSize(family.options[i].name) === event.target.value) {
+        if (getSize(family.options[i].name) === selectedOption) {
           family.options[i].chosen = true;
+          setOptionPrice(family.options[i].price);
         } else {
           family.options[i].chosen = false;
         }
     }
+    family.price = optionPrice + toppingPrice;
     setMyFamily(family);
-  }
+    upd(!state);
+  }, [selectedOption, optionPrice, toppingPrice, family]);
 
   // onClick={() => parentSelected((family.id == hand) ? -1 : myFamily)}>
   return (
@@ -43,9 +75,8 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
       <div className='name'>{family.name}</div>
       <div className='price'>$ {family.price}</div>
 
-
       {/* <img src={assetsDir + "family.name" + ".png"} alt={assetsDir + "unknown.jpg"} className='image' /> */}
-      {/* <div className='description'>Description: {myFamily.description}</div> */}
+      <div className='description'>{myFamily.description}</div>
       {
         myFamily.options.length > 1 ? (
           <FormControl className='options' component='fieldset'>
@@ -53,7 +84,7 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
             <RadioGroup
               aria-labelledby=""
               name="controlled-radio-buttons-group"
-              // value={getSize(myFamily.options[0])}
+              value={selectedOption}
               onChange={handleOptions}
             >
               {
@@ -72,9 +103,13 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
       {
         myFamily.toppings.length > 0 ? (
           <div className='toppings'>
-            <FormControl  component="fieldset" variant="standard">
+            <FormControl component="fieldset" variant="standard">
               <FormLabel component="legend">Toppings</FormLabel>
-              <FormGroup>
+              <FormGroup
+                aria-label="toppings"
+                // value={myFamily.toppings}
+                onChange={handleToppings}
+              >
                 {
                   myFamily.toppings.map((topping, index) => (
                     <FormControlLabel control={<Checkbox />} label={topping.name} />

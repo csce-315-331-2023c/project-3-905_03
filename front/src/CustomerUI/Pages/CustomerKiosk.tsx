@@ -89,8 +89,6 @@ const Customer = () => {
     const getFams = async () => {
         try {
             const res = await axios.get('/getFamilyItems');
-            console.log("res.data fam");
-            console.log(res.data);
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
@@ -107,7 +105,7 @@ const Customer = () => {
             });
 
             const families = await Promise.all(familiesPromises);
-            setFams(families); console.log(families);
+            setFams(families);
         } catch (err) {
             console.log(err);
         }
@@ -156,9 +154,8 @@ const Customer = () => {
 
     // loading animation
     useEffect(() => {
-        if (fams.length > 0) {
-            setLoading(false);
-        }
+        if (fams.length > 0) 
+            setLoading(false);        
     }, [fams]);
 
     useEffect(() => {
@@ -262,11 +259,7 @@ const Customer = () => {
                     (!loading) ? (
                         fams
                             .map((family, index) => ({ ...family, index }))
-                            // .filter((family) => {
-                            //     family.category === formValue
-                            //         // && family.toppings.some(topping => topping.name === "Gluten Free")
-                            //         // && family.toppings.some(topping => topping.name === "Vegan")
-                            // })
+                            .filter((family) => (family.category === formValue))
                             .map((family, index) => (
                                 <ItemComponent
                                     family={family}

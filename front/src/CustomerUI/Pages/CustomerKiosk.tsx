@@ -269,7 +269,7 @@ const Customer = () => {
                                 />
                             ))
                     ) : (
-                        <img src={wafflebite} alt="wafflebite" />
+                        <img className='loading' src={wafflebite} alt="wafflebite" />
                     )
                 }
             </div>

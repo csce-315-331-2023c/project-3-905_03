@@ -26,22 +26,19 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   const [toppingPrice, setToppingPrice] = useState<number>(0);
 
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
   }
 
   const handleToppings = (event: React.ChangeEvent<HTMLInputElement>) => {
-    for (let i = 0; i < family.toppings.length; i++) {
-      if (family.toppings[i])
-        if (family.toppings[i].name === event.target.value) {
-          family.toppings[i].chosen = true;
-          setToppingPrice(toppingPrice + family.toppings[i].price);
-        } else {
-          family.toppings[i].chosen = false;
-        }
+    const index = selectedToppings.indexOf(event.target.value);
+    if (index === -1) {
+      setSelectedToppings([...selectedToppings, event.target.value]);
+    } else {
+      setSelectedToppings(selectedToppings.filter((_, i) => i !== index));
     }
-    
   }
 
   useEffect(() => {
@@ -61,7 +58,17 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
           family.options[i].chosen = false;
         }
     }
-    family.price = optionPrice + toppingPrice;
+    for (let i = 0; i < family.toppings.length; i++) {
+      if (family.toppings[i])
+        if (selectedToppings.includes(family.toppings[i].name)) {
+          family.toppings[i].chosen = true;
+          setToppingPrice(toppingPrice + family.toppings[i].price);
+        } else {
+          family.toppings[i].chosen = false;
+        }
+    }
+
+    family.price = +(optionPrice + toppingPrice).toFixed(2);
     setMyFamily(family);
     upd(!state);
   }, [selectedOption, optionPrice, toppingPrice, family]);
@@ -69,14 +76,18 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   // onClick={() => parentSelected((family.id == hand) ? -1 : myFamily)}>
   return (
     <Paper
-      elevation={3 + 10 * Number(family.id == hand)}
+      elevation={5 + 15 * Number(family.id == hand)}
       className='itemComp'
       onClick={() => parentSelected(myFamily)}>
       <div className='name'>{family.name}</div>
       <div className='price'>$ {family.price}</div>
 
       {/* <img src={assetsDir + "family.name" + ".png"} alt={assetsDir + "unknown.jpg"} className='image' /> */}
-      <div className='description'>{myFamily.description}</div>
+      {
+        myFamily.description !== "null" && (
+          <div className='description'>{myFamily.description}</div>
+        )
+      }
       {
         myFamily.options.length > 1 ? (
           <FormControl className='options' component='fieldset'>
@@ -88,8 +99,12 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
               onChange={handleOptions}
             >
               {
-                myFamily.options.map((option: Item, index: number) => (
-                  <FormControlLabel key={index} value={getSize(option.name)} control={<Radio />} label={getSize(option.name)} />
+                myFamily.options.map((option) => (
+                  <FormControlLabel
+                    control={<Radio />}
+                    value={getSize(option.name)}
+                    label={`${getSize(option.name)} - ${option.price}`}
+                  />
                 ))
               }
             </RadioGroup>
@@ -111,8 +126,12 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
                 onChange={handleToppings}
               >
                 {
-                  myFamily.toppings.map((topping, index) => (
-                    <FormControlLabel control={<Checkbox />} label={topping.name} />
+                  myFamily.toppings.map((topping) => (
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      value={topping.name}
+                      label={`${topping.name} - ${topping.price}`}
+                    />
                   ))
                 }
               </FormGroup>

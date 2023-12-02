@@ -9,10 +9,10 @@
   flex-direction: column;
   /* justify-content: center; */
   /* align-items: center; */
-  margin: 10px;
-  padding: 10px;
-  width: 15%;
-  height: 10%;
+  padding: 15px;
+  margin: 1%;
+  width: 20%;
+  height: fit-content;
 }
 /* 
 .item > * {

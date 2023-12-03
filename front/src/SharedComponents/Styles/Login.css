@@ -39,7 +39,7 @@ body {
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 4.5rem;
     font-weight: 400;
     line-height: 1.2;
     text-align: center;
@@ -54,30 +54,6 @@ h1 {
 }
 
 
-/* button {
-    padding: 0.6em 1em;
-    font-size: 1rem;
-    border: none;
-    font-family: motor, monospace;
-    font-style: normal;
-    font-weight: 400;
-    background-color: var(--mess-color);
-    color: var(--background-color);
-    cursor: pointer;
-    transition: background-color 0.25s, transform 0.1s;
-    width: 30%;
-    margin-top: 7.5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-} */
-
-/* button:hover,
-button:focus {
-    color: #1a1a1a;
-    border-color: var(--mess-color);
-    transform: translateY(-2px);
- 
-} */
-
 .login-container {
     display: flex;
     flex-direction: column;
@@ -85,12 +61,6 @@ button:focus {
     overflow-y: hidden;
 }
 
-.logo-container {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
 
 .login-top {
     margin-top: 2.5%;
@@ -104,11 +74,25 @@ button:focus {
     height: fit-content;
     position: fixed;
     bottom: 20px;
-    right: 30px;
+    right: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     flex-direction: row;
-    align-items: flex-end;
+}
+
+.logo-container {
+    margin: 2rem;
+    width: 20vw;
+    max-width: 250px;
+    min-width: 125x;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.logo-container svg {
+    width: 80%;
+    height: auto;
 }
 
 .google-auth {
@@ -128,22 +112,45 @@ button:focus {
 .vertical-divider {
     align-self: stretch;
     width: 1.5px;
+    color: #ffffff;
     background-color: #ffffff;
     opacity: 0.4;
     height: 80%;
-    margin-top: 20px;
-    margin-bottom: 20px;
 }
 
-/* .MuiIconButton-colorPrimary {
-    color: var(--text-color);
-} */
+.login-button {
+    padding: 0.8em 1.2em;
+    font-size: 1rem;
+    border: none;
+    font-family: motor, monospace;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.1rem;
+    background-color: var(--mess-color);
+    color: var(--background-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 30%;
+    margin-top: 7.5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+}
 
-/* .mui-icon-button:hover {
-    transform: scale(1.1);
-    background-color: #ffffff;
-    border-color: var(--mess-color);
-} */
+.login-button:hover {
+    background-color: darken(var(--mess-color), 10%);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    color: var(--mess-color);
+}
+
+.login-button:active {
+    background-color: lighten(var(--mess-color), 10%);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+}
+
+@media (max-width: 768px) {}
 
 @media (max-width: 768px) {
     .login-container {
@@ -152,5 +159,10 @@ button:focus {
 
     .login-header {
         font-size: var(--font-size-base);
+    }
+
+    button.login-button {
+        width: 50%;
+        padding: 0.8em 1em;
     }
 }

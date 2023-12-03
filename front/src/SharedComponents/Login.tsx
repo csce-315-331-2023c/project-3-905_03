@@ -13,6 +13,7 @@ import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import Divider from '@mui/material/Divider';
 
 import './Styles/Login.css';
 import useStyles from './Styles/useStyles.ts';
@@ -20,19 +21,6 @@ import useStyles from './Styles/useStyles.ts';
 import axios from 'axios';
 import MessLogo from './MessLogo.tsx';
 
-const iconStyle = {
-  color: '#ffffff',
-  '&:hover': {
-    textDecoration: 'underline', 
-    textDecorationColor: 'var(--mess-color)', 
-  },
-  '&.Mui-focusVisible': {
-    outline: 'none',
-  },
-  '&:focus': {
-    outline: 'none',
-  }
-}
 
 interface CustomJwtPayload {
   email: string;
@@ -221,11 +209,11 @@ const LoginPage = () => {
                 theme='filled_black'
                 size='large'
                 logo_alignment='center'
-                width={220}
+                width={250}
               />
             </div>
           </div>
-          <div className="vertical-divider" />
+          <Divider orientation="vertical" flexItem sx={{backgroundColor:'#ffffff'} } />
           <div className="guest-options">
             <h1>Guest Options</h1>
             <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
@@ -233,11 +221,11 @@ const LoginPage = () => {
           </div>
         </div>
         <div className="login-bottom">
-          <IconButton className="mui-icon-button">
-            <TranslateIcon sx={iconStyle} />
+          <IconButton className="mui-icon-button"  >
+            <TranslateIcon sx={classes.iconButton} />
           </IconButton>
           <IconButton className="mui-icon-button" onClick={handleAccessibilityModal}>
-            <AccessibilityIcon sx={iconStyle} />
+            <AccessibilityIcon sx={classes.iconButton} />
           </IconButton>
         </div>
       </div>

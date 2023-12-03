@@ -28,8 +28,8 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
 
-  const isWaffles = useMemo(() => family.name === "Waffles", [family.name]); 
-  const compWidth = (isWaffles) ? "80%" : "20%";
+  const isWaffles = useMemo(() => family.name === "Waffles", [family.name]);
+  const compWidth = (isWaffles) ? "80%" : "";
   const compStyle = isWaffles ? { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' } : {};
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,11 +37,19 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   }
 
   const handleToppings = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const index = selectedToppings.indexOf(event.target.value);
+    const selectedTopping = event.target.value;
+    const index = selectedToppings.indexOf(selectedTopping);
+    const topping = myFamily.toppings.find(topping => topping.name === selectedTopping);
+    
     if (index === -1) {
-      setSelectedToppings([...selectedToppings, event.target.value]);
+      setSelectedToppings([...selectedToppings, selectedTopping]);
     } else {
-      setSelectedToppings(selectedToppings.filter((_, i) => i !== index));
+      const updatedToppings = selectedToppings.filter((_, i) => i !== index);
+      setSelectedToppings(updatedToppings);
+    }
+
+    if (topping) {
+      setToppingPrice(prevPrice => prevPrice + topping.price * (index === -1 ? 1 : -1));
     }
   }
 
@@ -54,28 +62,20 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   // setPrice
   useEffect(() => {
     for (let i = 0; i < family.options.length; i++) {
-      if (family.options[i])
-        if (getSize(family.options[i].name) === selectedOption) {
-          family.options[i].chosen = true;
-          setOptionPrice(family.options[i].price);
-        } else {
-          family.options[i].chosen = false;
-        }
+      if (getSize(family.options[i].name) === selectedOption) {
+        family.options[i].chosen = true;
+        setOptionPrice(family.options[i].price);
+      } else {
+        family.options[i].chosen = false;
+      }
     }
-    for (let i = 0; i < family.toppings.length; i++) {
-      if (family.toppings[i])
-        if (selectedToppings.includes(family.toppings[i].name)) {
-          family.toppings[i].chosen = true;
-          setToppingPrice(toppingPrice + family.toppings[i].price);
-        } else {
-          family.toppings[i].chosen = false;
-        }
-    }
+
+    //implement here
 
     family.price = +(optionPrice + toppingPrice).toFixed(2);
     setMyFamily(family);
     upd(!state);
-  }, [selectedOption, optionPrice, toppingPrice, family]);
+  }, [selectedOption, optionPrice, family]);
 
   // onClick={() => parentSelected((family.id == hand) ? -1 : myFamily)}>
   return (

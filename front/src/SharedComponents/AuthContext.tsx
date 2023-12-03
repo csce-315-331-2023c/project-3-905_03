@@ -5,7 +5,6 @@ export interface User {
   firstName: string;
   lastName: string;
   role: string;
-  isAuthenticated: boolean;
   profilePic: string;
 }
 

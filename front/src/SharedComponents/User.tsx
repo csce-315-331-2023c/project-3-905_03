@@ -13,7 +13,7 @@ const User: React.FC = () => {
     }
 
     const handlePasswordChange = () => {
-        // Implement password change logic
+        
     };
 
     return (

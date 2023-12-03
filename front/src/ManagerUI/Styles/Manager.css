@@ -7,7 +7,7 @@
     /* Full width of the containing element. */
     height: 100vh;
     background-color: #1A1A1A;
-    border-radius: 12px;
+    border-radius: 10px;
     /* Rounded corners for the container. */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     /* Subtle shadow for depth. */
@@ -21,12 +21,12 @@
 
 .rhs {
     background-color: #1A1A1A;
-    flex: 4 0 80%;
+    flex: 2 0 80%;
     /* Flex-grow: 4, flex-shrink: 0, flex-basis: 80% of the parent container. */
     color: #ffffff;
     /* Text color for the content area, white for visibility. */
     overflow-y: auto;
     /* Allows scrolling if content overflows vertically. */
-    padding: 24px;
+    padding: 1rem;
     /* Padding inside the content area for spacing. */
 }

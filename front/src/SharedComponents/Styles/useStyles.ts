@@ -44,7 +44,7 @@ const useStyles = () => ({
         width: '2.5rem',
         height: '2.5rem',
         padding: '10px',
-        transition: 'all 0.3s ease', // Smooth transition for hover and active effects
+        transition: 'all 0.3s ease', 
         '& .MuiIconButton-root': {
             fontSize: '1.5rem',
         },

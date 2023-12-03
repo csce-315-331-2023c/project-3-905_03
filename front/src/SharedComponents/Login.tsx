@@ -21,9 +21,13 @@ import useStyles from './Styles/useStyles.ts';
 import axios from 'axios';
 import MessLogo from './MessLogo.tsx';
 
-
 interface CustomJwtPayload {
   email: string;
+  given_name: string;
+  family_name: string;
+}
+interface OAuthJwtPayload {
+  role: string;
   given_name: string;
   family_name: string;
 }
@@ -87,26 +91,23 @@ const LoginPage = () => {
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
     try {
-      const decoded: CustomJwtPayload = jwtDecode(idToken);
-      const userEmail = decoded.email;
-      const userFirstName = decoded.given_name;
-      const userLastName = decoded.family_name;
-      const response = await axios.post('/auth/google/login', { userEmail, userFirstName, userLastName });
-      logMessage('GoogleLoginSuccess', `Response status: ${response.status}`);
-      if (response.status === 200) {
-        const { token, user } = response.data;
+      const serverResponse = await axios.post('/auth/google/login', { idToken });
+      if (serverResponse.status === 200) {
+        const { token } = serverResponse.data;
         localStorage.setItem('token', token);
-        setUser({ ...user, isAuthenticated: true });
-        navigateBasedOnRole(user.role);
-      } else {
-        setShowErrorModal(true);
+
+        const decodedUser: any = jwtDecode(token);
+        console.log(decodedUser);
+        setUser({...decodedUser });
+        navigateBasedOnRole(decodedUser.role);
       }
-    } catch (error) {
-      logMessage('GoogleLoginSuccess', 'Error occurred');
-      setAuthErrorMessage('Failed Google OAuth');
+    } catch (error: any) {
+      setAuthErrorMessage(error.response?.data.message || 'Google Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
+
   };
+
 
   const handleGoogleLoginError = () => {
     logMessage('GoogleLogin', 'Login failed');

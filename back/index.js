@@ -878,6 +878,33 @@ app.post('/submitOrder', async (req, res) => {
 /**
  * edit order
  */
+/**
+ * change order status to pending given order_id
+ */
+app.post('/pendingOrder', async (req, res) => {
+    let client;
+    let { order_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = 'pending' WHERE order_id = $1", [order_id]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
 
 /**
  * change order status to fulfilled given order_id
@@ -926,6 +953,33 @@ app.post('/cancelOrder', async (req, res) => {
         await client.query("UPDATE orders SET status = 'cancelled' WHERE order_id = $1", [order_id]);
 
         res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * get all pending orders
+ */
+app.get('/getPendingOrders', async (req, res) => {
+    let client;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        const result = await client.query("SELECT * FROM orders WHERE status = 'pending'");
+
+        res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {
         res.status(400).send(error.message);
     } finally {

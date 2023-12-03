@@ -600,6 +600,7 @@ app.post('/addServedItemStockItem', (req, res) => {
 /**
  * edit served_items entry 
  * will be provided with all values
+ * 
  */
 app.post('/editServedItem', (req, res) => {
     let { item_id, served_item, item_price } = req.body;
@@ -724,7 +725,7 @@ app.post('/submitOrder', async (req, res) => {
     let client;
 
     try {
-        let { receipt, total, sender_id, split, dineIn } = req.body;
+        let { receipt, total, sender_id, dineIn } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -745,8 +746,7 @@ app.post('/submitOrder', async (req, res) => {
         const dateTime = formattedDate + ' ' + formattedTime;
 
         let dineInInt = dineIn ? 1 : 0;
-        let splitInt = split ? 1 : 0;
-        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, split, order_date) VALUES ($1, $2, $3, $4, $5, $6)', [sender_id, neworderId, total, dineInInt, splitInt, dateTime]);
+        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, order_date, status) VALUES ($1, $2, $3, $4, $5, pending)', [sender_id, neworderId, total, dineInInt, dateTime]);
 
         const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
@@ -792,6 +792,74 @@ app.post('/submitOrder', async (req, res) => {
         }
     }
 });
+
+/**
+ * delete order
+ */
+
+/**
+ * edit order
+ */
+
+/**
+ * change order status to fulfilled given order_id
+ */
+app.post('/fulfillOrder', async (req, res) => {
+    let client;
+    let { order_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = 'fulfilled' WHERE order_id = $1", [order_id]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * change order status to cancelled given order_id
+ */
+app.post('/cancelOrder', async (req, res) => {
+    let client;
+    let { order_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = 'cancelled' WHERE order_id = $1", [order_id]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete an order
+ */
 
 /**
  * get all toppings

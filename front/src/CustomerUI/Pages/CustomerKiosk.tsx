@@ -168,7 +168,7 @@ const Customer = () => {
     };
 
     return (
-        <>
+        <div className='customer'>
             <div className="top">
                 <img className='title' src={mess} alt="mess" onClick={imgClick} />
                 {bagView ? (
@@ -250,10 +250,6 @@ const Customer = () => {
                 </Button>
             </div>
 
-
-
-            <div>hand: {hand}</div>
-            <div>selected:  {selected?.id} name {selected?.name}</div>
             <div className="displayedItems">
                 {
                     (!loading) ? (
@@ -273,7 +269,7 @@ const Customer = () => {
                     )
                 }
             </div>
-        </>
+        </div>
     );
 };
 

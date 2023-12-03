@@ -1,3 +1,15 @@
+:root {
+  --text: #150f05;
+  --background: #f7eede;
+  --primary: #2c5dba;
+  --secondary: #f1dcb6;
+  --accent: #2e62c2;
+}
+
+.customer {
+  color: var(--text);
+  background-color: var(--background);
+}
 
 .top {
   display: grid;
@@ -87,7 +99,8 @@
   flex-wrap: wrap;
   justify-content: center;
 
-  height: 900px;
+  margin-top: 20px;
+  height: 1200px;
   overflow: auto;
 }
 

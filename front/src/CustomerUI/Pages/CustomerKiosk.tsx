@@ -10,7 +10,7 @@ import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
 
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
-import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
+import { ShoppingBag, ShoppingBagOutlined, Remove, Undo, Add } from '@mui/icons-material';
 
 const BASE_URL = 'http://localhost:8080';
 
@@ -30,14 +30,13 @@ const Customer = () => {
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // setHand(-1);
         setSelected(undefined);
         setFormValue(event.target.value);
     };
 
-    const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFilters({ ...filters, [event.target.name]: event.target.checked });
-    };
+    // const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setFilters({ ...filters, [event.target.name]: event.target.checked });
+    // };
 
     const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrOrder(currOrder.setDineIn(event.target.value === 'dine-in'));
@@ -48,7 +47,6 @@ const Customer = () => {
         if (selected) {
             setSelected({ ...selected, id: selected.id + 1000 });
             setBag([...bag, selected]);
-            // setCurrOrder(currOrder.addItem(selected));
             setSelected(undefined);
             upd(a => !a);
         }
@@ -56,13 +54,14 @@ const Customer = () => {
 
     const handleRemove = () => {
         if (selected) {
-            //setCurrOrder(currOrder.removeItem(selected));
+            setBag(bag.filter((family) => family !== selected));
+            setSelected(undefined);
             upd(a => !a);
         }
     };
 
     const handleUndo = () => {
-        setCurrOrder(currOrder.undo());
+        setBag(bag.slice(0, bag.length - 1));
         upd(a => !a);
     };
 
@@ -84,6 +83,14 @@ const Customer = () => {
 
         setSelected(undefined);
         upd(a => !a);
+    };
+
+    const getTotal = () => {
+        let total = 0;
+        bag.forEach((family) => {
+            total += family.price;
+        });
+        return total.toFixed(2);
     };
 
     const getFams = async () => {
@@ -162,11 +169,17 @@ const Customer = () => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
-    // ask krish about loading animation
     const imgClick = () => {
         console.log(fams);
     };
 
+
+    // .filter((family) => {
+    //     if(family.toppings.length > 0) 
+    //         return family.toppings.some((topping) => 
+    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
+    //         );
+    // })
     return (
         <div className='customer'>
             <div className="top">
@@ -186,7 +199,7 @@ const Customer = () => {
                         <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
                     </RadioGroup>
                 </FormControl>
-                
+
                 {/* <FormControl className='filters'>
                     <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
                     <FormControlLabel
@@ -198,6 +211,7 @@ const Customer = () => {
                         label="Vegan"
                     />
                 </FormControl> */}
+                <div className='total'>Total: ${getTotal()}</div>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
                     startIcon=
@@ -209,7 +223,10 @@ const Customer = () => {
                         )
                     }
                 >
-                    {currOrder.receipt.length} items
+                    {bag.length} items
+                </Button>
+                <Button className='remove' variant="outlined" startIcon={<Remove />} onClick={() => handleRemove()}>
+                    Remove
                 </Button>
                 <Button className='undo' variant="outlined" startIcon={<Undo />} onClick={() => handleUndo()}>
                     Undo
@@ -241,18 +258,16 @@ const Customer = () => {
                         (!loading) ? (
                             bagView ? (
                                 bag.map((family, index) => (
-                                    <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
+                                    <ItemComponent 
+                                    family={family} 
+                                    key={index} 
+                                    hand={hand} 
+                                    parentSelected={setSelected} />
                                 ))
                             ) :
                                 fams
                                     .map((family, index) => ({ ...family, index }))
                                     .filter((family) => (family.category === formValue))
-                                    // .filter((family) => {
-                                    //     if(family.toppings.length > 0) 
-                                    //         return family.toppings.some((topping) => 
-                                    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
-                                    //         );
-                                    // })
                                     .map((family, index) => (
                                         <ItemComponent
                                             family={family}

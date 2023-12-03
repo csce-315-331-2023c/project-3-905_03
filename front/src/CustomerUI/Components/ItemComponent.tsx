@@ -50,16 +50,15 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
 
     if (topping) {
       setToppingPrice(prevPrice => prevPrice + topping.price * (index === -1 ? 1 : -1));
-    }
+    } console.log(selectedToppings);
   }
 
   useEffect(() => {
-    if (myFamily.options.length > 0) {
-      setSelectedOption(getSize(myFamily.options[0].name));
-    }
+    setSelectedOption(getSize(myFamily.options[0].name));
+
   }, []);
 
-  // setPrice
+  // set price
   useEffect(() => {
     for (let i = 0; i < family.options.length; i++) {
       if (getSize(family.options[i].name) === selectedOption) {
@@ -70,12 +69,10 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
       }
     }
 
-    //implement here
-
     family.price = +(optionPrice + toppingPrice).toFixed(2);
     setMyFamily(family);
     upd(!state);
-  }, [selectedOption, optionPrice, family]);
+  }, [selectedOption, optionPrice, family, toppingPrice]);
 
   // onClick={() => parentSelected((family.id == hand) ? -1 : myFamily)}>
   return (

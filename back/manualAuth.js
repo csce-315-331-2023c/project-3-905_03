@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const router = express.Router();
 
@@ -26,8 +27,15 @@ router.post('/auth/manual/login', async (req, res) => {
         }
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (passwordMatch) {
+            const userForToken = {
+                id: user.id, 
+                email: user.email
+            };
+
+            const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
             logMessage('ManualLogin', 'Login successful');
             return res.status(200).json({
+                token:token, 
                 message: 'Manual Log-In: Valid Credentials',
                 user: {
                     email: user.email,
@@ -58,8 +66,16 @@ router.post('/auth/google/login', async (req, res) => {
             logMessage('GoogleLogin', 'User not found');
             return res.status(404).json({ message: 'OAuth Log-In: Unauthorized Access Attempt' });
         }
+        const userForToken = {
+            id: user.id, 
+            email: user.email
+        };
+
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+
         logMessage('GoogleLogin', 'Login successful');
         return res.status(200).json({
+            token: token,
             message: 'OAuth Log-In: Valid Credentials',
             user: {
                 email: user.email,

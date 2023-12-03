@@ -1,5 +1,5 @@
 .table-container {
-    width: 100%;
+    width: 95%;
 }
 
 .table {
@@ -11,20 +11,17 @@
     border-radius: 10px;
     white-space: nowrap;
     width: 100%;
-    max-width: 80%;
-    margin: auto;
-    overflow-x: hidden;
 }
 
 .table thead {
-    background-color: #ccc;
-    color: #222;
+    color: #ccc;
+    background-color: #222;
     text-align: left;
 }
 
 .table th,
 .table td {
-    padding: 0.4rem;
+    padding: 0.2rem;
 
 }
 
@@ -45,7 +42,8 @@
 .actions {
     display: flex;
     justify-content: space-around;
-
+    align-items: center;
+    justify-content: center;
 }
 
 .actions svg {
@@ -55,7 +53,6 @@
 .delete-btn {
     color: #e10d05;
 }
-
 
 
 

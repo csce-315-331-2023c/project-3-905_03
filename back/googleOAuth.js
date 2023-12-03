@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 exports.verifyGoogleToken = async (req, res) => {
     if (!process.env.GOOGLE_CLIENT_ID) {
         throw new Error("GOOGLE_CLIENT_ID is not set in the environment variables.");
@@ -15,8 +17,17 @@ exports.verifyGoogleToken = async (req, res) => {
         const payload = ticket.getPayload();
         console.log(payload); 
 
-        res.status(200).json({ message: 'Token verified', user: payload });
+        const userForToken = {
+            email: payload.email,
+        };
+
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({
+            token,
+            user: payload
+        });
     } catch (error) {
-        res.status(400).json({ message: 'Token verification failed', error: error.toString() });
+        res.status(400).json({ message: 'Token Verification Failure', error: error.toString() });
     }
 };

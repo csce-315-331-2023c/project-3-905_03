@@ -28,8 +28,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
                 setShowErrorModal(true);
             } else if (user.role === 'admin') {
                 setShowRoleSelectionModal(true);
-            } else {
+            } else if (user.role === 'manager' || user.role === 'cashier') {
                 navigate(`/${user.role}`);
+            } else {
+                navigate('/');
             }
         }
     }, [user, allowedRoles, navigate, setShowErrorModal, setShowRoleSelectionModal]);

@@ -12,6 +12,7 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import './Styles/Login.css';
 import axios from 'axios';
+import Paper from '@mui/material/Paper';
 
 interface CustomJwtPayload {
   email: string;
@@ -142,7 +143,7 @@ const LoginPage = () => {
           <h1>Mess Waffles</h1>
         </div>
         <div className='login-top'>
-          <div className="manual-login">
+          <Paper className="manual-login">
             <h1>Sign In</h1>
             <input
               type="text"
@@ -171,7 +172,7 @@ const LoginPage = () => {
                 width={220}
               />
             </div>
-          </div>
+          </Paper>
           <div className="vertical-divider" />
           <div className="guest-options">
             <h1>Continue as Guest</h1>

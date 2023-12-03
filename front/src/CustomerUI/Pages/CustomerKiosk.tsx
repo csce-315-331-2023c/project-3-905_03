@@ -18,6 +18,7 @@ const Customer = () => {
     const [state, upd] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
+    const [checkoutReturn, setCheckoutReturn] = useState<number>(0);
 
     const [bagView, setBagView] = useState(false);
     const [bag, setBag] = useState<Family[]>([]);
@@ -68,15 +69,17 @@ const Customer = () => {
     const handleCheckout = () => {
         //make the order
         fams.forEach((family) => {
-            console.log(family);
+            console.log("adding", family);
             const chosenItem = family.options.find((option) => option.chosen === true);
             if (chosenItem) {
-                currOrder.receipt.push(chosenItem);
+                currOrder.addItem({ ...chosenItem, toppings: family.toppings });
             }
+            console.log("added", family);
+            console.log(currOrder);
         });
 
         currOrder.sender_id = 0; // id of logged in user
-        currOrder.checkout();
+        setCheckoutReturn(currOrder.checkout());
         setCurrOrder(new Order());
 
         console.log(currOrder.getReceiptString());
@@ -257,16 +260,17 @@ const Customer = () => {
                     {
                         (!loading) ? (
                             bagView ? (
-                                bag.map((family, index) => (
-                                    <ItemComponent 
-                                    family={family} 
-                                    key={index} 
-                                    hand={hand} 
-                                    parentSelected={setSelected} />
-                                ))
+                                bag
+                                    .map((family, index) => (
+                                        <ItemComponent
+                                            family={family}
+                                            key={index}
+                                            hand={hand}
+                                            parentSelected={setSelected}
+                                        />
+                                    ))
                             ) :
                                 fams
-                                    .map((family, index) => ({ ...family, index }))
                                     .filter((family) => (family.category === formValue))
                                     .map((family, index) => (
                                         <ItemComponent

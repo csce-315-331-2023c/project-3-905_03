@@ -5,29 +5,21 @@ const app = express();
 const PORT = 8080;
 var cors = require('cors');
 
-const authRoutes = require('./authRoutes'); 
+const googleOAuth= require('./googleOAuth');
 const manualAuth= require('./manualAuth');
 const bodyParser = require('body-parser');
-const { authenticateToken, allowRole} = require('./authenticateToken');
 
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(manualAuth);
+app.use(googleOAuth);
 
 const { Client } = require('pg')
 
 app.use(express.static(path.join(__dirname, '../front/dist')));
 
-
-app.get('/cashier', authenticateToken, allowRole(['cashier', 'admin']), (req, res) => {
-    
-});
-
-app.get('/manager', authenticateToken, allowRole(['manager', 'admin']), (req, res) => {
-
-});
 
 app.get('/test', (req, res) => {
     res.status(200).send('success!');

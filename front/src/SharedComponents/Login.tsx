@@ -72,17 +72,17 @@ const LoginPage = () => {
       }
       const response = await axios.post('/auth/manual/login', { email, password });
       if (response.status === 200) {
-        const { token, user } = response.data;
+        const { token } = response.data;
         localStorage.setItem('token', token);
-        setUser({ ...user });
-        navigateBasedOnRole(user.role);
+
+        const decodedUser:any = jwtDecode(token);
+        setUser({...decodedUser });
+        navigateBasedOnRole(decodedUser.role);
       } else {
         setAuthErrorMessage(response.data.message);
         setShowErrorModal(true);
       }
-      logMessage('ManualLoginSubmit', `Response status: ${response.status}`);
-    } catch (error: any) {
-      logMessage('ManualLoginSubmit', 'Error occurred');
+    } catch (error:any) {
       setAuthErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }

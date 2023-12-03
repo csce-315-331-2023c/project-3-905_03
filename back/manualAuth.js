@@ -25,27 +25,20 @@ router.post('/auth/manual/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (passwordMatch) {
             const userForToken = {
-                id: user.id, 
-                email: user.email
+                email: user.email,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                role: user.roles,
+                profilePic: user.profile_pic,
             };
 
             const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-            return res.status(200).json({
-                token:token, 
-                message: 'Manual Log-In: Valid Credentials',
-                user: {
-                    email: user.email,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                    role: user.roles,
-                    profilePic: user.profile_pic,
-                    profileComplete: user.profile_complete
-                }
-            });
+            return res.status(200).json({ token });
         } else {
             return res.status(401).json({ message: 'Manual Log-In: Invalid Credentials' });
         }
     } catch (error) {
+        console.error('Login Error:', error);
         return res.status(500).json({ message: 'Manual Log-In: Server Connection Cannot Be Established' });
     }
 });

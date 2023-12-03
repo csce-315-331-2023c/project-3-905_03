@@ -21,10 +21,12 @@ router.post('/auth/manual/login', async (req, res) => {
         const query = 'SELECT * FROM employees WHERE email = $1;';
         const dbRes = await pool.query(query, [email]);
         const user = dbRes.rows[0];
+
         if (!user) {
-            logMessage('ManualLogin', 'User not found');
-            return res.status(404).json({ message: 'Manual Log-In: Unauthorized Access Attempt' });
+            logMessage('anual Log-In:', 'User Not Found');
+            return res.status(404).json({ message: 'Manual Log-In: No User Found' });
         }
+
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (passwordMatch) {
             const userForToken = {
@@ -33,7 +35,7 @@ router.post('/auth/manual/login', async (req, res) => {
             };
 
             const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-            logMessage('ManualLogin', 'Login successful');
+            logMessage('Manual Log-In', 'Login successful');
             return res.status(200).json({
                 token:token, 
                 message: 'Manual Log-In: Valid Credentials',
@@ -47,11 +49,11 @@ router.post('/auth/manual/login', async (req, res) => {
                 }
             });
         } else {
-            logMessage('ManualLogin', 'Invalid credentials');
+            logMessage('Manual Log-In', 'Invalid Credentials');
             return res.status(401).json({ message: 'Manual Log-In: Invalid Credentials' });
         }
     } catch (error) {
-        logMessage('ManualLogin', 'Server error');
+        logMessage('Manual Log-In', 'Server Error');
         return res.status(500).json({ message: 'Manual Log-In: Server Connection Cannot Be Established' });
     }
 });
@@ -63,7 +65,7 @@ router.post('/auth/google/login', async (req, res) => {
         const dbRes = await pool.query(query, [userEmail, userFirstName, userLastName]);
         const user = dbRes.rows[0];
         if (!user) {
-            logMessage('GoogleLogin', 'User not found');
+            logMessage('OAuth', 'Unauthorized Access Attempt');
             return res.status(404).json({ message: 'OAuth Log-In: Unauthorized Access Attempt' });
         }
         const userForToken = {
@@ -73,7 +75,7 @@ router.post('/auth/google/login', async (req, res) => {
 
         const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        logMessage('GoogleLogin', 'Login successful');
+        logMessage('OAuth', 'Login Successful');
         return res.status(200).json({
             token: token,
             message: 'OAuth Log-In: Valid Credentials',
@@ -87,7 +89,7 @@ router.post('/auth/google/login', async (req, res) => {
             }
         });
     } catch (error) {
-        logMessage('GoogleLogin', 'Server error');
+        logMessage('OAuth', 'Server Error');
         return res.status(500).json({ message: 'OAuth Log-In: Server Connection Cannot Be Established' });
     }
 });

@@ -15,26 +15,30 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     const navigate = useNavigate();
     const [selectedRole, setSelectedRole] = useState('');
 
-    useEffect(() => {
-        if (!showRoleSelectionModal && selectedRole) {
-            navigate(`/${selectedRole}`);
-            setSelectedRole(''); 
-        }
-    }, [showRoleSelectionModal, selectedRole, navigate]);
+    // useEffect(() => {
+    //     if (!showRoleSelectionModal && selectedRole) {
+    //         navigate(`/${selectedRole}`);
+    //         setSelectedRole(''); 
+    //     }
+    // }, [showRoleSelectionModal, selectedRole, navigate]);
 
     useEffect(() => {
-        if (user && user.isAuthenticated) {
-            if (!allowedRoles.includes(user.role)) {
-                setShowErrorModal(true);
-            } else if (user.role === 'admin') {
-                setShowRoleSelectionModal(true);
-            } else if (user.role === 'manager' || user.role === 'cashier') {
-                navigate(`/${user.role}`);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        } else if (user) {
+            if (allowedRoles.includes(user.role)) {
+                if (user.role === 'admin') {
+                    setShowRoleSelectionModal(true);
+                } else {
+                    navigate(`/${user.role}`);
+                }
             } else {
-                navigate('/');
+                setShowErrorModal(true);    
             }
         }
-    }, [user, allowedRoles, navigate, setShowErrorModal, setShowRoleSelectionModal]);
+    }, [user, allowedRoles, navigate, setShowRoleSelectionModal]);
+
 
     const handleRoleSelection = (role?: string) => {
         if (role) {

@@ -9,7 +9,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 import { IconButton } from '@mui/material';
+import {Popover, Box} from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface Row {
     employee_id: number;
@@ -28,12 +31,15 @@ function OrdersTable4() {
     const [endDateTime, setEndDateTime] = useState<Date>(currentDateTime);
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<number | null>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
             .then(res => {
                 const data: Row[] = res.data.data;
                 setRows(data);
+                setIsLoading(false);
             })
             .catch(err => console.log(err));
     }, []);
@@ -68,19 +74,30 @@ function OrdersTable4() {
             .catch(err => console.log(err));
     }
 
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
     const columns = [
         { name: 'employee_id', label: 'Employee ID', options: { filter: true, sort: true }},
-        { name: 'order_id', label: 'Order ID', options: { filter: true, sort: true, }},
-        { name: 'order_total', label: 'Order Total', options: { filter: true, sort: true, }},
+        { name: 'order_id', label: 'Order ID', options: { filter: false, sort: true, }},
+        { name: 'order_total', label: 'Order Total', options: { filter: false, sort: true, }},
         { name: 'takeout', label: 'Takeout', options: { filter: true, sort: true, }},
         { name: 'split', label: 'Split', options: { filter: true, sort: true, }},
-        { name: 'formatted_order_date', label: 'Order Date', options: { filter: true, sort: true, }},
+        { name: 'formatted_order_date', label: 'Order Date', options: { filter: false, sort: true, }},
         {
             name: 'Actions',
             options: {
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     return (
-                        <span className='actions'>
+                        <span>
                             <IconButton onClick={() => setModalOpen(tableMeta.rowData[1])}>
                                 <VisibilityIcon/>
                             </IconButton>
@@ -101,32 +118,62 @@ function OrdersTable4() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        customToolbar: () => {
+            return (
+                <div>
+                    <IconButton aria-describedby={id} onClick={handleClick}>
+                        <DateRangeIcon/>
+                    </IconButton>
+                    <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                    >
+                        <Box p={2}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DateTimePicker
+                                    label="Start Date & Time"
+                                    value={startDateTime}
+                                    onChange={(value: Date | null) => setStartDateTime(value || new Date())}
+                                />
+                                <DateTimePicker
+                                    label="End Date & Time"
+                                    value={endDateTime}
+                                    onChange={(value: Date | null) => setEndDateTime(value || new Date())}
+                                />
+                            </LocalizationProvider>
+                            <button onClick={handleSearch}>Search</button>
+                        </Box>
+                    </Popover>
+                    <IconButton onClick={() => refreshOrders()} aria-label='Refresh'>
+                        <RefreshIcon/>
+                    </IconButton>
+                </div>
+            );
+        },
     };
 
     return (
         <div className='table-container'>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                    label="Start Date & Time"
-                    value={startDateTime}
-                    onChange={(value: Date | null) => setStartDateTime(value || new Date())}
+            {isLoading ? (
+                <CircularProgress style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}/>
+            ) : (
+                <MUIDataTable
+                    title={"Orders"}
+                    data={rows}
+                    columns={columns}
+                    options={options}
                 />
-                <DateTimePicker
-                    label="End Date & Time"
-                    value={endDateTime}
-                    onChange={(value: Date | null) => setEndDateTime(value || new Date())}
-                />
-            </LocalizationProvider>
-            <button onClick={handleSearch}>Search</button>
-            <IconButton onClick={() => refreshOrders()}>
-                <RefreshIcon/>
-            </IconButton>
-            <MUIDataTable
-                title={"Orders"}
-                data={rows}
-                columns={columns}
-                options={options}
-            />
+            )}
         </div>
     );
 }

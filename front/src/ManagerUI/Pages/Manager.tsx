@@ -5,7 +5,6 @@ import MenuTable2 from '../Components/MenuTable2';
 import InventoryTable from '../Components/InventoryTable';
 import InventoryTable2 from '../Components/InventoryTable2';
 import OrdersTable from '../Components/OrdersTable';
-import OrdersTable2 from '../Components/OrdersTable2';
 import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
 import '../Styles/Manager.css';
@@ -24,12 +23,12 @@ const ManagerGUI: React.FC = () => {
   const ActiveComponent = componentMapping[activeSection] || null;
 
   return (
-    <div className="manager-container">
-      <div className="lhs">
+    <div style={{ height: '100vh', overflow: 'auto'}}>
+      <div>
         <ManagerNav setActiveSection ={setActiveSection} />
       </div>
-      <div className="rhs">
-        {ActiveComponent && <ActiveComponent />}
+      <div>
+        {ActiveComponent && <ActiveComponent/>}
       </div>
     </div>
   );

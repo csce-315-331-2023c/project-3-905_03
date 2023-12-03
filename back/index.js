@@ -80,6 +80,44 @@ app.get('/getFamilyItems', (req, res) => {
 });
 
 /**
+ * return each served item's category in json form
+ */
+app.get('/getItemCategories', (req, res) => {
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT * FROM served_items`, async (err, result) => {
+        if (err) {
+            console.log(err.message);
+            res.status(500).send(err.message);
+            client.end();
+            return;
+        }
+
+        const familyIds = result.rows.map(row => row.family_id);
+        const itemCategories = [];
+
+        for (const familyId of familyIds) {
+            const result = await client.query(`SELECT family_category FROM served_items_family WHERE family_id = $1`, [familyId]);
+            itemCategories.push({ family_category: result.rows[0].family_category});
+        }
+
+        res.status(200).send({
+            data: itemCategories
+        });
+
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
  * return entree items in json form
  */
 app.get('/getEntreeItems', (req, res) => {
@@ -325,7 +363,7 @@ app.get('/getRecentOrders', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_date desc limit 20`, (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_date desc limit 1000`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -470,7 +508,7 @@ app.post('/getOrderItemToppings', (req, res) => {
  */
 app.post('/addServedItem', (req, res) => {
 
-    let { served_item, item_price } = req.body;
+    let { served_item, item_price, family_name } = req.body;
 
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
@@ -491,17 +529,53 @@ app.post('/addServedItem', (req, res) => {
 
         let maxItemId = result.rows[0].max || 0; // If no records exist, default to 0
         let newItemId = maxItemId + 1;
-
-        // Insert the new entry with the incremented item_id
-        client.query('INSERT INTO served_items (item_id, served_item, item_price, family_id) VALUES ($1, $2, $3, $4)', [newItemId, served_item, item_price, 37], (err, result) => {
-            if (!err) {
-                res.status(200).send('success!');
-            } else {
+        let family_id = 0;
+        client.query('SELECT family_id FROM served_items_family WHERE family_name = $1', [family_name], (err, result) => {
+            if (err) {
                 res.status(400).send(err.message);
+                client.end();
+                return;
+            } else{
+                family_id = result.rows[0].family_id;
             }
-            client.end();
+        
+            // Insert the new entry with the incremented item_id
+            client.query('INSERT INTO served_items (item_id, served_item, item_price, family_id) VALUES ($1, $2, $3, $4)', [newItemId, served_item, item_price, family_id], (err, result) => {
+                if (!err) {
+                    res.status(200).send('success!');
+                } else {
+                    res.status(400).send(err.message);
+                }
+                client.end();
+            });
         });
     });
+});
+
+/**
+ * get family names given item category
+ */
+app.post('/getFamilies', (req, res) => {
+    let { family_category } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query('SELECt * FROM served_items_family where family_category = $1', [family_category], (err, result) => {
+        if (!err) {
+            const familyNames = result.rows.map(row => ({family_name: row.family_name}));
+            res.status(200).send({ data: familyNames });
+        } else {
+            res.status(400).send(err.message);
+        }
+        client.end();
+    })
 });
 
 

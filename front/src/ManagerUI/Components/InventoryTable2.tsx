@@ -5,6 +5,13 @@ import AddInventoryModal from './AddInventoryModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { Edit, Delete, Check, Close } from '@mui/icons-material';
 import { TextField } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 interface Row {
@@ -20,12 +27,14 @@ function InventoryTable2() {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         axios.get('/getStockItems')
             .then(res => {
                 const data: Row[] = res.data.data;
                 setRows(data);
+                setIsLoading(false);
             })
             .catch(err => console.log(err));
     }, []);
@@ -89,29 +98,29 @@ function InventoryTable2() {
     };
     
     const columns = [
-        { name: 'stock_id', label: 'Stock ID', options: {sort: true, filter: true} },
-        { name: 'stock_item', label: 'Stock Item', options: {sort: true, filter: true,
+        { name: 'stock_id', label: 'Stock ID', options: {sort: true, filter: false} },
+        { name: 'stock_item', label: 'Stock Item', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="stock_item" label="Stock Item" value={editData?.stock_item} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
                 }
                 return value;
             }} },
-        { name: 'cost', label: 'Cost', options: {sort: true, filter: true,
+        { name: 'cost', label: 'Cost', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="cost" label="Cost" value={editData?.cost} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
                 }
                 return value;
             }} },
-        { name: 'stock_quantity', label: 'Quantity', options: {sort: true, filter: true,
+        { name: 'stock_quantity', label: 'Quantity', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="stock_quantity" label="Stock Quantity" value={editData?.stock_quantity} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
                 }
                 return value;
             }} },
-        { name: 'max_amount', label: 'Maximum Amount', options: {sort: true, filter: true,
+        { name: 'max_amount', label: 'Maximum Amount', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="max_amount" label="Maximum Amount" value={editData?.max_amount} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -124,16 +133,24 @@ function InventoryTable2() {
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
-                            <span className='actions'>
-                                <Check onClick={handleConfirmEdit} />
-                                <Close onClick={handleCancelEdit} />
+                            <span>
+                                <IconButton onClick={handleConfirmEdit}>
+                                    <CheckIcon/>
+                                </IconButton>
+                                <IconButton onClick={handleCancelEdit}>
+                                    <CloseIcon/>
+                                </IconButton>
                             </span>
                         );
                     }else{
                         return (
-                            <span className='actions'>
-                                <Edit onClick={() => handleEditRow(tableMeta)} />
-                                <Delete onClick={() => handleDeleteRow(tableMeta.rowIndex)} />
+                            <span>
+                                <IconButton onClick={() => handleEditRow(tableMeta)}>
+                                    <EditIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                    <DeleteIcon/>
+                                </IconButton>
                             </span>
                         );
                     }
@@ -148,17 +165,27 @@ function InventoryTable2() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        customToolbar: () => {
+            return (
+                <IconButton onClick={() => setModalOpen(true)}>
+                    <AddIcon />
+                </IconButton>
+            );
+        },
     };
 
     return (
         <div className='table-container'>
-            <MUIDataTable
-                title={"Inventory List"}
-                data={rows}
-                columns={columns}
-                options={options}
-            />
-            <button className='btn' onClick={() => setModalOpen(true)}>Add New Inventory</button>
+            {isLoading ? (
+                <CircularProgress style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}/>
+            ) : (
+                <MUIDataTable
+                    title={"Inventory List"}
+                    data={rows}
+                    columns={columns}
+                    options={options}
+                />
+            )}
             {modalOpen && <AddInventoryModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
         </div>
     );

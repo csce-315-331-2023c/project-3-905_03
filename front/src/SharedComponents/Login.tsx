@@ -168,12 +168,14 @@ const LoginPage = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className='login-input'
             />
             <input
               type="text"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className='login-input'
             />
             <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit

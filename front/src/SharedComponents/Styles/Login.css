@@ -1,11 +1,21 @@
 :root {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    --background-color: #BDBFBF;
-    --primary-color: #575858;
-    --text-color: #1a1a1a;
-    --input-background: #ffffff;
-    --button-hover-color: transparent;
-    --border-radius: 8px;
+    font-family: motor, monospace;
+    font-style: normal;
+    font-weight: 400;
+    --background-color: #1a1a1a;
+    --input-text-color: #575858;
+    --text-color: #ffffff;
+    --input-background: #2c2c2e;
+
+
+    --border-radius: 0px;
+
+    --mess-color: rgb(255, 229, 0);
+
+    --mess-secondary-color: rgb(15, 0, 122);
+    --icon-color: #ffffff;
+    --icon-hover-color: var(--mess-color);
+
 }
 
 body {
@@ -29,12 +39,12 @@ body {
 }
 
 h1 {
-    font-size: 3rem;
-    font-weight: 300;
+    font-size: 4.5rem;
+    font-weight: 400;
     line-height: 1.2;
     text-align: center;
-    color: var(--text-color);
     margin: 1.5rem 0;
+    color: var(--text-color);
 }
 
 @media (max-width: 768px) {
@@ -43,35 +53,6 @@ h1 {
     }
 }
 
-input[type="text"] {
-    height: 35px;
-    width: 40%;
-    border-radius: var(--border-radius);
-    padding: 0.6em 1em;
-    font-size: .8rem;
-    border: 1px solid var(--background-color);
-    color: var(--primary-color);
-    margin-bottom: 7.5px;
-    box-sizing: border-box;
-}
-
-button {
-    border-radius: var(--border-radius);
-    padding: 0.6em 1em;
-    font-size: 1rem;
-    border: none;
-    background-color: var(--text-color);
-    color: #ffffff;
-    cursor: pointer;
-    transition: background-color 0.25s, transform 0.1s;
-    width: 30%;
-    margin-top: 7.5px;
-}
-
-button:hover,
-button:focus {
-    background-color: var(--button-hover-color);
-}
 
 .login-container {
     display: flex;
@@ -80,28 +61,38 @@ button:focus {
     overflow-y: hidden;
 }
 
-.logo-container {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
 
 .login-top {
     margin-top: 2.5%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    height: 80%;
+    height: 75%;
 }
 
 .login-bottom {
+    height: fit-content;
     position: fixed;
-    bottom: 10px;
+    bottom: 20px;
     right: 20px;
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
+}
+
+.logo-container {
+    margin: 2rem;
+    width: 20vw;
+    max-width: 250px;
+    min-width: 125x;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.logo-container svg {
+    width: 80%;
+    height: auto;
 }
 
 .google-auth {
@@ -121,16 +112,45 @@ button:focus {
 .vertical-divider {
     align-self: stretch;
     width: 1.5px;
-    background-color: #1a1a1a;
+    color: #ffffff;
+    background-color: #ffffff;
     opacity: 0.4;
     height: 80%;
-    margin-top: 20px;
-    margin-bottom: 20px;
 }
 
-.mui-icon-button:hover {
-    transform: scale(1.1);
+.login-button {
+    padding: 0.8em 1.2em;
+    font-size: 1rem;
+    border: none;
+    font-family: motor, monospace;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.1rem;
+    background-color: var(--mess-color);
+    color: var(--background-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 30%;
+    margin-top: 7.5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
 }
+
+.login-button:hover {
+    background-color: darken(var(--mess-color), 10%);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    color: var(--mess-color);
+}
+
+.login-button:active {
+    background-color: lighten(var(--mess-color), 10%);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+}
+
+@media (max-width: 768px) {}
 
 @media (max-width: 768px) {
     .login-container {
@@ -139,5 +159,10 @@ button:focus {
 
     .login-header {
         font-size: var(--font-size-base);
+    }
+
+    button.login-button {
+        width: 50%;
+        padding: 0.8em 1em;
     }
 }

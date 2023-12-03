@@ -7,11 +7,20 @@ import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
 import AccessibilityModal from './AccessibilityModal';
 import RoleSelectionModal from './RoleSelectionModal';
-import IconButton from '@mui/material/IconButton';
 import TranslateIcon from '@mui/icons-material/Translate';
+import { IconButton, InputAdornment } from '@mui/material';
+import { TextField } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
+import Divider from '@mui/material/Divider';
+
 import './Styles/Login.css';
+import useStyles from './Styles/useStyles.ts';
+
 import axios from 'axios';
+import MessLogo from './MessLogo.tsx';
+
 
 interface CustomJwtPayload {
   email: string;
@@ -19,105 +28,90 @@ interface CustomJwtPayload {
   family_name: string;
 }
 
-const oAuthFailureMessage = "You are not authorized to access this application.";
-
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, authErrorMessage, setAuthErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
   const [selectedRole, setSelectedRole] = useState('');
 
+  const classes = useStyles();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event:any) => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
-    console.log("Modal state changed:", showRoleSelectionModal);
     if (!showRoleSelectionModal && selectedRole) {
-      console.log("Navigating to:", `/${selectedRole}`);
       navigate(`/${selectedRole}`);
       setSelectedRole('');
     }
   }, [showRoleSelectionModal, selectedRole, navigate]);
 
-
-  
+  const logMessage = (action: string, message: string) => {
+    console.log(`Action: ${action} | Info: ${message}`);
+  };
 
   const handleManualLoginSubmit = async () => {
     try {
       const errors = validateForm();
       if (errors.email || errors.password) {
-        setAuthErrorMessage(errors.email || errors.password);
+        setAuthErrorMessage("validateForm(): " + (errors.email || errors.password));
         setShowErrorModal(true);
         return;
       }
-
       const response = await axios.post('/auth/manual/login', { email, password });
-
-      if (response.status == 200) {
-        console.log("Client Received 200 OK");
-        console.log("response.data: ", response.data);
+      if (response.status === 200) {
+        const { token, user } = response.data;
+        localStorage.setItem('token', token);
+        setUser({ ...user });
+        navigateBasedOnRole(user.role);
+      } else {
+        setAuthErrorMessage(response.data.message);
+        setShowErrorModal(true);
       }
-
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      setUser({ ...user });
-
-      if (user.role === 'cashier') {
-        navigate('/cashier');
-      } else if (user.role === 'manager') {
-        navigate('/manager');
-      } else if (user.role === 'admin') {
-        setShowRoleSelectionModal(true);
-      }
-
+      logMessage('ManualLoginSubmit', `Response status: ${response.status}`);
     } catch (error: any) {
-      setAuthErrorMessage(error.response?.data || 'Manual Authentication Failed: Invalid Credentials');
+      logMessage('ManualLoginSubmit', 'Error occurred');
+      setAuthErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
   };
 
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
-
     try {
       const decoded: CustomJwtPayload = jwtDecode(idToken);
-
       const userEmail = decoded.email;
       const userFirstName = decoded.given_name;
       const userLastName = decoded.family_name;
-
-      const response = await axios.post('/auth/google/login', { userEmail, userFirstName, userLastName});
-
-      if (response.status == 200) {
-        console.log("Client Received 200 OK");
-        console.log("response.data: ", response.data);
+      const response = await axios.post('/auth/google/login', { userEmail, userFirstName, userLastName });
+      logMessage('GoogleLoginSuccess', `Response status: ${response.status}`);
+      if (response.status === 200) {
+        const { token, user } = response.data;
+        localStorage.setItem('token', token);
+        setUser({ ...user, isAuthenticated: true });
+        navigateBasedOnRole(user.role);
       } else {
         setShowErrorModal(true);
       }
-
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      setUser({ ...user, role: user.role, isAuthenticated: true });
-
-      if (user.role === 'cashier') {
-        navigate('/cashier');
-      } else if (user.role === 'manager') {
-        navigate('/manager');
-      } else if (user.role === 'admin') {
-        setShowRoleSelectionModal(true);
-      }
-       else {
-        handleGoogleLoginError();
-        setShowErrorModal(true);
-      }
     } catch (error) {
+      logMessage('GoogleLoginSuccess', 'Error occurred');
       setAuthErrorMessage('Failed Google OAuth');
       setShowErrorModal(true);
     }
   };
 
   const handleGoogleLoginError = () => {
-    setAuthErrorMessage(oAuthFailureMessage);
+    logMessage('GoogleLogin', 'Login failed');
+    setAuthErrorMessage('You are not authorized to access this application.');
+    setShowErrorModal(true);
   };
 
   const handleAccessibilityModal = () => {
@@ -127,8 +121,6 @@ const LoginPage = () => {
   const handleErrorModal = () => {
     setShowErrorModal(!showErrorModal);
   }
-
-  
 
   const handleRoleSelectionModal = (role = '') => {
     setShowRoleSelectionModal(!showRoleSelectionModal);
@@ -153,35 +145,63 @@ const LoginPage = () => {
     return errors;
   };
 
+  const navigateBasedOnRole = (role: string) => {
+    if (role === 'cashier') {
+      navigate('/cashier');
+    } else if (role === 'manager') {
+      navigate('/manager');
+    } else if (role === 'admin') {
+      setShowRoleSelectionModal(true);
+    }
+  };
+
   return (
     <>
       <div className={`login-container ${showErrorModal || showRoleSelectionModal ? 'blur-background' : ''}`}>
         <div className="logo-container">
-          {/* <img src={logo} alt="Mess Waffles" width={200} height={75}/> */}
-          <h1>Mess Waffles</h1>
+          <MessLogo />
         </div>
         <div className='login-top'>
           <div className="manual-login">
             <h1>Sign In</h1>
-            <input
+            <TextField
               type="text"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              sx={classes.textFieldCustom}
+              variant="outlined"
             />
-            <input
-              type="text"
-              placeholder="Password"
+
+            <TextField
+              type={showPassword ? 'text' : 'password'}
               value={password}
+              placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
+              sx={classes.textFieldCustom}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      disableRipple
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
             />
+
             <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit
             </button>
-
             <div className="google-auth">
               <GoogleLogin
-
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
@@ -189,33 +209,25 @@ const LoginPage = () => {
                 theme='filled_black'
                 size='large'
                 logo_alignment='center'
-                width={220}
+                width={250}
               />
-
             </div>
           </div>
-          <div className="vertical-divider" />
+          <Divider orientation="vertical" flexItem sx={{backgroundColor:'#ffffff'} } />
           <div className="guest-options">
-            <h1>Continue as Guest</h1>
+            <h1>Guest Options</h1>
             <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
             <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
           </div>
         </div>
-
-
         <div className="login-bottom">
-          <IconButton className="mui-icon-button">
-            <TranslateIcon />
+          <IconButton className="mui-icon-button"  >
+            <TranslateIcon sx={classes.iconButton} />
           </IconButton>
           <IconButton className="mui-icon-button" onClick={handleAccessibilityModal}>
-            <AccessibilityIcon />
-            <AccessibilityModal
-              isOpen={showAccessibilityModal}
-              onClose={() => setShowAccessibilityModal(false)}
-            />
+            <AccessibilityIcon sx={classes.iconButton} />
           </IconButton>
         </div>
-
       </div>
       <ErrorModal
         isOpen={showErrorModal}
@@ -225,6 +237,10 @@ const LoginPage = () => {
       <RoleSelectionModal
         isOpen={showRoleSelectionModal}
         onClose={handleRoleSelectionModal}
+      />
+      <AccessibilityModal
+        isOpen={showAccessibilityModal}
+        onClose={() => setShowAccessibilityModal(false)}
       />
     </>
   );

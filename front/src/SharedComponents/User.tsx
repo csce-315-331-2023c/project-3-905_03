@@ -1,68 +1,79 @@
 import React, { useState } from 'react';
-import { useAuth, User } from './AuthContext';
-import { TextField, Button, Avatar, Typography, Box } from '@mui/material';
+import { useAuth } from './AuthContext';
+import { TextField, Button, Avatar, Typography, Grid, Box, Paper } from '@mui/material';
 
 const User: React.FC = () => {
-    const { user, setUser } = useAuth();
-    const [editMode, setEditMode] = useState(false);
-
-    const [editableUser, setEditableUser] = useState<User>(user!);
+    const { user } = useAuth();
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
     if (!user) {
         return <Box className="user-container"><Typography>No user data available</Typography></Box>;
     }
 
-    const handleEdit = () => {
-        setEditMode(true);
-        setEditableUser(user); 
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEditableUser((prevUser) => ({
-            ...prevUser!,
-            [e.target.name]: e.target.value,
-        }));
-    };
-
-    const handleSave = () => {
-        setEditMode(false);
-        setUser(editableUser!);
+    const handlePasswordChange = () => {
+        // Implement password change logic
     };
 
     return (
-        <Box className="user-container">
-            <Typography variant="h4">Signed-In as {user.role.charAt(0).toUpperCase()}</Typography>
-            <Avatar src={user.profilePic} alt={`${user.firstName} ${user.lastName}`} />
-            {editMode ? (
-                <>
-                    <TextField
-                        label="First Name"
-                        value={editableUser?.firstName || ''}
-                        onChange={handleChange}
-                        name="firstName"
-                    />
-                    <TextField
-                        label="Last Name"
-                        value={editableUser?.lastName || ''}
-                        onChange={handleChange}
-                        name="lastName"
-                />
-                    <TextField
-                        label="Email"
-                        value={editableUser?.email || ''}
-                        onChange={handleChange}
-                        name="email"
-                    />
-                    <Button onClick={handleSave}>Save</Button>
-                </>
-            ) : (
-                <>
-                    <Typography><strong>Email:</strong> {user.email}</Typography>
-                    <Typography><strong>First Name:</strong> {user.firstName}</Typography>
-                    <Typography><strong>Last Name:</strong> {user.lastName}</Typography>
-                    <Button onClick={handleEdit}>Edit</Button>
-                </>
-            )}
+        <Box className="user-container" sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
+            <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+                <Typography variant="h6" gutterBottom><b>Account</b></Typography>
+                <Grid container spacing={3} alignItems="center">
+                    <Grid item>
+                        <Avatar src={user.profilePic} alt={`${user.firstName} ${user.lastName}`} sx={{ width: 60, height: 60 }} />
+                    </Grid>
+                    <Grid item xs>
+                        <Typography variant="subtitle1">{user.firstName} {user.lastName}</Typography>
+                        <Typography variant="body2" color="textSecondary">{user.email}</Typography>
+                        <Typography variant="caption" sx={{ opacity: 0.7 }}>{user.role}</Typography>
+                    </Grid>
+                </Grid>
+            </Paper>
+
+            <Paper elevation={3} sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom><b>Change Password</b></Typography>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Current Password"
+                            type="password"
+                            fullWidth
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="New Password"
+                            type="password"
+                            fullWidth
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            label="Confirm New Password"
+                            type="password"
+                            fullWidth
+                            value={confirmNewPassword}
+                            onChange={(e) => setConfirmNewPassword(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handlePasswordChange}
+                            fullWidth
+                        >
+                            Submit
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Paper>
         </Box>
     );
 };

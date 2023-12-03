@@ -7,11 +7,32 @@ import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
 import AccessibilityModal from './AccessibilityModal';
 import RoleSelectionModal from './RoleSelectionModal';
-import IconButton from '@mui/material/IconButton';
 import TranslateIcon from '@mui/icons-material/Translate';
+import { IconButton, InputAdornment } from '@mui/material';
+import { TextField } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AccessibilityIcon from '@mui/icons-material/Accessibility';
+
 import './Styles/Login.css';
+import useStyles from './Styles/useStyles.ts';
+
 import axios from 'axios';
+import MessLogo from './MessLogo.tsx';
+
+const iconStyle = {
+  color: '#ffffff',
+  '&:hover': {
+    textDecoration: 'underline', 
+    textDecorationColor: 'var(--mess-color)', 
+  },
+  '&.Mui-focusVisible': {
+    outline: 'none',
+  },
+  '&:focus': {
+    outline: 'none',
+  }
+}
 
 interface CustomJwtPayload {
   email: string;
@@ -26,6 +47,17 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, authErrorMessage, setAuthErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
   const [selectedRole, setSelectedRole] = useState('');
+
+  const classes = useStyles();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event:any) => {
+    event.preventDefault();
+  };
 
   useEffect(() => {
     if (!showRoleSelectionModal && selectedRole) {
@@ -139,23 +171,44 @@ const LoginPage = () => {
     <>
       <div className={`login-container ${showErrorModal || showRoleSelectionModal ? 'blur-background' : ''}`}>
         <div className="logo-container">
-          <h1>Mess Waffles</h1>
+          <MessLogo />
         </div>
         <div className='login-top'>
           <div className="manual-login">
             <h1>Sign In</h1>
-            <input
+            <TextField
               type="text"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              sx={classes.textFieldCustom}
+              variant="outlined"
             />
-            <input
-              type="text"
-              placeholder="Password"
+
+            <TextField
+              type={showPassword ? 'text' : 'password'}
               value={password}
+              placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
+              sx={classes.textFieldCustom}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      disableRipple
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
             />
+
             <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit
             </button>
@@ -174,17 +227,17 @@ const LoginPage = () => {
           </div>
           <div className="vertical-divider" />
           <div className="guest-options">
-            <h1>Continue as Guest</h1>
+            <h1>Guest Options</h1>
             <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
             <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
           </div>
         </div>
         <div className="login-bottom">
           <IconButton className="mui-icon-button">
-            <TranslateIcon />
+            <TranslateIcon sx={iconStyle} />
           </IconButton>
           <IconButton className="mui-icon-button" onClick={handleAccessibilityModal}>
-            <AccessibilityIcon />
+            <AccessibilityIcon sx={iconStyle} />
           </IconButton>
         </div>
       </div>

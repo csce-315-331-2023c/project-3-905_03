@@ -154,8 +154,8 @@ const Customer = () => {
 
     // loading animation
     useEffect(() => {
-        if (fams.length > 0) 
-            setLoading(false);        
+        if (fams.length > 0)
+            setLoading(false);
     }, [fams]);
 
     useEffect(() => {
@@ -171,47 +171,32 @@ const Customer = () => {
         <div className='customer'>
             <div className="top">
                 <img className='title' src={mess} alt="mess" onClick={imgClick} />
-                {bagView ? (
-                    <>
-                        <div className="bagview">
-                            <h1>bagview</h1>
-                            <div className='displayedItems'>
-                                {bag.map((family, index) => (
-                                    <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
-                                ))}
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <FormControl className='sections' component='fieldset'>
-                            <FormLabel component="legend">Sections</FormLabel>
-                            <RadioGroup
-                                aria-labelledby="demo-controlled-radio-buttons-group"
-                                name="controlled-radio-buttons-group"
-                                value={formValue}
-                                defaultValue="w&t"
-                                onChange={handleSections}
-                            >
-                                <FormControlLabel value="w&t" control={<Radio />} label="Waffles & Toast" />
-                                <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
-                                <FormControlLabel value="side" control={<Radio />} label="Sides" />
-                                <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
-                            </RadioGroup>
-                        </FormControl>
-                        <FormControl className='filters'>
-                            <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
-                            <FormControlLabel
-                                control={<Switch name="gf" onChange={handleFilters} />}
-                                label="Gluten Free"
-                            />
-                            <FormControlLabel
-                                control={<Switch name="vegan" onChange={handleFilters} />}
-                                label="Vegan"
-                            />
-                        </FormControl>
-                    </>
-                )}
+                <FormControl className='sections' component='fieldset'>
+                    <FormLabel component="legend">Sections</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="demo-controlled-radio-buttons-group"
+                        name="controlled-radio-buttons-group"
+                        value={formValue}
+                        defaultValue="w&t"
+                        onChange={handleSections}
+                    >
+                        <FormControlLabel value="w&t" control={<Radio />} label="Waffles & Toast" />
+                        <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
+                        <FormControlLabel value="side" control={<Radio />} label="Sides" />
+                        <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
+                    </RadioGroup>
+                </FormControl>
+                <FormControl className='filters'>
+                    <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
+                    <FormControlLabel
+                        control={<Switch name="gf" onChange={handleFilters} />}
+                        label="Gluten Free"
+                    />
+                    <FormControlLabel
+                        control={<Switch name="vegan" onChange={handleFilters} />}
+                        label="Vegan"
+                    />
+                </FormControl>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
                     startIcon=
@@ -253,17 +238,22 @@ const Customer = () => {
             <div className="displayedItems">
                 {
                     (!loading) ? (
-                        fams
-                            .map((family, index) => ({ ...family, index }))
-                            .filter((family) => (family.category === formValue))
-                            .map((family, index) => (
-                                <ItemComponent
-                                    family={family}
-                                    key={index}
-                                    hand={hand}
-                                    parentSelected={setSelected}
-                                />
+                        bagView ? (
+                            bag.map((family, index) => (
+                                <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
                             ))
+                        ) :
+                            fams
+                                .map((family, index) => ({ ...family, index }))
+                                .filter((family) => (family.category === formValue))
+                                .map((family, index) => (
+                                    <ItemComponent
+                                        family={family}
+                                        key={index}
+                                        hand={hand}
+                                        parentSelected={setSelected}
+                                    />
+                                ))
                     ) : (
                         <img className='loading' src={wafflebite} alt="wafflebite" />
                     )

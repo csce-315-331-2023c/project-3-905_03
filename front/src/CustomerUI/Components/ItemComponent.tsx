@@ -28,6 +28,10 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
 
+  const isWaffles = useMemo(() => family.name === "Waffles", [family.name]); 
+  const compWidth = (isWaffles) ? "80%" : "20%";
+  const compStyle = isWaffles ? { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' } : {};
+
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
   }
@@ -78,7 +82,9 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
     <Paper
       elevation={5 + 15 * Number(family.id == hand)}
       className='itemComp'
-      onClick={() => parentSelected(myFamily)}>
+      onClick={() => parentSelected(myFamily)}
+      style={{ width: compWidth }}
+    >
       <div className='name'>{family.name}</div>
       <div className='price'>$ {family.price}</div>
 
@@ -122,7 +128,7 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
               <FormLabel component="legend">Toppings</FormLabel>
               <FormGroup
                 aria-label="toppings"
-                // value={myFamily.toppings}
+                style={compStyle}
                 onChange={handleToppings}
               >
                 {

@@ -159,11 +159,6 @@ const Cashier = () => {
                         Takeout
                         {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
                     </button>
-                    <button className="login-button" onClick={() => setSplit(split === 0 ? 1 : 0)}
-                        style={{ backgroundColor: split === 1 ? 'green' : '#1a1a1a' }}>
-                        Split
-                        {split === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
-                    </button>
                     <button className="login-button" onClick={() => clearOrder()}>Clear Order</button>
                 </div>
                 {modalOpen && <OrderConfirmationModal closeModal={() => (setModalOpen(false))}/>}            

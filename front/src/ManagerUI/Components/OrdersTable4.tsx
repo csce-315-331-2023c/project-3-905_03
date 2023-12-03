@@ -19,7 +19,6 @@ interface Row {
     order_id: number;
     order_total: string;
     takeout: string;
-    split: string;
     order_date: string;
     formatted_order_date: string;
 }
@@ -90,7 +89,6 @@ function OrdersTable4() {
         { name: 'order_id', label: 'Order ID', options: { filter: false, sort: true, }},
         { name: 'order_total', label: 'Order Total', options: { filter: false, sort: true, }},
         { name: 'takeout', label: 'Takeout', options: { filter: true, sort: true, }},
-        { name: 'split', label: 'Split', options: { filter: true, sort: true, }},
         { name: 'formatted_order_date', label: 'Order Date', options: { filter: false, sort: true, }},
         {
             name: 'Actions',

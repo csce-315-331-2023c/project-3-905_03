@@ -122,7 +122,6 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
                             ))
                         }
                     </div>
-                    // Submit button
                     <button className='btn' onClick={handleSubmit}>Submit</button>
                 </form>
             </div>

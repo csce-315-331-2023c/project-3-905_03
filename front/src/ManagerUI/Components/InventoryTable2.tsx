@@ -12,6 +12,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import CircularProgress from '@mui/material/CircularProgress';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 interface Row {
@@ -174,17 +175,31 @@ function InventoryTable2() {
         },
     };
 
+    const getMuiTheme = () => createTheme({
+        components: {
+            MUIDataTableBodyCell: {
+            // styleOverrides:{
+            //     root: {
+            //         backgroundColor: "#F7EEDE"
+            //     }
+            // }
+            }
+        }
+    })
+
     return (
         <div className='table-container'>
             {isLoading ? (
                 <CircularProgress style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}/>
             ) : (
-                <MUIDataTable
-                    title={"Inventory List"}
-                    data={rows}
-                    columns={columns}
-                    options={options}
-                />
+                <ThemeProvider theme={getMuiTheme()}>
+                    <MUIDataTable
+                        title={"Inventory List"}
+                        data={rows}
+                        columns={columns}
+                        options={options}
+                    />
+                </ThemeProvider>
             )}
             {modalOpen && <AddInventoryModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
         </div>

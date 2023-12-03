@@ -824,7 +824,7 @@ app.post('/submitOrder', async (req, res) => {
         const dateTime = formattedDate + ' ' + formattedTime;
 
         let dineInInt = dineIn ? 1 : 0;
-        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, order_date, status) VALUES ($1, $2, $3, $4, $5, pending)', [sender_id, neworderId, total, dineInInt, dateTime]);
+        await client.query("INSERT INTO orders (employee_id, order_id, order_total, takeout, order_date, status) VALUES ($1, $2, $3, $4, $5, 'pending')", [sender_id, neworderId, total, dineInInt, dateTime]);
 
         const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;

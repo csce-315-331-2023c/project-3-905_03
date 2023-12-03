@@ -9,7 +9,8 @@ import { Item, Topping } from '../../Order.ts';
 import axios from 'axios';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 import AddToppingModal from './AddToppingModal.tsx';
-import { IoInformationCircleOutline } from "react-icons/io5";
+import InfoIcon from '@mui/icons-material/Info';
+import { IconButton } from '@mui/material';
 
 
 interface displayItem {
@@ -97,9 +98,11 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
                             <CardActionArea>
                                 <CardHeader
                                     title={
-                                        <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
+                                        <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px", gap: '5px'}}>
                                             {item.family_name}
-                                            <IoInformationCircleOutline onClick={(e: React.MouseEvent<SVGSVGElement>) => {displayInfo(); e.stopPropagation();}}></IoInformationCircleOutline>
+                                            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => {displayInfo(); e.stopPropagation();}}>
+                                                <InfoIcon/>
+                                            </IconButton>
                                         </Typography>
                                     }
                                 />
@@ -118,7 +121,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
                                 title={
                                     <Typography variant="h6" align="center" style={{color: "black", fontSize: "15px"}}>
                                         {item.family_name}
-                                        <IoInformationCircleOutline onClick={() => {displayInfo()}}></IoInformationCircleOutline>
+                                        <IconButton onClick={() => {displayInfo()}}>
+                                                <InfoIcon/>
+                                        </IconButton>
                                     </Typography>
                                 }
                             />

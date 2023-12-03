@@ -99,13 +99,13 @@ const Cashier = () => {
         <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative'}}>
             <div>
                 <div className="button-container" style={{ display: 'flex', marginTop: '5%'}}>
-                    <button onClick={displayEntrees}>Entrees</button>
-                    <button onClick={displayWT}>Waffles & Toasts</button>
-                    <button onClick={displaySides}>Sides</button>
-                    <button onClick={displayDrinks}>Drinks</button>
-                    <button onClick={displaySpecialItems}>Special Items</button>
+                    <button className="login-button" onClick={displayEntrees}>Entrees</button>
+                    <button className="login-button" onClick={displayWT}>Waffles & Toasts</button>
+                    <button className="login-button" onClick={displaySides}>Sides</button>
+                    <button className="login-button" onClick={displayDrinks}>Drinks</button>
+                    <button className="login-button"onClick={displaySpecialItems}>Special Items</button>
                 </div>
-                <Grid container className="grid-container" style={{ display: 'flex', marginRight: '5%'}}>
+                <Grid container className="grid-container" style={{ display: 'flex', marginRight: '5%', marginBottom: '5%'}}>
                     {items.map((menuItem) => (
                         <Grid item key={menuItem.family_id} xs={12} md={6} lg={3}>
                             <ItemCard item={menuItem} addItem={addItemToOrder} addTopping={addTopping}/>
@@ -114,7 +114,7 @@ const Cashier = () => {
                 </Grid>
             </div>
             <div>
-                <table className='table' style={{ }}>
+                <table className='table'>
                     <thead>
                         <tr>
                             <th>Item ID</th>
@@ -152,19 +152,19 @@ const Cashier = () => {
                         </tr>
                     </tbody>
                 </table>
-                <div className="button-container" style={{ display: 'flex', width: '80%', marginLeft: '10%', marginTop: '3%'}}>
-                    <button onClick={() => {submitOrder()}}>Submit Order</button>
-                    <button onClick={() => {setTakeout(takeout === 0 ? 1 : 0); takeoutAction()}}
+                <div className="button-container" style={{ display: 'flex', width: '100%', marginTop: '3%'}}>
+                    <button className="login-button" onClick={() => {submitOrder()}}>Submit Order</button>
+                    <button className="login-button" onClick={() => {setTakeout(takeout === 0 ? 1 : 0); takeoutAction()}}
                         style={{ backgroundColor: takeout === 1 ? 'green' : '#1a1a1a' }}>
                         Takeout
                         {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
                     </button>
-                    <button onClick={() => setSplit(split === 0 ? 1 : 0)}
+                    <button className="login-button" onClick={() => setSplit(split === 0 ? 1 : 0)}
                         style={{ backgroundColor: split === 1 ? 'green' : '#1a1a1a' }}>
                         Split
                         {split === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
                     </button>
-                    <button onClick={() => clearOrder()}>Clear Order</button>
+                    <button className="login-button" onClick={() => clearOrder()}>Clear Order</button>
                 </div>
                 {modalOpen && <OrderConfirmationModal closeModal={() => (setModalOpen(false))}/>}            
             </div>

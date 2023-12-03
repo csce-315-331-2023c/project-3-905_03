@@ -11,6 +11,7 @@ import SalesPerformanceChart from './SalesPerformanceChart';
 import ExcessInventoryChart from './ExcessInventoryChart';
 import InventoryUsageChart from './InventoryUsageChart';
 import FreqPairsChart from './FreqPairsChart';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const ManagerAnalytics: React.FC = () => {
   const currentDateTime = new Date();
@@ -66,7 +67,7 @@ const ManagerAnalytics: React.FC = () => {
 
   const renderChart = () => {
     if (loading || !reportData) {
-      return <p>Loading...</p>; 
+      return <CircularProgress style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}/>; 
     }
     switch (activeReportType) {
       case 'generateRestockReport':
@@ -98,20 +99,15 @@ const ManagerAnalytics: React.FC = () => {
             value={endDateTime}
             onChange={(value: Date | null) => setEndDateTime(value || new Date())}
           />
+            <Button variant="text" onClick={() => handleReport('generateRestockReport')}>Generate Restock Report</Button>
+            <Button variant="text" onClick={() => handleReport('generateSalesReport')}>Generate Sales Report</Button>
+            <Button variant="text" onClick={() => handleReport('generateExcessReport')}>Generate Excess Report</Button>
+            <Button variant="text" onClick={() => handleReport('generateUsageReport')}>Generate Usage Report</Button>
+            <Button variant="text" onClick={() => handleReport('generateFreqPairsReport')}>Generate Freq Pairs Report</Button>
         </div>
         <div className='report-display-container'>
           {renderChart()}
         </div>
-
-        <div className='report-buttons-container'>
-          <Button variant="text" onClick={() => handleReport('generateRestockReport')}>Generate Restock Report</Button>
-          <Button variant="text" onClick={() => handleReport('generateSalesReport')}>Generate Sales Report</Button>
-          <Button variant="text" onClick={() => handleReport('generateExcessReport')}>Generate Excess Report</Button>
-          <Button variant="text" onClick={() => handleReport('generateUsageReport')}>Generate Usage Report</Button>
-          <Button variant="text" onClick={() => handleReport('generateFreqPairsReport')}>Generate Freq Pairs Report</Button>
-        </div>
-
-        
       </div>
     </LocalizationProvider>
   );

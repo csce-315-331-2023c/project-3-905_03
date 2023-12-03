@@ -22,12 +22,12 @@ const ManagerGUI: React.FC = () => {
   const ActiveComponent = componentMapping[activeSection] || null;
 
   return (
-    <div className="manager-container">
-      <div className="lhs">
+    <div style={{ height: '100vh', overflow: 'auto'}}>
+      <div>
         <ManagerNav setActiveSection ={setActiveSection} />
       </div>
-      <div className="rhs">
-        {ActiveComponent && <ActiveComponent />}
+      <div>
+        {ActiveComponent && <ActiveComponent/>}
       </div>
     </div>
   );

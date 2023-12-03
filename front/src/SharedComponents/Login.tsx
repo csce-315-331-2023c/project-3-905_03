@@ -172,6 +172,7 @@ const LoginPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               sx={classes.textFieldCustom}
               variant="outlined"
+              className='login-input'
             />
 
             <TextField
@@ -196,6 +197,7 @@ const LoginPage = () => {
                 ),
               }}
               variant="outlined"
+              className='login-input'
             />
 
             <button className="login-button" onClick={handleManualLoginSubmit}>

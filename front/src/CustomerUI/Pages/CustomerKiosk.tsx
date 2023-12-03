@@ -12,7 +12,7 @@ import wafflebite from '../../assets/wafflebite.gif';
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
 import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
 
-
+const BASE_URL = 'http://localhost:8080';
 
 const Customer = () => {
     const [state, upd] = useState(false);
@@ -88,7 +88,7 @@ const Customer = () => {
 
     const getFams = async () => {
         try {
-            const res = await axios.get('/getFamilyItems');
+            const res = await axios.get('/getFamilyItems', { baseURL: BASE_URL });
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
@@ -113,7 +113,7 @@ const Customer = () => {
 
     const getSizes = async (familyId: number) => {
         try {
-            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId });
+            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
             const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number }, index: number) => {
                 const { served_item, item_price } = itemData;
                 return {
@@ -131,7 +131,7 @@ const Customer = () => {
 
     const getToppings = async (familyId: number) => {
         try {
-            const res = await axios.post('/getToppingsInFamily', { family_id: familyId });
+            const res = await axios.post('/getToppingsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
             const retToppings: Topping[] = res.data.data.map((toppingData: { topping: string, topping_price: number }, index: number) => {
                 const { topping, topping_price } = toppingData;
                 return {
@@ -186,7 +186,8 @@ const Customer = () => {
                         <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
                     </RadioGroup>
                 </FormControl>
-                <FormControl className='filters'>
+                
+                {/* <FormControl className='filters'>
                     <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
                     <FormControlLabel
                         control={<Switch name="gf" onChange={handleFilters} />}
@@ -196,7 +197,7 @@ const Customer = () => {
                         control={<Switch name="vegan" onChange={handleFilters} />}
                         label="Vegan"
                     />
-                </FormControl>
+                </FormControl> */}
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
                     startIcon=
@@ -234,33 +235,39 @@ const Customer = () => {
                     Checkout
                 </Button>
             </div>
-
-            <div className="displayedItems">
-                {
-                    (!loading) ? (
-                        bagView ? (
-                            bag.map((family, index) => (
-                                <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
-                            ))
-                        ) :
-                            fams
-                                .map((family, index) => ({ ...family, index }))
-                                .filter((family) => (family.category === formValue))
-                                .map((family, index) => (
-                                    <ItemComponent
-                                        family={family}
-                                        key={index}
-                                        hand={hand}
-                                        parentSelected={setSelected}
-                                    />
+            <div className="displayWrap">
+                <div className="displayedItems">
+                    {
+                        (!loading) ? (
+                            bagView ? (
+                                bag.map((family, index) => (
+                                    <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
                                 ))
-                    ) : (
-                        <img className='loading' src={wafflebite} alt="wafflebite" />
-                    )
-                }
+                            ) :
+                                fams
+                                    .map((family, index) => ({ ...family, index }))
+                                    .filter((family) => (family.category === formValue))
+                                    // .filter((family) => {
+                                    //     if(family.toppings.length > 0) 
+                                    //         return family.toppings.some((topping) => 
+                                    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
+                                    //         );
+                                    // })
+                                    .map((family, index) => (
+                                        <ItemComponent
+                                            family={family}
+                                            key={index}
+                                            hand={hand}
+                                            parentSelected={setSelected}
+                                        />
+                                    ))
+                        ) : (
+                            <img className='loading' src={wafflebite} alt="wafflebite" />
+                        )
+                    }
+                </div>
             </div>
         </div>
     );
 };
-
 export default Customer;

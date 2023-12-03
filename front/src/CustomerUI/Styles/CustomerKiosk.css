@@ -94,13 +94,16 @@
 
 /* menu */
 
+.displayWrap {
+  height: 1200px;
+}
+
 .displayedItems {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 
   margin-top: 20px;
-  height: 1200px;
   overflow: auto;
 }
 

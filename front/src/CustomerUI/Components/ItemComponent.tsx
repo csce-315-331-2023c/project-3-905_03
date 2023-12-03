@@ -40,7 +40,7 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
     const selectedTopping = event.target.value;
     const index = selectedToppings.indexOf(selectedTopping);
     const topping = myFamily.toppings.find(topping => topping.name === selectedTopping);
-    
+
     if (index === -1) {
       setSelectedToppings([...selectedToppings, selectedTopping]);
     } else {
@@ -124,7 +124,7 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
       {
         myFamily.toppings.length > 0 ? (
           <div className='toppings'>
-            <FormControl component="fieldset" variant="standard">
+            <FormControl component="fieldset" variant="standard" key={myFamily.id}>
               <FormLabel component="legend">Toppings</FormLabel>
               <FormGroup
                 aria-label="toppings"

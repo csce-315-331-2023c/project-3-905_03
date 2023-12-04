@@ -23,7 +23,6 @@ const Cashier = () => {
     const [order, setOrder] = useState<Order>(new Order());
     const [rows, setRows] = useState<Item[]>(order.getReceipt());
     const [takeout, setTakeout] = useState<number>(0);
-    const [split, setSplit] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [orderNumber, setOrderNumber] = useState<number>(0);
 
@@ -84,7 +83,6 @@ const Cashier = () => {
         setOrder(newOrder);
         setRows(newOrder.getReceipt());
         setTakeout(0);
-        setSplit(0);
         upd(a => !a);
     }
 
@@ -150,7 +148,7 @@ const Cashier = () => {
                             <td></td>
                             <td></td>
                             <td>Total: </td>
-                            <td>{split === 0 ? order.getOrderTotal() : order.splitOrder()}</td>
+                            <td>{order.getOrderTotal()}</td>
                         </tr>
                     </tbody>
                 </table>

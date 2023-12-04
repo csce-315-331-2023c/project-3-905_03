@@ -28,30 +28,54 @@ app.get('/test', (req, res) => {
 /**
  * return served items in json form
  */
-app.get('/getServedItems', (req, res) => {
+app.get('/getServedItems', async (req, res) => {
+    let client;
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
 
-    const client = new Client({
-        host: 'csce-315-db.engr.tamu.edu',
-        user: 'csce315_905_03user',
-        password: '90503',
-        database: 'csce315_905_03db'
-    })
+        await client.connect();
+        const result = await client.query("SELECT * FROM served_items ORDER BY item_id");
+        const servedItems = result.rows;
 
-    client.connect();
+        let allServedItems = []; // Array to hold all served items
 
-    client.query(`SELECT * FROM served_items ORDER BY item_id`, (err, result) => {
-        if (!err) {
-            res.status(200).send({
-                data: result.rows
-            });
+        for (const servedItem of servedItems) {
+            let servedItemInfo = { // Create a new servedItemInfo for each served item
+                item_id: servedItem.item_id,
+                served_item: servedItem.served_item,
+                item_price: servedItem.item_price,
+                family_id: servedItem.family_id,
+                ingredients: []
+            };
 
+            let ingredientsInfo = []; // Create a new ingredientsInfo for each served item
+
+            const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [servedItem.item_id]);
+            const stock_ids_used = stock_ids_usedResult.rows;
+
+            for (const stock_id of stock_ids_used) {
+                const stockInfoResult = await client.query('SELECT * FROM stock_items WHERE stock_id = $1', [stock_id.stock_id]);
+                const stockInfo = stockInfoResult.rows[0];
+                ingredientsInfo.push(stockInfo);
+            }
+
+            servedItemInfo.ingredients = ingredientsInfo;
+            allServedItems.push(servedItemInfo); // Add the servedItemInfo to the allServedItems array
         }
-        else {
-            console.log(err.message);
-            res.status(500).send(err.message);
+
+        res.status(200).json({ message: "success!", data: allServedItems });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
         }
-        client.end();  // Ensure the client connection is closed
-    });
+    }
 });
 
 /**
@@ -427,7 +451,7 @@ app.get('/getRecentOrders', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_date desc limit 1000`, (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_id desc limit 1000`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows
@@ -738,29 +762,52 @@ app.post('/addServedItemStockItem', (req, res) => {
 /**
  * edit served_items entry 
  * will be provided with all values
- * 
+ * delete all current entries with item_id in serveditemstockitem
+ * given sting list of ingredients, find their ids, then add entry
  */
 app.post('/editServedItem', async (req, res) => {
-    let { item_id, served_item, item_price, family_name } = req.body;
+    let client;
 
-    const client = new Client({
-        host: 'csce-315-db.engr.tamu.edu',
-        user: 'csce315_905_03user',
-        password: '90503',
-        database: 'csce315_905_03db'
-    })
+    try {
 
-    client.connect();
+        let { item_id, served_item, item_price, family_name, ingredients } = req.body;
 
-    const result = await client.query('SELECT family_id FROM served_items_family WHERE family_name = $1', [family_name]);
-        client.query('UPDATE served_items SET served_item = $1, item_price = $2, family_id = $4 WHERE item_id = $3', [served_item, item_price, item_id, result.rows[0].family_id], (err, result) => {
-            if (!err) {
-                res.status(200).send('success!');
-            } else {
-                res.status(400).send(err.message);
-            }
-            client.end();
+        const client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
         })
+
+        client.connect();
+
+        //get family_id given family name
+        const result = await client.query('SELECT family_id FROM served_items_family WHERE family_name = $1', [family_name]);
+        const family_id = result.rows[0].family_id;
+
+        //update the served_items table
+        client.query('UPDATE served_items SET served_item = $1, item_price = $2, family_id = $4 WHERE item_id = $3', [served_item, item_price, item_id, family_id]);
+
+        //delete from joint table
+        client.query('DELETE FROM serveditemstockitem WHERE item_id = $1', [item_id]);
+
+        //get stock_id given stock_item
+        for (const stock_item of ingredients) {
+            const result = await client.query('SELECT stock_id FROM stock_items WHERE stock_item = $1', [stock_item]);
+            const stock_id = result.rows[0].stock_id;
+
+            //add entry to joint table
+            client.query('INSERT INTO serveditemstockitem (item_id, stock_id) VALUES ($1, $2)', [item_id, stock_id]);
+        }
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
 });
 
 /**

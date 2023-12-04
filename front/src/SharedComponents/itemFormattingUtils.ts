@@ -6,7 +6,7 @@ export function formatCamelCase(str: string): string {
     }
     const result = str.replace(/([a-z0-9])([A-Z])/g, '$1 $2')
                     .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2');
-    return result.charAt(0).toUpperCase() + result.slice(1);
+    return result.trim().charAt(0).toUpperCase() + result.trim().slice(1);
 }
 
 const approvedSizes = ['Snack', 'Regular', 'Plus', 'One', 'Two', 'Three', 'Large', 'Single', 'Double', 'Single', 'Carafe', 'Lavender', 'Raspberry', 'Original'];

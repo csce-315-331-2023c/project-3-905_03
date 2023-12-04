@@ -4,6 +4,7 @@ import ManagerGUI from './ManagerUI/Pages/Manager';
 import Cashier from './CashierUI/Pages/Cashier';
 import CustomerKiosk from './CustomerUI/Pages/CustomerKiosk';
 import DynamicMenu from './DynamicMenu/Pages/DynamicMenu';
+import KitchenDisplay from './KitchenDisplay/Pages/KitchenDisplay';
 import LoginPage from './SharedComponents/Login';
 import ProtectedRoute from './SharedComponents/ProtectedRoute';
 import { AuthProvider } from './SharedComponents/AuthContext';
@@ -22,11 +23,13 @@ function App() {
               <Route path="/customer-kiosk" element={<CustomerKiosk />} />
               <Route path="/dynamic-menu" element={<DynamicMenu />} />
               <Route path="/cashier2" element={<Cashier />} />
+              <Route path="/kitchen-display2" element={<KitchenDisplay />} />
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
                 <Route path="/manager" element={<ManagerGUI />} />
               </Route>
               <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
                 <Route path="/cashier" element={<Cashier />} />
+                <Route path="/kitchen-display" element={<KitchenDisplay />} />
               </Route>
               <Route path="*" element={<LoginPage />} />
             </Routes>

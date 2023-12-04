@@ -43,6 +43,7 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
                 <div className='role-options'>
                     <button className='role-button' onClick={() => handleRoleSelect('cashier')}>Cashier</button>
                     <button className='role-button' onClick={() => handleRoleSelect('manager')}>Manager</button>
+                    <button className='role-button' onClick={() => handleRoleSelect('kitchen-display')}>Kitchen</button>
                 </div>
             </div>
         </div>,

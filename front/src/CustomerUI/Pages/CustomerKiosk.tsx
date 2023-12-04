@@ -4,7 +4,6 @@ import axios from 'axios';
 import "../Styles/CustomerKiosk.css";
 import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
-import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
@@ -35,7 +34,7 @@ const Customer = () => {
     const [bagTotal, setBagTotal] = useState<string>("");
 
     const [formValue, setFormValue] = useState('w&t');
-    const [filters, setFilters] = useState({ gf: false, vegan: false });
+    // const [filters, setFilters] = useState({ gf: false, vegan: false });
     const [fams, setFams] = useState<Family[]>([]);
 
     const [hand, setHand] = useState(0);

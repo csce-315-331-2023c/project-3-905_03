@@ -18,7 +18,7 @@
   gap: 30px;
   grid-auto-rows: minmax(80px, auto);
 
-  height: 35%;
+  height: 25vh;
 }
 
 .top > * {
@@ -107,7 +107,7 @@
 /* menu */
 
 .displayWrap {
-  height: 70vh;
+  height: 75vh;
   overflow: auto;
 }
 

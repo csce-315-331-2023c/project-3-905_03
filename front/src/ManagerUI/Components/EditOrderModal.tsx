@@ -11,9 +11,10 @@ import { BsFillTrashFill } from "react-icons/bs";
 interface EditOrderModalProps {
     orderID: number;
     closeModal : () => void;
+    getOrders: () => void;
 }
 
-const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) => {
+const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal, getOrders }) => {
     interface displayItem {
         family_id: number;
         family_name: string;
@@ -104,6 +105,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
             dineIn: takeout
           })
         clearOrder();
+        getOrders();
         closeModal();
 
     };

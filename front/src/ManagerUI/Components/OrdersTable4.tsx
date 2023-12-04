@@ -259,7 +259,8 @@ function OrdersTable4() {
                                 {editOrderModalOpen === tableMeta.rowData[1] && <EditOrderModal 
                                 key={tableMeta.rowData[1]} 
                                 closeModal={() => setEditOrderModalOpen(null)} 
-                                orderID={tableMeta.rowData[1]} />}
+                                orderID={tableMeta.rowData[1]} 
+                                getOrders={() => refreshOrders()}/>}
                             </span>
                         );
                     }

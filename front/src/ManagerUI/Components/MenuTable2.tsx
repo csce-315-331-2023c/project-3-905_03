@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import { TextField } from '@mui/material';
+import { Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import InputLabel from '@mui/material/InputLabel';
@@ -23,6 +23,7 @@ interface Row {
     item_price: number;
     family_id?: number;
     family_name: string;
+    ingredients?: string[];
 }
 
 function MenuTable() {
@@ -32,6 +33,7 @@ function MenuTable() {
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [familyNames, setFamilyNames] = useState<string[]>([]);
+    const [allIngredients, setAllIngredients] = useState<string[]>([]);
 
 
     const fetchMenuItems = () => {
@@ -40,8 +42,10 @@ function MenuTable() {
             // axios.get('/getItemCategories')
         ])
         .then(([servedItemsRes]) => {
-            const servedItemsData: Row[] = servedItemsRes.data.data;
-            
+            const servedItemsData: Row[] = servedItemsRes.data.data.map((item: any) => ({
+                ...item,
+                ingredients: item.ingredients.map((ingredient: any) => ingredient.stock_item),
+            }));
             const familyCategoryPromises = servedItemsData.map((item) =>
                 axios.post('/getItemFamily', {family_id: item.family_id})
             );
@@ -66,6 +70,15 @@ function MenuTable() {
             // Handle the error appropriately
         });
     }
+    const fetchAllIngredients = () => {
+        axios.get('/getStockItems')
+            .then((res) => {
+                const data: Array<{ stock_item: string }> = res.data.data;
+                const ingredientNames: string[] = data.map(item => item.stock_item);
+                setAllIngredients(ingredientNames);
+            })
+            .catch(err => console.log(err));
+    };
 
     const fetchItemFamilies = () => {
         axios.get('/getAllFamilies')
@@ -77,7 +90,7 @@ function MenuTable() {
             .catch(err => console.log(err));
     };
 
-    useEffect(() => { fetchMenuItems(); fetchItemFamilies(); }, []);
+    useEffect(() => { fetchMenuItems(); fetchItemFamilies(); fetchAllIngredients(); }, []);
 
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('/deleteServedItem', rows[targetIndex])
@@ -132,6 +145,7 @@ function MenuTable() {
                     item_price: 0, // default value
                     family_id: 0, // default value
                     family_name: '', // default value
+                    ingredients: [],
                 };
             }
         });
@@ -150,11 +164,30 @@ function MenuTable() {
                         item_price: 0, // default value
                         family_id: 0, // default value
                         family_name: '', // default value
+                        ingredients: [],
                     };
                 }
             });
 
         }
+    }
+
+    const handleIngredientsChange = (event: SelectChangeEvent<string[]>) => {
+        const val = event.target.value as unknown as string[];
+        setEditData(prevData => {
+            if (prevData) {
+                return { ...prevData, ingredients: val };
+            } else {
+                return {
+                    item_id: 0, // default value
+                    served_item: '', // default value
+                    item_price: 0, // default value
+                    family_id: 0, // default value
+                    family_name: '', // default value
+                    ingredients: [],
+                };
+            }
+        });
     }
 
     const columns = [
@@ -197,6 +230,35 @@ function MenuTable() {
                     );
                 }
                 return value;
+            }} },
+        { name: 'ingredients', label: 'Ingredients', options: {sort: true, filter: true,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return (
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                        <InputLabel id="demo-multiple-checkbox-label">Ingredients</InputLabel>
+                        <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            value={editData?.ingredients || []}
+                            onChange={handleIngredientsChange}
+                            input={<OutlinedInput label="Ingredients" />}
+                            renderValue={(selected) => (selected as string[]).join(', ')}
+                            >
+                            {allIngredients.map((ingredient) => (
+                                <MenuItem key={ingredient} value={ingredient}>
+                                    <Checkbox checked={(editData?.ingredients || []).indexOf(ingredient) > -1} />
+                                    <ListItemText primary={ingredient} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        </FormControl>
+                    </div>
+                    );
+                }
+                return value.join(', ');
             }} },
         {
             name: 'Actions',

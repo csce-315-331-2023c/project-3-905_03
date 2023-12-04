@@ -96,7 +96,7 @@ const Cashier = () => {
     }, []);
 
     return (
-        <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative'}}>
+        <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative', overflow: 'auto'}}>
             <div>
                 <div className="button-container" style={{ display: 'flex', marginTop: '5%'}}>
                     <button className="login-button" onClick={displayEntrees}>Entrees</button>

@@ -17,7 +17,7 @@ function App() {
   
   return (
     <AuthProvider>
-      <GoogleOAuthProvider clientId={googleClientId}>
+      {/* <GoogleOAuthProvider clientId={googleClientId}> */}
         <BrowserRouter>
           <ModalProvider>
             <Routes>
@@ -39,7 +39,7 @@ function App() {
             </Routes>
           </ModalProvider>
         </BrowserRouter>
-      </GoogleOAuthProvider>
+      {/* </GoogleOAuthProvider> */}
     </AuthProvider>
   );
 }

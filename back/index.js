@@ -678,6 +678,7 @@ app.post('/addServedItemStockItem', (req, res) => {
 /**
  * edit served_items entry 
  * will be provided with all values
+ * 
  */
 app.post('/editServedItem', (req, res) => {
     let { item_id, served_item, item_price } = req.body;
@@ -802,7 +803,7 @@ app.post('/submitOrder', async (req, res) => {
     let client;
 
     try {
-        let { receipt, total, sender_id, split, dineIn } = req.body;
+        let { receipt, total, sender_id, dineIn } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -823,8 +824,7 @@ app.post('/submitOrder', async (req, res) => {
         const dateTime = formattedDate + ' ' + formattedTime;
 
         let dineInInt = dineIn ? 1 : 0;
-        let splitInt = split ? 1 : 0;
-        await client.query('INSERT INTO orders (employee_id, order_id, order_total, takeout, split, order_date) VALUES ($1, $2, $3, $4, $5, $6)', [sender_id, neworderId, total, dineInInt, splitInt, dateTime]);
+        await client.query("INSERT INTO orders (employee_id, order_id, order_total, takeout, order_date, status) VALUES ($1, $2, $3, $4, $5, 'pending')", [sender_id, neworderId, total, dineInInt, dateTime]);
 
         const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
         let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
@@ -846,8 +846,6 @@ app.post('/submitOrder', async (req, res) => {
             let maxOrderServedItemToppingId = maxOrderServedItemToppingIdResult.rows[0].max || 0;
             let newOrderServedItemToppingId = maxOrderServedItemToppingId + 1;
 
-            // toppings = item.toppings;
-            // toppings = JSON.parse(toppings);
             console.log(item.toppings);
             if (item.toppings && Array.isArray(item.toppings)) {
                 for (const topping of item.toppings) {
@@ -873,6 +871,677 @@ app.post('/submitOrder', async (req, res) => {
     }
 });
 
+/**
+ * delete order
+ */
+
+/**
+ * edit order
+ */
+/**
+ * change order status to pending given order_id
+ */
+app.post('/pendingOrder', async (req, res) => {
+    let client;
+    let { order_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = 'pending' WHERE order_id = $1", [order_id]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * change order status to fulfilled given order_id
+ */
+app.post('/fulfillOrder', async (req, res) => {
+    let client;
+    let { order_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = 'fulfilled' WHERE order_id = $1", [order_id]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * change order status to cancelled given order_id
+ */
+app.post('/cancelOrder', async (req, res) => {
+    let client;
+    let { order_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = 'cancelled' WHERE order_id = $1", [order_id]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * get all pending orders
+ */
+app.get('/getPendingOrders', async (req, res) => {
+    let client;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        const result = await client.query("SELECT * FROM orders WHERE status = 'pending'");
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete an order
+ */
+
+/**
+ * get all toppings
+ */
+app.get('/getToppings', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM served_items_topping');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add topping
+ * family_ids is an array of family ids ex : [0,1,2] we can change this if needed
+ * I am imaging when manager is adding a topping, they will select which families it applies to similar to how 
+ * they select what ingredients are in a served_item
+ */
+app.post('/addTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {family_ids, topping, topping_price } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        let maxTopping_id = await client.query('SELECT MAX(topping_id) FROM served_items_topping');
+        let topping_id = (maxTopping_id.rows[0].max || 0) + 1;
+        for (const family_id of family_ids) {
+            await client.query('INSERT INTO served_items_topping (topping_id, family_id, topping, topping_price) VALUES ($1, $2, $3, $4)', [topping_id, family_id, topping, topping_price]);
+            topping_id++;
+        }
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a topping
+ * currently this is deleting a topping from all families just by using its name
+ */
+app.post('/deleteAllOfTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {topping} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM served_items_topping WHERE topping = $1', [ topping ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a topping
+ * deletes a specific topping using its topping_id
+ */
+app.post('/deleteIndividualTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {topping_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM served_items_topping WHERE topping_id = $1', [ topping_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit a topping
+ * currently this is editing the 
+ */
+app.post('/editTopping', async (req, res) => {
+    let client;
+
+    try {
+        let {topping_id, topping, topping_price} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE served_items_topping SET topping_price = $1, topping = $2 WHERE topping_id = $3', [ topping_price, topping, topping_id]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * get all families
+ */
+app.get('/getAllFamilies', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM served_items_family');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add family
+ */
+app.post('/addFamily', async (req, res) => {
+    let client;
+
+    try {
+        let {family_name, family_category, family_description } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        let maxFamily_id = await client.query('SELECT MAX(family_id) FROM served_items_family');
+        let family_id = (maxFamily_id.rows[0].max || 0) + 1;
+        await client.query('INSERT INTO served_items_family (family_id, family_name, family_category, family_description) VALUES ($1, $2, $3, $4)', [family_id, family_name, family_category, family_description]);
+       
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a family
+ * will need to look into edge case for when an item in the family exists. maybe reasign that item item to the Special family?
+ */
+app.post('/deleteFamily', async (req, res) => {
+    let client;
+
+    try {
+        let {family_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM served_items_family WHERE family_id = $1', [ family_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit a Family
+ */
+app.post('/editFamily', async (req, res) => {
+    let client;
+
+    try {
+        let {family_id, family_name, family_category, family_description} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE served_items_family SET family_name = $2, family_category = $3, family_description = $4 WHERE family_id = $1', [ family_id, family_name, family_category, family_description]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * get all  employees
+ */
+app.get('/getEmployees', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM employees');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add an employee
+ */
+app.post('/addEmployee', async (req, res) => {
+    let client;
+
+    try {
+        let {first_name, last_name, email, password, roles, profile_pic, profile_complete, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' + currentDate.getDate().toString().padStart(2, '0');
+        const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
+        const dateTime = formattedDate + ' ' + formattedTime;
+
+        let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
+        let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+       
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete an employee
+ */
+app.post('/deleteEmployee', async (req, res) => {
+    let client;
+
+    try {
+        let {employee_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM employees WHERE employee_id = $1', [ employee_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit an employee
+ */
+app.post('/editEmployee', async (req, res) => {
+    let client;
+
+    try {
+        let {employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE employees SET first_name = $2, last_name = $3, email = $4, password = $5, roles = $6, profile_pic = $7, profile_complete = $8, created_at = $9, phone = $10, pay_rate = $11, alt_email = $12, prefered_name = $13, address = $14, emergency_contact_first_name = $15, emergency_contact_last_name = $16, emergency_contact_phone = $17 WHERE employee_id = $1', [ employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * get all users
+ */
+app.get('/getUsers', async (req, res) => {
+    let client;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const result = await client.query('SELECT * FROM users');
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * add users
+ */
+app.post('/addUser', async (req, res) => {
+    let client;
+
+    try {
+        let {first_name, last_name, email} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        let maxUser_id = await client.query('SELECT MAX(user_id) FROM users');
+        let user_id = (maxUser_id.rows[0].max || 0) + 1;
+        await client.query('INSERT INTO users (user_id, first_name, last_name, email) VALUES ($1, $2, $3, $4)', [user_id, first_name, last_name, email]);
+       
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * delete a User
+ */
+app.post('/deleteUser', async (req, res) => {
+    let client;
+
+    try {
+        let {user_id} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('DELETE FROM users WHERE user_id = $1', [ user_id ]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit a User
+ */
+app.post('/editUser', async (req, res) => {
+    let client;
+
+    try {
+        let {user_id, first_name, last_name, email} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE users SET first_name = $2, last_name = $3, email = $4 WHERE user_id = $1', [user_id, first_name, last_name, email]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+// TEMP TEMPLATE
+// app.get('/getToppings', async (req, res) => {
+//     let client;
+
+//     try {
+//         client = new Client({
+//             host: 'csce-315-db.engr.tamu.edu',
+//             user: 'csce315_905_03user',
+//             password: '90503',
+//             database: 'csce315_905_03db'
+//         });
+
+//         await client.connect();
+
+//         res.status(200).json({ message: 'success!' });
+//     } catch (error) {
+//         res.status(400).send(error.message);
+//     } finally {
+//         if (client) {
+//             client.end();
+//         }
+//     }
+// });
+
+// REPORTS
 
 { /* Managerial Analytics / Reports */ }
 app.get('/generateRestockReport', async (req, res) => {
@@ -1064,7 +1733,6 @@ app.post('/generateFreqPairsReport', async (req, res) => {
         }
     }
 });
-
 
 //// SERVER
 

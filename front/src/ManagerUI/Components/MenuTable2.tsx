@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface Row {
     item_id: number;
@@ -26,7 +27,8 @@ function MenuTable() {
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    useEffect(() => {
+
+    const fetchMenuItems = () => {
         Promise.all([
             axios.get('/getServedItems'),
             axios.get('/getItemCategories')
@@ -43,7 +45,9 @@ function MenuTable() {
             setRows(data);
             setIsLoading(false);
         })
-    }, []);
+    }
+
+    useEffect(() => { fetchMenuItems(); }, []);
 
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('/deleteServedItem', rows[targetIndex])
@@ -58,7 +62,7 @@ function MenuTable() {
     const handleAddRow = (newRow: Row) => {
         axios.post('/addServedItem', newRow)
             .then(() => {
-                setRows(prevRows => [...prevRows, newRow]);
+                fetchMenuItems();
             })
             .catch(err => console.log(err));
     };
@@ -159,9 +163,14 @@ function MenuTable() {
         jumpToPage: true,
         customToolbar: () => {
             return (
-                <IconButton onClick={() => setModalOpen(true)}>
-                    <AddIcon />
-                </IconButton>
+                <div>
+                    <IconButton onClick={() => setModalOpen(true)}>
+                        <AddIcon />
+                    </IconButton>
+                    <IconButton onClick={() => { fetchMenuItems(); setIsLoading(true); }} aria-label='Refresh'>
+                        <RefreshIcon/>
+                    </IconButton>
+                </div>
             );
         },
     };

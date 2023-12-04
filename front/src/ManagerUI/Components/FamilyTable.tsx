@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
-import AddInventoryModal from './AddInventoryModal';
+import AddFamilyModal from './AddFamilyModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -11,36 +11,39 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import CircularProgress from '@mui/material/CircularProgress';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface Row {
-    stock_id: number;
-    stock_item: string;
-    cost: number;
-    stock_quantity: number;
-    max_amount: number;
+    family_id: number;
+    family_name: string;
+    family_category: string;
+    family_description: string;
 }
 
-function InventoryTable2() {
+function FamilyTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const fetchInventoryItems = () => {
-        axios.get('/getStockItems')
+    const fetchFamilies = () => {
+        axios.get('/getAllFamilies')
             .then(res => {
                 const data: Row[] = res.data.data;
                 setRows(data);
                 setIsLoading(false);
             })
             .catch(err => console.log(err));
-    };
+    }
 
-    useEffect(() => { fetchInventoryItems(); }, []);
+    useEffect(() => { fetchFamilies(); }, []);
 
     const handleEditRow = (tableMeta: MUIDataTableMeta) => {
         setEditRow(tableMeta.rowIndex);
@@ -54,7 +57,7 @@ function InventoryTable2() {
 
     const handleConfirmEdit = () => {
         if (editData) {
-            axios.post('/editStockItem', editData)
+            axios.post('/editFamily', editData)
                 .then(() => {
                     const newRows = [...rows];
                     newRows[editRow as number] = editData;
@@ -72,18 +75,17 @@ function InventoryTable2() {
                 return { ...prevData, [event.target.name]: event.target.value };
             } else {
                 return {
-                    stock_id: 0, // default value
-                    stock_item: '', // default value
-                    cost: 0, // default value
-                    stock_quantity: 0, // default value
-                    max_amount: 0, // default value
+                    family_id: 0,
+                    family_name: '',
+                    family_category: '',
+                    family_description: '',
                 };
             }
         });
     };
 
     const handleDeleteRow = (targetIndex: number) => {
-        axios.post('/deleteStockItem', rows[targetIndex])
+        axios.post('/deleteFamily', rows[targetIndex])
             .then(() => {
                 const newRows = [...rows];
                 newRows.splice(targetIndex, 1);
@@ -93,42 +95,77 @@ function InventoryTable2() {
     };
 
     const handleAddRow = (newRow: Row) => {
-        axios.post('/addStockItem', newRow)
+        axios.post('/addFamily', newRow)
             .then(() => {
-                fetchInventoryItems();
-            })
+                fetchFamilies();
+                })
             .catch(err => console.log(err));
     };
+
+    const handleSelectChange = (event: SelectChangeEvent) => {
+        const val = event.target.value;
+        if (typeof val === 'string'){
+            setEditData(prevData => {
+                if (prevData) {
+                    return { ...prevData, family_category: val };
+                } else {
+                    return {
+                        family_id: 0,
+                        family_name: '',
+                        family_category: '',
+                        family_description: '',
+                    };
+                }
+            });
+
+        }
+    }
     
     const columns = [
-        { name: 'stock_id', label: 'Stock ID', options: {sort: true, filter: false} },
-        { name: 'stock_item', label: 'Stock Item', options: {sort: true, filter: false,
+        { name: 'family_id', label: 'Family ID', options: {sort: true, filter: false} },
+        { name: 'family_name', label: 'Family Name', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
-                    return <TextField name="stock_item" label="Stock Item" value={editData?.stock_item} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                    return <TextField name="family_name" label="Family Name" value={editData?.family_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
                 }
                 return value;
             }} },
-        { name: 'cost', label: 'Cost', options: {sort: true, filter: false,
+        { name: 'family_category', label: 'Family Category', options: {sort: true, filter: true,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
-                    return <TextField name="cost" label="Cost" value={editData?.cost} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
+                    return (
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                            <InputLabel id="demo-select-small-label">Category</InputLabel>
+                            <Select
+                                name='family_category'
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={editData?.family_category}
+                                label="Category"
+                                onChange={handleSelectChange}
+                            >
+                                <MenuItem value="entree">Entree</MenuItem>
+                                <MenuItem value="side">Side</MenuItem>
+                                <MenuItem value="w&t">Waffle & Toast</MenuItem>
+                                <MenuItem value="drink">Drink</MenuItem>
+                                <MenuItem value="special">Special</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    );
                 }
                 return value;
             }} },
-        { name: 'stock_quantity', label: 'Quantity', options: {sort: true, filter: false,
+        { name: 'family_description', label: 'Description', options: {sort: true, filter: false,
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
-                if (editRow === tableMeta.rowIndex) {
-                    return <TextField name="stock_quantity" label="Stock Quantity" value={editData?.stock_quantity} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
-                }
-                return value;
-            }} },
-        { name: 'max_amount', label: 'Maximum Amount', options: {sort: true, filter: false,
-            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
-                if (editRow === tableMeta.rowIndex) {
-                    return <TextField name="max_amount" label="Maximum Amount" value={editData?.max_amount} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
-                }
-                return value;
+                return (
+                    <span>
+                        <IconButton onClick={handleConfirmEdit}>
+                            <VisibilityIcon/>
+                        </IconButton>
+                    </span>
+                );
             }} },
         {
             name: 'Actions',
@@ -174,7 +211,7 @@ function InventoryTable2() {
                     <IconButton onClick={() => setModalOpen(true)}>
                         <AddIcon />
                     </IconButton>
-                    <IconButton onClick={() => { fetchInventoryItems(); setIsLoading(true); }} aria-label='Refresh'>
+                    <IconButton onClick={() => { fetchFamilies(); setIsLoading(true); }} aria-label='Refresh'>
                         <RefreshIcon/>
                     </IconButton>
                 </div>
@@ -201,16 +238,16 @@ function InventoryTable2() {
             ) : (
                 <ThemeProvider theme={getMuiTheme()}>
                     <MUIDataTable
-                        title={"Inventory List"}
+                        title={"Family List"}
                         data={rows}
                         columns={columns}
                         options={options}
                     />
                 </ThemeProvider>
             )}
-            {modalOpen && <AddInventoryModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
+            {modalOpen && <AddFamilyModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} />}
         </div>
     );
 }
 
-export default InventoryTable2;
+export default FamilyTable

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ManagerNav from '../Components/ManagerNav';
 import MenuTable2 from '../Components/MenuTable2';
+import FamilyTable from '../Components/FamilyTable';
 import InventoryTable2 from '../Components/InventoryTable2';
 import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
@@ -13,6 +14,7 @@ const ManagerGUI: React.FC = () => {
 
   const componentMapping: { [key: string]: React.FC } = {
     Menu: MenuTable2,
+    Families: FamilyTable,
     Inventory: InventoryTable2,
     Orders: OrdersTable4,
     Analytics: ManagerAnalytics,

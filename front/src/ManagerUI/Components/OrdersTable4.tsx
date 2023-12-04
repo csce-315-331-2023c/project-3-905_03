@@ -13,6 +13,9 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import { IconButton } from '@mui/material';
 import {Popover, Box} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 interface Row {
     employee_id: number;
@@ -21,6 +24,7 @@ interface Row {
     takeout: string;
     order_date: string;
     formatted_order_date: string;
+    status: string;
 }
 
 function OrdersTable4() {
@@ -61,6 +65,7 @@ function OrdersTable4() {
             .then(res => {
                 const data: Row[] = res.data.data;
                 setRows(data);
+                setIsLoading(false);
             })
             .catch(err => console.log(err));
     }
@@ -90,6 +95,29 @@ function OrdersTable4() {
         { name: 'order_total', label: 'Order Total', options: { filter: false, sort: true, }},
         { name: 'takeout', label: 'Takeout', options: { filter: true, sort: true, }},
         { name: 'formatted_order_date', label: 'Order Date', options: { filter: false, sort: true, }},
+        { name: 'status', label: 'Order Status', options: { filter: true, sort: true, 
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (value === "fulfilled") {
+                    return (
+                        <span>
+                            <TaskAltIcon style={{ color: 'green' }}/>
+                        </span>
+                    );
+                } else if (value === "cancelled") {
+                    return (
+                        <span>
+                            <HighlightOffIcon style={{ color: 'red' }}/>
+                        </span>
+                    );
+                } else if (value === "pending") {
+                    return (
+                        <span>
+                            <RadioButtonUncheckedIcon style={{ color: 'orange' }}/>
+                        </span>
+                    );
+                }
+            }
+        }},
         {
             name: 'Actions',
             options: {
@@ -152,7 +180,7 @@ function OrdersTable4() {
                             <button onClick={handleSearch}>Search</button>
                         </Box>
                     </Popover>
-                    <IconButton onClick={() => refreshOrders()} aria-label='Refresh'>
+                    <IconButton onClick={() => { refreshOrders(); setIsLoading(true); }} aria-label='Refresh'>
                         <RefreshIcon/>
                     </IconButton>
                 </div>

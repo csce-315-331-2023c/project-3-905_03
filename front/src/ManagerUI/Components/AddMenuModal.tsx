@@ -47,11 +47,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
             .catch(er => console.log(er));
     }, []);
 
-    const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        const selectedIngredients = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        );
+    const handleSelectChange = (selectedIngredients: any[]) => {
         setSelectedOptions(selectedIngredients);
     };
 

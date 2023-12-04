@@ -9,7 +9,6 @@ body {
 }
 
 
-
 .manager-analytics-container {
     padding: 30px;
     border-radius: 3px;
@@ -71,9 +70,3 @@ body {
     }
 }
 
-svg {
-    width: 125px;
-    height: 70px;
-    justify-self: center;
-    align-self: center;
-}

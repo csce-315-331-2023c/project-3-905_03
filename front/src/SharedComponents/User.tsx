@@ -2,18 +2,27 @@ import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import { TextField, Button, Avatar, Typography, Grid, Box, Paper } from '@mui/material';
 
+
 const User: React.FC = () => {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
-
+    const [feedback, setFeedback] = useState({ error: '', success: '' });
+    
     if (!user) {
         return <Box className="user-container"><Typography>No user data available</Typography></Box>;
     }
 
     const handlePasswordChange = () => {
-        
+        if (newPassword !== confirmNewPassword) {
+            setFeedback({ ...feedback, error: 'Passwords do not match' });
+            return;
+        }
+        if (currentPassword === newPassword) {
+            setFeedback({ ...feedback, error: 'New password must be different from current password' });
+            return;
+        }
     };
 
     return (

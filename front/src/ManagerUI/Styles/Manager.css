@@ -1,32 +1,20 @@
 .manager-container {
     display: flex;
-    /* Uses flexbox for layout. */
     flex-direction: row;
-    /* Arranges children in a row (side by side). */
     width: 100%;
-    /* Full width of the containing element. */
     height: 100vh;
     background-color: #1A1A1A;
-    border-radius: 10px;
-    /* Rounded corners for the container. */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow for depth. */
 }
 
 .lhs {
-    flex: 1 0 20%;
-    color: #ffffff;
-    /* Text color for the sidebar, white for visibility. */
+    flex: 2 0 15%;
+    color: #1a1a1a;
+    background-color: #ffffff;
 }
 
 .rhs {
-    background-color: #1A1A1A;
-    flex: 2 0 80%;
-    /* Flex-grow: 4, flex-shrink: 0, flex-basis: 80% of the parent container. */
+    background-color: #ffffff;
+    flex: 1 0 100%;
     color: #ffffff;
-    /* Text color for the content area, white for visibility. */
-    overflow-y: auto;
-    /* Allows scrolling if content overflows vertically. */
-    padding: 1rem;
-    /* Padding inside the content area for spacing. */
 }

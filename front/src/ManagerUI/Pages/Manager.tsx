@@ -10,7 +10,6 @@ import '../Styles/Manager.css';
 const ManagerGUI: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('Menu');
 
-
   const componentMapping: { [key: string]: React.FC } = {
     Menu: MenuTable2,
     Inventory: InventoryTable2,
@@ -22,12 +21,12 @@ const ManagerGUI: React.FC = () => {
   const ActiveComponent = componentMapping[activeSection] || null;
 
   return (
-    <div style={{ height: '100vh', overflow: 'auto'}}>
-      <div>
-        <ManagerNav setActiveSection ={setActiveSection} />
+    <div className="manager-container">
+      <div className="lhs">
+        <ManagerNav setActiveSection={setActiveSection} />
       </div>
-      <div>
-        {ActiveComponent && <ActiveComponent/>}
+      <div className="rhs">
+        {ActiveComponent && <ActiveComponent />}
       </div>
     </div>
   );

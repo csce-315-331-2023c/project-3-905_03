@@ -21,23 +21,13 @@ import useStyles from './Styles/useStyles.ts';
 import axios from 'axios';
 import MessLogo from './MessLogo.tsx';
 
-interface CustomJwtPayload {
-  email: string;
-  given_name: string;
-  family_name: string;
-}
-interface OAuthJwtPayload {
-  role: string;
-  given_name: string;
-  family_name: string;
-}
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, authErrorMessage, setAuthErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
+  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage ,showAccessibilityModal, setShowAccessibilityModal } = useModal();
   const [selectedRole, setSelectedRole] = useState('');
 
   const classes = useStyles();
@@ -66,7 +56,7 @@ const LoginPage = () => {
     try {
       const errors = validateForm();
       if (errors.email || errors.password) {
-        setAuthErrorMessage("validateForm(): " + (errors.email || errors.password));
+        setErrorMessage("validateForm(): " + (errors.email || errors.password));
         setShowErrorModal(true);
         return;
       }
@@ -79,11 +69,11 @@ const LoginPage = () => {
         setUser({...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       } else {
-        setAuthErrorMessage(response.data.message);
+        setErrorMessage(response.data.message);
         setShowErrorModal(true);
       }
     } catch (error:any) {
-      setAuthErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
+      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
   };
@@ -102,7 +92,7 @@ const LoginPage = () => {
         navigateBasedOnRole(decodedUser.role);
       }
     } catch (error: any) {
-      setAuthErrorMessage(error.response?.data.message || 'Google Authentication Failed: Invalid Credentials');
+      setErrorMessage(error.response?.data.message || 'Google Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
 
@@ -111,7 +101,7 @@ const LoginPage = () => {
 
   const handleGoogleLoginError = () => {
     logMessage('GoogleLogin', 'Login failed');
-    setAuthErrorMessage('You are not authorized to access this application.');
+    setErrorMessage('You are not authorized to access this application.');
     setShowErrorModal(true);
   };
 
@@ -234,7 +224,7 @@ const LoginPage = () => {
       </div>
       <ErrorModal
         isOpen={showErrorModal}
-        errorMessage={authErrorMessage}
+        errorMessage={errorMessage}
         onClose={handleErrorModal}
       />
       <RoleSelectionModal

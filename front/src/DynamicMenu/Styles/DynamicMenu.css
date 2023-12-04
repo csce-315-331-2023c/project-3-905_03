@@ -19,6 +19,7 @@
     align-items: flex-start;
     font-family: 'PT Sans', sans-serif;
     height: 100vh;
+    overflow: scroll;
 }
 
 .header {

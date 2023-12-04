@@ -17,7 +17,7 @@
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     width: 80%;
-    max-width: 450px;
+    max-width: 600px;
     text-align: center;
     font-family: sans-serif;
     position: relative;
@@ -35,8 +35,14 @@
     font-size: 1rem;
 }
 
+.role-options {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
 .modal button {
-    background-color: #414345;
+    background-color: #2c5dba;
     color: #EBEBE9;
     border: none;
     padding: 12px 24px;

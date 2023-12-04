@@ -451,7 +451,7 @@ app.get('/getRecentOrders', (req, res) => {
 
     client.connect();
 
-    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_date desc limit 1000`, (err, result) => {
+    client.query(`SELECT *, to_char(order_date, 'YYYY-MM-DD HH24:MI:SS') as formatted_order_date FROM orders order by order_id desc limit 1000`, (err, result) => {
         if (!err) {
             res.status(200).send({
                 data: result.rows

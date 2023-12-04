@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ManagerNav from '../Components/ManagerNav';
 import MenuTable2 from '../Components/MenuTable2';
+import FamilyTable from '../Components/FamilyTable';
 import InventoryTable2 from '../Components/InventoryTable2';
 import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
@@ -8,11 +9,16 @@ import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
 
 const ManagerGUI: React.FC = () => {
+
   const [activeSection, setActiveSection] = useState<string>('Menu');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
 
+  const [activeSection, setActiveSection] = useState<string>('Orders');
+
+
   const componentMapping: { [key: string]: React.FC<{ isDrawerOpen: boolean }> } = {
     Menu: MenuTable2,
+    Families: FamilyTable,
     Inventory: InventoryTable2,
     Orders: OrdersTable4,
     Analytics: ManagerAnalytics,

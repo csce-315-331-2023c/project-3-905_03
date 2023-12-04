@@ -39,7 +39,6 @@ export class Order {
   public receipt: Item[] = [];
   public total: number = 0;
   public sender_id: number = 0;
-  public split: boolean = false;
   public dineIn: boolean = false;
   private tax: number = 0.07;
 
@@ -48,7 +47,6 @@ export class Order {
       this.sender_id = order.sender_id;
       this.receipt = [...order.receipt];
       this.total = order.total;
-      this.split = order.split;
       this.dineIn = order.dineIn;
       this.tax = order.tax;
     }
@@ -100,11 +98,6 @@ export class Order {
     return orderTotal.toFixed(2);
   }
 
-  splitOrder(): string {
-    this.split = true;
-    return (this.total / 2).toFixed(2);
-  }
-
   getReceipt(): Item[] {  
     return this.receipt;
   }
@@ -147,7 +140,6 @@ export class Order {
         receipt: this.getReceipt(),
         total: this.getOrderTotal(),
         sender_id: this.sender_id,
-        split: this.split,
         dineIn: this.dineIn
       });
   

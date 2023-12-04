@@ -23,8 +23,8 @@ const Cashier = () => {
     const [order, setOrder] = useState<Order>(new Order());
     const [rows, setRows] = useState<Item[]>(order.getReceipt());
     const [takeout, setTakeout] = useState<number>(0);
-    const [split, setSplit] = useState<number>(0);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [orderNumber, setOrderNumber] = useState<number>(0);
 
     const fetchData = (url: string) => {
         axios.get(url)
@@ -60,8 +60,9 @@ const Cashier = () => {
         upd(a => !a);
     };
 
-    const submitOrder = () => {
-        order.checkout();
+    const submitOrder = async () => {
+        const tempOrder = await order.checkout();
+        setOrderNumber(tempOrder);
         setModalOpen(true);
         clearOrder();
 
@@ -82,7 +83,6 @@ const Cashier = () => {
         setOrder(newOrder);
         setRows(newOrder.getReceipt());
         setTakeout(0);
-        setSplit(0);
         upd(a => !a);
     }
 
@@ -96,7 +96,7 @@ const Cashier = () => {
     }, []);
 
     return (
-        <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative'}}>
+        <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative', overflow: 'auto'}}>
             <div>
                 <div className="button-container" style={{ display: 'flex', marginTop: '5%'}}>
                     <button className="login-button" onClick={displayEntrees}>Entrees</button>
@@ -148,7 +148,7 @@ const Cashier = () => {
                             <td></td>
                             <td></td>
                             <td>Total: </td>
-                            <td>{split === 0 ? order.getOrderTotal() : order.splitOrder()}</td>
+                            <td>{order.getOrderTotal()}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -159,14 +159,9 @@ const Cashier = () => {
                         Takeout
                         {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
                     </button>
-                    <button className="login-button" onClick={() => setSplit(split === 0 ? 1 : 0)}
-                        style={{ backgroundColor: split === 1 ? 'green' : '#1a1a1a' }}>
-                        Split
-                        {split === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
-                    </button>
                     <button className="login-button" onClick={() => clearOrder()}>Clear Order</button>
                 </div>
-                {modalOpen && <OrderConfirmationModal closeModal={() => (setModalOpen(false))}/>}            
+                {modalOpen && <OrderConfirmationModal closeModal={() => (setModalOpen(false))} orderID={orderNumber}/>}            
             </div>
         </Container>
     );

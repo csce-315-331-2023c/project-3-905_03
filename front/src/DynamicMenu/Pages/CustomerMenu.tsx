@@ -18,8 +18,6 @@ import DrinkItems from '../Components/DrinkItems';
 import SpecialItems from '../Components/SpecialItems';
 import Weather from '../../SharedComponents/Weather';
 
-import Carousel from 'react-material-ui-carousel'
-
 const CustomerMenu: React.FC = () => {
     return (
         <div className="customer-menu-container">

@@ -107,7 +107,8 @@
 /* menu */
 
 .displayWrap {
-  height: 1200px;
+  height: 70vh;
+  overflow: auto;
 }
 
 .displayedItems {

@@ -122,6 +122,38 @@ app.get('/getItemCategories', (req, res) => {
 });
 
 /**
+ * return each served item's family name in json form
+ */
+app.post('/getItemFamily', (req, res) => {
+
+    let { family_id } = req.body;
+
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
+    client.connect();
+
+    client.query(`SELECT family_name FROM served_items_family WHERE family_id = $1`, [family_id], (err, result) => {
+        if (err) {
+            console.log(err.message);
+            res.status(500).send(err.message);
+            client.end();
+            return;
+        }
+
+        res.status(200).send({
+            data: result.rows[0]
+        });
+
+        client.end();  // Ensure the client connection is closed
+    });
+});
+
+/**
  * return entree items in json form
  */
 app.get('/getEntreeItems', (req, res) => {
@@ -708,8 +740,8 @@ app.post('/addServedItemStockItem', (req, res) => {
  * will be provided with all values
  * 
  */
-app.post('/editServedItem', (req, res) => {
-    let { item_id, served_item, item_price } = req.body;
+app.post('/editServedItem', async (req, res) => {
+    let { item_id, served_item, item_price, family_name } = req.body;
 
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
@@ -720,15 +752,17 @@ app.post('/editServedItem', (req, res) => {
 
     client.connect();
 
-    client.query('UPDATE served_items SET served_item = $1, item_price = $2 WHERE item_id = $3', [served_item, item_price, item_id], (err, result) => {
-        if (!err) {
-            res.status(200).send('success!');
-        } else {
-            res.status(400).send(err.message);
-        }
-        client.end();
-    })
+    const result = await client.query('SELECT family_id FROM served_items_family WHERE family_name = $1', [family_name]);
+        client.query('UPDATE served_items SET served_item = $1, item_price = $2, family_id = $4 WHERE item_id = $3', [served_item, item_price, item_id, result.rows[0].family_id], (err, result) => {
+            if (!err) {
+                res.status(200).send('success!');
+            } else {
+                res.status(400).send(err.message);
+            }
+            client.end();
+        })
 });
+
 /**
  * edit stock_items entry
  * will be provided with all values
@@ -936,8 +970,174 @@ app.post('/deleteOrder', async (req, res) => {
 });
 
 /**
- * edit order
+ * get info about order for edit order functionality
  */
+app.post('/editOrderGetInfo', async (req, res) => {
+    let client;
+
+    try {
+        let { order_id } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const orderResult = await client.query('SELECT * FROM orders WHERE order_id = $1', [order_id]);
+        const order = orderResult.rows[0];
+        
+        let orderInfo = {
+            order_id: order_id,
+            sender_id: order.employee_id,
+            order_total: order.order_total,
+            dineIn: order.takeout,
+            order_date: order.order_date,
+            receipt: []
+        };
+
+        const orderItemIdsResult = await client.query('SELECT order_item_id, item_id FROM orderserveditem WHERE order_id = $1', [order_id]);
+        const orderItemIds = orderItemIdsResult.rows;
+
+        let receiptInfo = []; // Initialize receiptInfo as an array
+
+        for (const orderItemId of orderItemIds) {
+            const itemInfoResult = await client.query('SELECT* FROM served_items WHERE item_id = $1', [orderItemId.item_id]);
+            const itemInfo = itemInfoResult.rows[0];
+            itemInfo.toppings = []; // Initialize toppings as an array
+
+            const toppingIdsResult = await client.query('SELECT topping_id FROM order_served_item_topping WHERE order_served_item_id = $1', [orderItemId.order_item_id]);
+            const toppingIds = toppingIdsResult.rows;
+
+            for(const toppingId of toppingIds){
+                const toppingInfoResult = await client.query('SELECT* FROM served_items_topping WHERE topping_id = $1', [toppingId.topping_id]);
+                const toppingInfo = toppingInfoResult.rows[0];
+                itemInfo.toppings.push(toppingInfo); // Push toppingInfo into toppings array
+            }
+
+            receiptInfo.push(itemInfo); // Push itemInfo into receiptInfo array
+        }
+        console.log(receiptInfo);
+
+        orderInfo.receipt = receiptInfo;
+
+        res.status(200).json({ message: "success!", data: orderInfo });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * submit order for edit order funcitonality
+ */
+app.post('/editOrderSubmit', async (req, res) => {
+    let client;
+
+    try {
+        let { order_id, receipt, total, sender_id, dineIn } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const orderItemIdsResult = await client.query('SELECT order_item_id FROM orderserveditem WHERE order_id = $1', [order_id]);
+        const orderItemIds = orderItemIdsResult.rows;
+        for (const orderItemId of orderItemIds) {
+            await client.query('DELETE FROM order_served_item_topping WHERE order_served_item_id = $1', [orderItemId.order_item_id]);
+        }
+        await client.query('DELETE FROM orderserveditem WHERE order_id = $1', [order_id]);
+        await client.query('DELETE FROM orders WHERE order_id = $1', [order_id]);
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' + currentDate.getDate().toString().padStart(2, '0');
+        const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
+        const dateTime = formattedDate + ' ' + formattedTime;
+
+        let dineInInt = dineIn ? 1 : 0;
+        await client.query("INSERT INTO orders (employee_id, order_id, order_total, takeout, order_date, status) VALUES ($1, $2, $3, $4, $5, 'pending')", [sender_id, order_id, total, dineInInt, dateTime]);
+
+        const maxOrderItemIdResult = await client.query('SELECT MAX(order_item_id) FROM orderserveditem');
+        let maxOrderItemId = maxOrderItemIdResult.rows[0].max || 0;
+        let newOrderItemId = maxOrderItemId + 1;
+
+        for (const item of receipt) {
+            await client.query('INSERT INTO orderserveditem (order_id, item_id, order_item_id) VALUES ($1, $2, $3)', [order_id, item.id, newOrderItemId]);
+
+            const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [item.id]);
+            const stock_ids_used = stock_ids_usedResult.rows;
+
+            for (const stock_id of stock_ids_used) {
+                await client.query('UPDATE stock_items SET stock_quantity = stock_quantity - 1 WHERE stock_id = $1', [stock_id.stock_id]);
+            }
+
+            const maxOrderServedItemToppingIdResult = await client.query('SELECT MAX(order_served_item_topping_id) FROM order_served_item_topping');
+            let maxOrderServedItemToppingId = maxOrderServedItemToppingIdResult.rows[0].max || 0;
+            let newOrderServedItemToppingId = maxOrderServedItemToppingId + 1;
+
+            console.log(item.toppings);
+            if (item.toppings && Array.isArray(item.toppings)) {
+                for (const topping of item.toppings) {
+                    if (topping.chosen == true) {
+                        await client.query('INSERT INTO order_served_item_topping (order_served_item_topping_id, order_served_item_id, topping_id) VALUES ($1, $2, $3)', [newOrderServedItemToppingId, newOrderItemId, topping.id]);
+                        newOrderServedItemToppingId++;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+            }
+            newOrderItemId++;
+        }
+
+        res.status(200).json({ message: 'success!', OrderId: order_id });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * change order status to given status given order_id and status
+ */
+app.post('/changeOrderStatus', async (req, res) => {
+    let client;
+    let { order_id, status } = req.body;
+
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        await client.query("UPDATE orders SET status = $2 WHERE order_id = $1", [order_id, status]);
+
+        res.status(200).json({ message: 'success!' });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
 
 /**
  * change order status to pending given order_id
@@ -1322,6 +1522,36 @@ app.post('/editFamily', async (req, res) => {
         await client.connect();
 
         await client.query('UPDATE served_items_family SET family_name = $2, family_category = $3, family_description = $4 WHERE family_id = $1', [ family_id, family_name, family_category, family_description]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
+ * edit a Family's Description
+ */
+app.post('/editFamilyDescription', async (req, res) => {
+    let client;
+
+    try {
+        let {family_id, family_description} = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        await client.query('UPDATE served_items_family SET family_description = $2 WHERE family_id = $1', [ family_id, family_description]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {

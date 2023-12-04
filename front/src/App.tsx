@@ -16,8 +16,9 @@ function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   console.log(googleClientId);
   return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      <AuthProvider>
+
+    <AuthProvider>
+      {/* <GoogleOAuthProvider clientId={googleClientId}> */}
         <BrowserRouter>
           <ModalProvider>
             <Routes>
@@ -39,9 +40,8 @@ function App() {
             </Routes>
           </ModalProvider>
         </BrowserRouter>
-      </AuthProvider>
-    </GoogleOAuthProvider>
-
+      {/* </GoogleOAuthProvider> */}
+    </AuthProvider>
   );
 }
 

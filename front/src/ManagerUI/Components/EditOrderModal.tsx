@@ -26,6 +26,8 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
     const [order, setOrder] = useState<Order>(new Order());
     const [rows, setRows] = useState<Item[]>(order.getReceipt());
     const [takeout, setTakeout] = useState<number>(0);
+    const [orderTotal, setOrderTotal] = useState<string | null>(null);
+    const [orderTax, setOrderTax] = useState<string | null>(null);
 
     const fetchData = (url: string) => {
         axios.get(url)
@@ -44,6 +46,8 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
         axios.post('/editOrderGetInfo', {order_id: orderID})
             .then(res => {
                 const data = res.data.data;
+                data.total = data.order_total;
+                data.tax = 0.07;
                 data.receipt = data.receipt.map((item: any) => ({
                     ...data.receipt,
                     id: item.item_id,
@@ -60,7 +64,11 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
                 const newOrder = new Order(data);
                 setOrder(newOrder);
                 setRows(newOrder.getReceipt());
+                setOrderTotal(newOrder.getOrderTotal());
+                setOrderTax(newOrder.getTax());
                 upd(a => !a);
+                console.log(order.getOrderTotal());
+                console.log(order.getTax());
             })
             .catch(err => console.log(err));
 
@@ -128,7 +136,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
     }, []);
 
     return (
-        <div className="modal-container">
+        <div className="edit-order-modal-container">
                 <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative'}}>
                     <div>
                         <div className="button-container" style={{ display: 'flex', marginTop: '5%'}}>
@@ -193,6 +201,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
                                 {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
                             </button>
                             <button className="login-button" onClick={() => clearOrder()}>Clear Order</button>
+                            <button className="login-button" onClick={() => closeModal()}>Cancel</button>
                         </div>           
                     </div>
                 </Container>

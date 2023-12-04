@@ -104,6 +104,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
             dineIn: takeout
           })
         clearOrder();
+        closeModal();
 
     };
 

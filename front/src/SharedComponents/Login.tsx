@@ -209,7 +209,7 @@ const LoginPage = () => {
               />
             </div>
           </div>
-          <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff' }} />
+          <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />
           <div className="guest-options">
             <h1>Guest Options</h1>
             <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>

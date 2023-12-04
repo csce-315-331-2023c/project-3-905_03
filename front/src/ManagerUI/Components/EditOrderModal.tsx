@@ -96,7 +96,7 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal }) 
     };
 
     const submitOrder = async () => {
-        axios.post('/submitOrder', {
+        axios.post('/editOrderSubmit', {
             order_id: orderID,
             receipt: order.getReceipt(),
             total: order.getOrderTotal(),

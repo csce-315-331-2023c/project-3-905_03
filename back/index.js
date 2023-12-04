@@ -955,7 +955,6 @@ app.post('/submitOrder', async (req, res) => {
             let maxOrderServedItemToppingId = maxOrderServedItemToppingIdResult.rows[0].max || 0;
             let newOrderServedItemToppingId = maxOrderServedItemToppingId + 1;
 
-            console.log(item.toppings);
             if (item.toppings && Array.isArray(item.toppings)) {
                 for (const topping of item.toppings) {
                     if (topping.chosen == true) {
@@ -1132,7 +1131,6 @@ app.post('/editOrderSubmit', async (req, res) => {
             let maxOrderServedItemToppingId = maxOrderServedItemToppingIdResult.rows[0].max || 0;
             let newOrderServedItemToppingId = maxOrderServedItemToppingId + 1;
 
-            console.log(item.toppings);
             if (item.toppings && Array.isArray(item.toppings)) {
                 for (const topping of item.toppings) {
                     if (topping.chosen == true) {

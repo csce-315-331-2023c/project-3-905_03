@@ -140,21 +140,18 @@ export class Order {
     this.receipt = [];
   }
 
-  checkout(): number {
+  checkout(): any {
     // implementation for checkout
     console.log("checkout ! ! !");
     console.log(this);
 
     axios.post('/submitOrder', {receipt: this.getReceipt(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
       .then(res => {
-        console.log(res);
-        console.log(res.data);
         return res.data.data;
       })
       .catch(err => {
         console.log(err);
+        return err;
       });
-
-    return this.total; // shuold be order id 
   }
 }

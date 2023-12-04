@@ -69,18 +69,17 @@ const Customer = () => {
 
     const handleCheckout = () => {
         //make the order
-        fams.forEach((family) => {
-            console.log("adding", family);
+        console.log("bag", bag)
+        bag.forEach((family) => {
             const chosenItem = family.options.find((option) => option.chosen === true);
-            if (chosenItem) {
+            console.log("ID", chosenItem?.id);
+            if (chosenItem) 
                 currOrder.addItem({ ...chosenItem, toppings: family.toppings });
-            }
-            console.log("added", family);
-            console.log(currOrder);
         });
 
         currOrder.sender_id = 0; // id of logged in user
         setCheckoutReturn(currOrder.checkout());
+        console.log("checkoutReturn", checkoutReturn);
 
         setCurrOrder(new Order());
         setSelected(undefined); 
@@ -115,6 +114,7 @@ const Customer = () => {
 
             const families = await Promise.all(familiesPromises);
             setFams(families);
+            console.log(families);
         } catch (err) {
             console.log(err);
         }
@@ -123,10 +123,10 @@ const Customer = () => {
     const getSizes = async (familyId: number) => {
         try {
             const res = await axios.post('/getServedItemsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
-            const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number }, index: number) => {
-                const { served_item, item_price } = itemData;
+            const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_id: number }, index: number) => {
+                const { served_item, item_price, item_id } = itemData;
                 return {
-                    id: index,
+                    id: item_id,
                     name: served_item,
                     price: item_price
                 };
@@ -166,6 +166,8 @@ const Customer = () => {
         if (fams.length > 0)
             setLoading(false);
     }, [fams]);
+
+    use
 
     useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);

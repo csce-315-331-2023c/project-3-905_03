@@ -14,8 +14,9 @@ import { ModalProvider } from './SharedComponents/ModalContext';
 
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-  
+  console.log(googleClientId);
   return (
+
     <AuthProvider>
       {/* <GoogleOAuthProvider clientId={googleClientId}> */}
         <BrowserRouter>

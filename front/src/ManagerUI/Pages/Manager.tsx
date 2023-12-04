@@ -9,10 +9,14 @@ import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
 
 const ManagerGUI: React.FC = () => {
+
+  const [activeSection, setActiveSection] = useState<string>('Menu');
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+
   const [activeSection, setActiveSection] = useState<string>('Orders');
 
 
-  const componentMapping: { [key: string]: React.FC } = {
+  const componentMapping: { [key: string]: React.FC<{ isDrawerOpen: boolean }> } = {
     Menu: MenuTable2,
     Families: FamilyTable,
     Inventory: InventoryTable2,
@@ -24,12 +28,16 @@ const ManagerGUI: React.FC = () => {
   const ActiveComponent = componentMapping[activeSection] || null;
 
   return (
-    <div style={{ height: '100vh', overflow: 'auto'}}>
-      <div>
-        <ManagerNav setActiveSection ={setActiveSection} />
+    <div className="manager-container">
+      <div className={`lhs ${!isDrawerOpen ? 'lhs-closed' : ''}`}>
+        <ManagerNav
+          setActiveSection={setActiveSection}
+          isDrawerOpen={isDrawerOpen}
+          setIsDrawerOpen={setIsDrawerOpen}
+        />
       </div>
-      <div>
-        {ActiveComponent && <ActiveComponent/>}
+      <div className={`rhs ${!isDrawerOpen ? 'rhs-expanded' : ''}`}>
+        {ActiveComponent && <ActiveComponent isDrawerOpen={isDrawerOpen} />}
       </div>
     </div>
   );

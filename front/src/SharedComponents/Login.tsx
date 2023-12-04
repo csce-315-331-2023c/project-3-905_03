@@ -21,23 +21,12 @@ import useStyles from './Styles/useStyles.ts';
 import axios from 'axios';
 import MessLogo from './MessLogo.tsx';
 
-interface CustomJwtPayload {
-  email: string;
-  given_name: string;
-  family_name: string;
-}
-interface OAuthJwtPayload {
-  role: string;
-  given_name: string;
-  family_name: string;
-}
-
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, authErrorMessage, setAuthErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
+  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
   const [selectedRole, setSelectedRole] = useState('');
 
   const classes = useStyles();
@@ -47,7 +36,7 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (event:any) => {
+  const handleMouseDownPassword = (event: any) => {
     event.preventDefault();
   };
 
@@ -66,7 +55,7 @@ const LoginPage = () => {
     try {
       const errors = validateForm();
       if (errors.email || errors.password) {
-        setAuthErrorMessage("validateForm(): " + (errors.email || errors.password));
+        setErrorMessage("validateForm(): " + (errors.email || errors.password));
         setShowErrorModal(true);
         return;
       }
@@ -75,15 +64,15 @@ const LoginPage = () => {
         const { token } = response.data;
         localStorage.setItem('token', token);
 
-        const decodedUser:any = jwtDecode(token);
-        setUser({...decodedUser });
+        const decodedUser: any = jwtDecode(token);
+        setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       } else {
-        setAuthErrorMessage(response.data.message);
+        setErrorMessage(response.data.message);
         setShowErrorModal(true);
       }
-    } catch (error:any) {
-      setAuthErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
+    } catch (error: any) {
+      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
   };
@@ -98,11 +87,11 @@ const LoginPage = () => {
 
         const decodedUser: any = jwtDecode(token);
         console.log(decodedUser);
-        setUser({...decodedUser });
+        setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       }
     } catch (error: any) {
-      setAuthErrorMessage(error.response?.data.message || 'Google Authentication Failed: Invalid Credentials');
+      setErrorMessage(error.response?.data.message || 'Google Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
 
@@ -111,7 +100,7 @@ const LoginPage = () => {
 
   const handleGoogleLoginError = () => {
     logMessage('GoogleLogin', 'Login failed');
-    setAuthErrorMessage('You are not authorized to access this application.');
+    setErrorMessage('You are not authorized to access this application.');
     setShowErrorModal(true);
   };
 
@@ -151,7 +140,11 @@ const LoginPage = () => {
       navigate('/cashier');
     } else if (role === 'manager') {
       navigate('/manager');
-    } else if (role === 'admin') {
+    } else if (role === 'customer') {
+      console.log('customer');
+      navigate('/customer-kiosk');
+    }
+    else if (role === 'admin') {
       setShowRoleSelectionModal(true);
     }
   };
@@ -216,7 +209,7 @@ const LoginPage = () => {
               /> 
             </div>*/}
           </div>
-          <Divider orientation="vertical" flexItem sx={{backgroundColor:'#ffffff'} } />
+          <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />
           <div className="guest-options">
             <h1>Guest Options</h1>
             <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>
@@ -234,7 +227,7 @@ const LoginPage = () => {
       </div>
       <ErrorModal
         isOpen={showErrorModal}
-        errorMessage={authErrorMessage}
+        errorMessage={errorMessage}
         onClose={handleErrorModal}
       />
       <RoleSelectionModal

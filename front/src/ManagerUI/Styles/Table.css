@@ -79,7 +79,7 @@ button {
     margin-top: 7.5px;
 }
 
-input[type="text"]{
+input[type="text"] {
     height: 35px;
     border-radius: var(--border-radius);
     padding: 0.6em 1em;
@@ -135,7 +135,3 @@ input[type="text"]{
     padding: 5px;
     cursor: pointer;
 }
-
-
-
-

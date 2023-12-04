@@ -19,14 +19,14 @@ const useStyles = () => ({
         '& .MuiOutlinedInput-root': {
             '& fieldset': {
                 borderColor: 'var(--background-color)',
-                transition: 'border-color 0.3s', 
+                transition: 'border-color 0.3s',
             },
             '&:hover fieldset': {
-                borderColor: 'var(--mess-color)', 
+                borderColor: 'var(--mess-color)',
             },
             '&.Mui-focused fieldset': {
-                borderWidth: '1px', 
-                borderColor: 'transparent', 
+                borderWidth: '1px',
+                borderColor: 'transparent',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                 borderWidth: '1px',
@@ -44,7 +44,7 @@ const useStyles = () => ({
         width: '2.5rem',
         height: '2.5rem',
         padding: '10px',
-        transition: 'all 0.3s ease', 
+        transition: 'all 0.3s ease',
         '& .MuiIconButton-root': {
             fontSize: '1.5rem',
         },
@@ -53,13 +53,14 @@ const useStyles = () => ({
             height: '100%',
         },
         '&:hover': {
-            color: 'var(--icon-hover-color)', 
+            color: 'var(--icon-hover-color)',
         },
         '&:active': {
 
-            transform: 'scale(0.95)', 
+            transform: 'scale(0.95)',
         },
     },
+    
 });
 
 export default useStyles;

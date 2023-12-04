@@ -53,6 +53,35 @@ h1 {
     }
 }
 
+.login-input[type="text"] {
+    height: 35px;
+    width: 40%;
+    border-radius: var(--border-radius);
+    padding: 0.6em 1em;
+    font-size: .8rem;
+    border: 1px solid var(--background-color);
+    color: var(--primary-color);
+    margin-bottom: 7.5px;
+    box-sizing: border-box;
+}
+
+.login-button {
+    border-radius: var(--border-radius);
+    padding: 0.6em 1em;
+    font-size: 1rem;
+    border: none;
+    background-color: var(--text-color);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.1s;
+    width: 30%;
+    margin-top: 7.5px;
+}
+
+button:hover,
+button:focus {
+    background-color: var(--button-hover-color);
+}
 
 .login-container {
     display: flex;

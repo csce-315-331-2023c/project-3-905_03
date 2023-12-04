@@ -3,7 +3,9 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import ManagerGUI from './ManagerUI/Pages/Manager';
 import Cashier from './CashierUI/Pages/Cashier';
 import CustomerKiosk from './CustomerUI/Pages/CustomerKiosk';
-import DynamicMenu from './DynamicMenu/Pages/DynamicMenu';
+import DynamicMenu from './DynamicMenu/Pages/CustomerMenu';
+import DynamicTVMenu1 from './DynamicMenu/Pages/DynamicTVMenu1';
+import DynamicTVMenu2 from './DynamicMenu/Pages/DynamicTVMenu2';
 import KitchenDisplay from './KitchenDisplay/Pages/KitchenDisplay';
 import LoginPage from './SharedComponents/Login';
 import ProtectedRoute from './SharedComponents/ProtectedRoute';
@@ -21,7 +23,9 @@ function App() {
             <Routes>
               <Route path="/" element={<LoginPage />} />
               <Route path="/customer-kiosk" element={<CustomerKiosk />} />
-              <Route path="/dynamic-menu" element={<DynamicMenu />} />
+              <Route path="/customer-menu" element={<DynamicMenu />} />
+              <Route path="/dynamic-tv-menu1" element={<DynamicTVMenu1 />} />
+              <Route path="/dynamic-tv-menu2" element={<DynamicTVMenu2 />} />
               <Route path="/cashier2" element={<Cashier />} />
               <Route path="/kitchen-display2" element={<KitchenDisplay />} />
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>

@@ -33,6 +33,10 @@ const KitchenDisplay: React.FC = () => {
     
     useEffect(() => {
         fetchPendingOrders();
+
+        setInterval(() => {
+            fetchPendingOrders();
+        }, 5000); // update every 5 seconds
     }, []);
 
     return (

@@ -47,6 +47,10 @@ const PendingOrder: React.FC<OrderProps> = ({ order, isSelected, onSelect }) => 
     const [elapsedTime, setElapsedTime] = useState('');
 
     useEffect(() => {
+
+        const initialElapsedTime = calculateElapsedTime(order.order_date);
+        setElapsedTime(initialElapsedTime);
+        
         const timer = setInterval(() => {
             const newElapsedTime = calculateElapsedTime(order.order_date);
             setElapsedTime(newElapsedTime);

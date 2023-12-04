@@ -762,29 +762,52 @@ app.post('/addServedItemStockItem', (req, res) => {
 /**
  * edit served_items entry 
  * will be provided with all values
- * 
+ * delete all current entries with item_id in serveditemstockitem
+ * given sting list of ingredients, find their ids, then add entry
  */
 app.post('/editServedItem', async (req, res) => {
-    let { item_id, served_item, item_price, family_name } = req.body;
+    let client;
 
-    const client = new Client({
-        host: 'csce-315-db.engr.tamu.edu',
-        user: 'csce315_905_03user',
-        password: '90503',
-        database: 'csce315_905_03db'
-    })
+    try {
 
-    client.connect();
+        let { item_id, served_item, item_price, family_name, ingredients } = req.body;
 
-    const result = await client.query('SELECT family_id FROM served_items_family WHERE family_name = $1', [family_name]);
-        client.query('UPDATE served_items SET served_item = $1, item_price = $2, family_id = $4 WHERE item_id = $3', [served_item, item_price, item_id, result.rows[0].family_id], (err, result) => {
-            if (!err) {
-                res.status(200).send('success!');
-            } else {
-                res.status(400).send(err.message);
-            }
-            client.end();
+        const client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
         })
+
+        client.connect();
+
+        //get family_id given family name
+        const result = await client.query('SELECT family_id FROM served_items_family WHERE family_name = $1', [family_name]);
+        const family_id = result.rows[0].family_id;
+
+        //update the served_items table
+        client.query('UPDATE served_items SET served_item = $1, item_price = $2, family_id = $4 WHERE item_id = $3', [served_item, item_price, item_id, family_id]);
+
+        //delete from joint table
+        client.query('DELETE FROM serveditemstockitem WHERE item_id = $1', [item_id]);
+
+        //get stock_id given stock_item
+        for (const stock_item of ingredients) {
+            const result = await client.query('SELECT stock_id FROM stock_items WHERE stock_item = $1', [stock_item]);
+            const stock_id = result.rows[0].stock_id;
+
+            //add entry to joint table
+            client.query('INSERT INTO serveditemstockitem (item_id, stock_id) VALUES ($1, $2)', [item_id, stock_id]);
+        }
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
 });
 
 /**

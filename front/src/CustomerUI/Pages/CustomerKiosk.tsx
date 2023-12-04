@@ -22,6 +22,7 @@ const Customer = () => {
 
     const [bagView, setBagView] = useState(false);
     const [bag, setBag] = useState<Family[]>([]);
+    const [bagTotal, setBagTotal] = useState<string>("");
 
     const [formValue, setFormValue] = useState('w&t');
     const [filters, setFilters] = useState({ gf: false, vegan: false });
@@ -80,11 +81,9 @@ const Customer = () => {
 
         currOrder.sender_id = 0; // id of logged in user
         setCheckoutReturn(currOrder.checkout());
+
         setCurrOrder(new Order());
-
-        console.log(currOrder.getReceiptString());
-
-        setSelected(undefined);
+        setSelected(undefined); 
         upd(a => !a);
     };
 
@@ -172,6 +171,10 @@ const Customer = () => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
+    useEffect(() => {
+        setBagTotal(getTotal());
+    }, [bag]);
+
     const imgClick = () => {
         console.log(fams);
     };
@@ -214,7 +217,7 @@ const Customer = () => {
                         label="Vegan"
                     />
                 </FormControl> */}
-                <div className='total'>Total: ${getTotal()}</div>
+                <div className='total'>Total: ${bagTotal}</div>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
                     startIcon=

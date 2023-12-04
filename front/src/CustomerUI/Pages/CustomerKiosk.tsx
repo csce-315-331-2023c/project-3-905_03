@@ -14,7 +14,8 @@ import {
     FormControlLabel, FormControl, FormLabel,
     Button, Switch,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Slide
+    Slide,
+    Avatar, Popover
 } from '@mui/material';
 import {
     ShoppingBag, ShoppingBagOutlined,
@@ -43,8 +44,19 @@ const Customer = () => {
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
-    const handleClose = () => { 
-        setOrderId(0); 
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
+    const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    const handleClose = () => {
+        setOrderId(0);
         window.location.reload();
     };
 
@@ -222,6 +234,27 @@ const Customer = () => {
         <div className='customer'>
             <div className="top">
                 <img className='title' src={mess} alt="mess" onClick={imgClick} />
+
+                <Button className='profile' onClick={handlePopoverClick}>
+                    <Avatar className="avatar" src="" />
+                </Button>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handlePopoverClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+
+                </Popover>
+
                 <FormControl className='sections' component='fieldset'>
                     <FormLabel component="legend">Sections</FormLabel>
                     <RadioGroup

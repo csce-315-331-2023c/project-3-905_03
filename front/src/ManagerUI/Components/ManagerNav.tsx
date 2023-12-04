@@ -9,11 +9,12 @@ import { useNavigate } from 'react-router-dom';
 
 interface ManagerNavProps {
     setActiveSection: (section: string) => void;
+    isDrawerOpen: boolean;
+    setIsDrawerOpen: (isOpen: boolean) => void;
 }
 
-const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
+const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection, isDrawerOpen, setIsDrawerOpen }) => {
     const [openSection, setOpenSection] = useState<string>('');
-    const [isDrawerOpen, setIsDrawerOpen] = useState(true); 
     const { user, setUser } = useAuth();
     const { errorMessage, setErrorMessage, showErrorModal, setShowErrorModal } = useModal();
 
@@ -26,7 +27,9 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
     };
 
     const handleSwitchUser = () => {
-        console.log(user);
+        if (user?.role === 'admin') {
+            navigate('/cashier');
+        }
     }
 
     const handleSignOut = () => {
@@ -47,19 +50,27 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
             <IconButton
                 onClick={() => setIsDrawerOpen(!isDrawerOpen)}
                 className="menu-icon"
+                style={{ fontSize: '2rem' }} // Increase the icon size
+                size = 'large'
             >
                 <MenuIcon />
             </IconButton>
 
-
             <Drawer
+                
                 anchor="left"
                 open={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
-                PaperProps={{ style: { width: '15%' } }}
-
+                PaperProps={{ style: { width: isDrawerOpen ? '15%' : '5%' } }} // Adjust width
             >
-                <MessLogo className='mess-logo' />
+                <IconButton
+                    onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+                    className="menu-icon"
+                    style={{ fontSize: '2rem' }} // Increase the icon size
+                    size='large'
+                >
+                    <MenuIcon />
+                </IconButton>
                 <List>
                     {navItems.map((item) => (
                         <ListItem key={item} onClick={() => toggleSection(item)}>
@@ -70,9 +81,9 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
                     ))}
                 </List>
                 <Button className="sign-out-button" onClick={handleSwitchUser}>Switch User</Button>
-                <Button className="sign-out-button" onClick = {handleSignOut}>Sign Out</Button>
+                <Button className="sign-out-button" onClick={handleSignOut}>Sign Out</Button>
             </Drawer>
-            
+
         </div>
     );
 

@@ -9,8 +9,9 @@ import '../Styles/Manager.css';
 
 const ManagerGUI: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('Menu');
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
 
-  const componentMapping: { [key: string]: React.FC } = {
+  const componentMapping: { [key: string]: React.FC<{ isDrawerOpen: boolean }> } = {
     Menu: MenuTable2,
     Inventory: InventoryTable2,
     Orders: OrdersTable4,
@@ -22,11 +23,15 @@ const ManagerGUI: React.FC = () => {
 
   return (
     <div className="manager-container">
-      <div className="lhs">
-        <ManagerNav setActiveSection={setActiveSection} />
+      <div className={`lhs ${!isDrawerOpen ? 'lhs-closed' : ''}`}>
+        <ManagerNav
+          setActiveSection={setActiveSection}
+          isDrawerOpen={isDrawerOpen}
+          setIsDrawerOpen={setIsDrawerOpen}
+        />
       </div>
-      <div className="rhs">
-        {ActiveComponent && <ActiveComponent />}
+      <div className={`rhs ${!isDrawerOpen ? 'rhs-expanded' : ''}`}>
+        {ActiveComponent && <ActiveComponent isDrawerOpen={isDrawerOpen} />}
       </div>
     </div>
   );

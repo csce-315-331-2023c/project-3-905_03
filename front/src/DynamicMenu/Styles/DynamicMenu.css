@@ -53,13 +53,13 @@
 .WandTContainer {
     grid-row: 1 / 2;
     grid-column: 1 / 4;
-    height: 600px;
+    height: 650px;
 }
 
 .entreeContainer {
     grid-row: 1 / 2;
     grid-column: 1 / 4;
-    height: 1150px;
+    height: 1200px;
 }
 
 .pictureContainer {

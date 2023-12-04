@@ -23,7 +23,6 @@ import {
 } from '@mui/icons-material';
 import { TransitionProps } from '@mui/material/transitions';
 
-
 const BASE_URL = 'http://localhost:8080';
 
 const Customer = () => {
@@ -101,7 +100,7 @@ const Customer = () => {
             console.log("bag", bag)
             bag.forEach((family) => {
                 const chosenItem = family.options.find((option) => option.chosen === true);
-                console.log("ID", chosenItem?.id);
+                console.log("chosenItem", chosenItem);
                 if (chosenItem)
                     currOrder.addItem({ ...chosenItem, toppings: family.toppings });
             });
@@ -141,7 +140,6 @@ const Customer = () => {
 
             const families = await Promise.all(familiesPromises);
             setFams(families);
-            console.log(families);
         } catch (err) {
             console.log(err);
         }

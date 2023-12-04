@@ -28,30 +28,54 @@ app.get('/test', (req, res) => {
 /**
  * return served items in json form
  */
-app.get('/getServedItems', (req, res) => {
+app.get('/getServedItems', async (req, res) => {
+    let client;
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
 
-    const client = new Client({
-        host: 'csce-315-db.engr.tamu.edu',
-        user: 'csce315_905_03user',
-        password: '90503',
-        database: 'csce315_905_03db'
-    })
+        await client.connect();
+        const result = await client.query("SELECT * FROM served_items ORDER BY item_id");
+        const servedItems = result.rows;
 
-    client.connect();
+        let allServedItems = []; // Array to hold all served items
 
-    client.query(`SELECT * FROM served_items ORDER BY item_id`, (err, result) => {
-        if (!err) {
-            res.status(200).send({
-                data: result.rows
-            });
+        for (const servedItem of servedItems) {
+            let servedItemInfo = { // Create a new servedItemInfo for each served item
+                item_id: servedItem.item_id,
+                served_item: servedItem.served_item,
+                item_price: servedItem.item_price,
+                family_id: servedItem.family_id,
+                ingredients: []
+            };
 
+            let ingredientsInfo = []; // Create a new ingredientsInfo for each served item
+
+            const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [servedItem.item_id]);
+            const stock_ids_used = stock_ids_usedResult.rows;
+
+            for (const stock_id of stock_ids_used) {
+                const stockInfoResult = await client.query('SELECT * FROM stock_items WHERE stock_id = $1', [stock_id.stock_id]);
+                const stockInfo = stockInfoResult.rows[0];
+                ingredientsInfo.push(stockInfo);
+            }
+
+            servedItemInfo.ingredients = ingredientsInfo;
+            allServedItems.push(servedItemInfo); // Add the servedItemInfo to the allServedItems array
         }
-        else {
-            console.log(err.message);
-            res.status(500).send(err.message);
+
+        res.status(200).json({ message: "success!", data: allServedItems });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
         }
-        client.end();  // Ensure the client connection is closed
-    });
+    }
 });
 
 /**
@@ -1020,7 +1044,6 @@ app.post('/editOrderGetInfo', async (req, res) => {
 
             receiptInfo.push(itemInfo); // Push itemInfo into receiptInfo array
         }
-        console.log(receiptInfo);
 
         orderInfo.receipt = receiptInfo;
 
@@ -1117,7 +1140,6 @@ app.post('/editOrderSubmit', async (req, res) => {
 app.post('/changeOrderStatus', async (req, res) => {
     let client;
     let { order_id, status } = req.body;
-
     try {
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',

@@ -18,24 +18,43 @@ router.post('/auth/manual/login', async (req, res) => {
         const dbRes = await pool.query(query, [email]);
         const user = dbRes.rows[0];
 
-        if (!user) {
-            return res.status(404).json({ message: 'Manual Log-In: No User Found' });
+        const customerQuery = 'SELECT * FROM customers WHERE email = $1';
+        const dbCustomerRes = await pool.query(customerQuery, [email]);
+        const customerUser = dbCustomerRes.rows[0];
+
+        if (user) {
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            if (passwordMatch) {
+                const userForToken = {
+                    email: user.email,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    role: user.roles,
+                    profilePic: user.profile_pic,
+                };
+
+                const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+                return res.status(200).json({ token });
+            } 
         }
 
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (passwordMatch) {
-            const userForToken = {
-                email: user.email,
-                firstName: user.first_name,
-                lastName: user.last_name,
-                role: user.roles,
-                profilePic: user.profile_pic,
-            };
+        else if (customerUser) {
+            const passwordMatch = await bcrypt.compare(password, customerUser.password);
+            if (passwordMatch) {
+                const customerUserToken = {
+                    firstName: customerUser.first_name,
+                    lastName: customerUser.last_name,
+                    role: 'customer',
+                    email: customerUser.email,
+                    profilePic: customerUser.profile_pic,
+                }
 
-            const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-            return res.status(200).json({ token });
-        } else {
-            return res.status(401).json({ message: 'Manual Log-In: Invalid Credentials' });
+                const token = jwt.sign(customerUserToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+                return res.status(200).json({ token });
+            }
+        }
+        else {
+            return res.status(404).json({ message: 'Manual Log-In: No User Found' });
         }
     } catch (error) {
         console.error('Login Error:', error);

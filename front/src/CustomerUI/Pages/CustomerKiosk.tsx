@@ -7,18 +7,35 @@ import { ItemComponent } from '../Components/ItemComponent';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
+import wafflebite from '../../assets/wafflebite.gif';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
-import { ShoppingBag, ShoppingBagOutlined, Undo, Add } from '@mui/icons-material';
+import {
+    Radio, RadioGroup,
+    FormControlLabel, FormControl, FormLabel,
+    Button, Switch,
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Slide,
+    Avatar, Popover
+} from '@mui/material';
+import {
+    ShoppingBag, ShoppingBagOutlined,
+    Remove, Undo, Add
+} from '@mui/icons-material';
+import { TransitionProps } from '@mui/material/transitions';
 
 
+const BASE_URL = 'http://localhost:8080';
 
 const Customer = () => {
     const [state, upd] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
+    const [orderId, setOrderId] = useState<number>(0);
+
 
     const [bagView, setBagView] = useState(false);
     const [bag, setBag] = useState<Family[]>([]);
+    const [bagTotal, setBagTotal] = useState<string>("");
 
     const [formValue, setFormValue] = useState('w&t');
     const [filters, setFilters] = useState({ gf: false, vegan: false });
@@ -27,15 +44,30 @@ const Customer = () => {
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    const handleClose = () => {
+        setOrderId(0);
+        window.location.reload();
+        // logout
+    };
+
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // setHand(-1);
         setSelected(undefined);
         setFormValue(event.target.value);
     };
 
-    const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFilters({ ...filters, [event.target.name]: event.target.checked });
-    };
+    // const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setFilters({ ...filters, [event.target.name]: event.target.checked });
+    // };
 
     const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrOrder(currOrder.setDineIn(event.target.value === 'dine-in'));
@@ -46,7 +78,6 @@ const Customer = () => {
         if (selected) {
             setSelected({ ...selected, id: selected.id + 1000 });
             setBag([...bag, selected]);
-            // setCurrOrder(currOrder.addItem(selected));
             setSelected(undefined);
             upd(a => !a);
         }
@@ -54,57 +85,63 @@ const Customer = () => {
 
     const handleRemove = () => {
         if (selected) {
-            //setCurrOrder(currOrder.removeItem(selected));
+            setBag(bag.filter((family) => family !== selected));
+            setSelected(undefined);
             upd(a => !a);
         }
     };
 
     const handleUndo = () => {
-        setCurrOrder(currOrder.undo());
+        setBag(bag.slice(0, bag.length - 1));
         upd(a => !a);
     };
 
-    const handleCheckout = () => {
-        //make the order
-        fams.forEach((family) => {
-            console.log(family);
-            const chosenItem = family.options.find((option) => option.chosen === true);
-            if (chosenItem) {
-                currOrder.receipt.push(chosenItem);
-            }
+    const handleCheckout = async () => {
+        if (bag.length > 0 && confirm("Are you sure?") == true) {//make the order
+            console.log("bag", bag)
+            bag.forEach((family) => {
+                const chosenItem = family.options.find((option) => option.chosen === true);
+                console.log("ID", chosenItem?.id);
+                if (chosenItem)
+                    currOrder.addItem({ ...chosenItem, toppings: family.toppings });
+            });
+
+            currOrder.sender_id = 0; // id of logged in user
+            const order = await currOrder.checkout();
+            setOrderId(order);
+            console.log("order", order);
+        }
+    };
+
+    const getTotal = () => {
+        let total = 0;
+        bag.forEach((family) => {
+            total += family.price;
         });
-
-        currOrder.sender_id = 0; // id of logged in user
-        currOrder.checkout();
-        setCurrOrder(new Order());
-
-        console.log(currOrder.getReceiptString());
-
-        setSelected(undefined);
-        upd(a => !a);
+        return total.toFixed(2);
     };
 
     const getFams = async () => {
         try {
-            const res = await axios.get('/getFamilyItems');
-            console.log("res.data fam");
-            console.log(res.data);
+            const res = await axios.get('/getFamilyItems', { baseURL: BASE_URL });
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
+                const toppings = await getToppings(family_id);
                 return {
                     id: family_id,
                     name: family_name,
                     category: family_category,
                     description: family_description,
                     options: options,
-                    toppings: [],
+                    toppings: toppings,
                     price: 0
                 };
             });
 
             const families = await Promise.all(familiesPromises);
             setFams(families);
+            console.log(families);
         } catch (err) {
             console.log(err);
         }
@@ -112,11 +149,11 @@ const Customer = () => {
 
     const getSizes = async (familyId: number) => {
         try {
-            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId });
-            const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number }, index: number) => {
-                const { served_item, item_price } = itemData;
+            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
+            const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_id: number }, index: number) => {
+                const { served_item, item_price, item_id } = itemData;
                 return {
-                    id: index,
+                    id: item_id,
                     name: served_item,
                     price: item_price
                 };
@@ -130,12 +167,12 @@ const Customer = () => {
 
     const getToppings = async (familyId: number) => {
         try {
-            const res = await axios.post('/getToppingsInFamily', { family_id: familyId });
-            const retToppings: Topping[] = res.data.data.map((toppingData: { topping_name: string, topping_price: number }, index: number) => {
-                const { topping_name, topping_price } = toppingData;
+            const res = await axios.post('/getToppingsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
+            const retToppings: Topping[] = res.data.data.map((toppingData: { topping: string, topping_price: number }, index: number) => {
+                const { topping, topping_price } = toppingData;
                 return {
                     id: index,
-                    name: topping_name,
+                    name: topping,
                     price: topping_price
                 };
             })
@@ -146,69 +183,108 @@ const Customer = () => {
         }
     }
 
+    const Transition = React.forwardRef(function Transition(
+        props: TransitionProps & {
+            children: React.ReactElement<any, any>;
+        },
+        ref: React.Ref<unknown>,
+    ) {
+        return <Slide direction="up" ref={ref} {...props} />;
+    });
+
 
     useEffect(() => {
         getFams();
+        // sign in pop up
     }, []);
 
+    // loading animation
     useEffect(() => {
-        console.log("fams updated:", fams);
+        if (fams.length > 0)
+            setLoading(false);
     }, [fams]);
+
+    useEffect(() => {
+        console.log("checkoutReturn", orderId);
+        // setCurrOrder(new Order());
+        // setSelected(undefined); 
+        // upd(a => !a);
+    }, [orderId]);
+
 
     useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
-    // ask krish about loading animation
+    useEffect(() => {
+        setBagTotal(getTotal());
+    }, [bag]);
+
     const imgClick = () => {
         console.log(fams);
+        window.location.reload();
     };
 
+
+    // .filter((family) => {
+    //     if(family.toppings.length > 0) 
+    //         return family.toppings.some((topping) => 
+    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
+    //         );
+    // })
     return (
-        <>
+        <div className='customer'>
             <div className="top">
                 <img className='title' src={mess} alt="mess" onClick={imgClick} />
-                {bagView ? (
-                    <>
-                        <div className="bagview">
-                            <h1>bagview</h1>
-                            <div className='displayedItems'>
-                                {bag.map((family, index) => (
-                                    <ItemComponent family={family} key={index} hand={hand} parentSelected={setSelected} />
-                                ))}
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <FormControl className='sections' component='fieldset'>
-                            <FormLabel component="legend">Sections</FormLabel>
-                            <RadioGroup
-                                aria-labelledby="demo-controlled-radio-buttons-group"
-                                name="controlled-radio-buttons-group"
-                                value={formValue}
-                                defaultValue="w&t"
-                                onChange={handleSections}
-                            >
-                                <FormControlLabel value="w&t" control={<Radio />} label="Waffles & Toast" />
-                                <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
-                                <FormControlLabel value="side" control={<Radio />} label="Sides" />
-                                <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
-                            </RadioGroup>
-                        </FormControl>
-                        <FormControl className='filters'>
-                            <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
-                            <FormControlLabel
-                                control={<Switch name="gf" onChange={handleFilters} />}
-                                label="Gluten Free"
-                            />
-                            <FormControlLabel
-                                control={<Switch name="vegan" onChange={handleFilters} />}
-                                label="Vegan"
-                            />
-                        </FormControl>
-                    </>
-                )}
+
+                <Button className='profile' onClick={handlePopoverClick}>
+                    <Avatar className="avatar" src="" />
+                </Button>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handlePopoverClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+
+                </Popover>
+
+                <FormControl className='sections' component='fieldset'>
+                    <FormLabel component="legend">Sections</FormLabel>
+                    <RadioGroup
+                        aria-labelledby="demo-controlled-radio-buttons-group"
+                        name="controlled-radio-buttons-group"
+                        value={formValue}
+                        defaultValue="w&t"
+                        onChange={handleSections}
+                    >
+                        <FormControlLabel value="w&t" control={<Radio />} label="Waffles & Toast" />
+                        <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
+                        <FormControlLabel value="side" control={<Radio />} label="Sides" />
+                        <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
+                    </RadioGroup>
+                </FormControl>
+
+                {/* <FormControl className='filters'>
+                    <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
+                    <FormControlLabel
+                        control={<Switch name="gf" onChange={handleFilters} />}
+                        label="Gluten Free"
+                    />
+                    <FormControlLabel
+                        control={<Switch name="vegan" onChange={handleFilters} />}
+                        label="Vegan"
+                    />
+                </FormControl> */}
+                <div className='total'>Total: ${bagTotal}</div>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
                     startIcon=
@@ -220,7 +296,10 @@ const Customer = () => {
                         )
                     }
                 >
-                    {currOrder.receipt.length} items
+                    {bag.length} items
+                </Button>
+                <Button className='remove' variant="outlined" startIcon={<Remove />} onClick={() => handleRemove()}>
+                    Remove
                 </Button>
                 <Button className='undo' variant="outlined" startIcon={<Undo />} onClick={() => handleUndo()}>
                     Undo
@@ -228,6 +307,7 @@ const Customer = () => {
                 <Button className='add' variant="outlined" startIcon={<Add />} onClick={() => handleAdd()}>
                     Add
                 </Button>
+
                 <FormControl className='dinein' component='fieldset'>
                     <FormLabel component="legend">Seating</FormLabel>
                     <RadioGroup
@@ -245,28 +325,56 @@ const Customer = () => {
                     Checkout
                 </Button>
             </div>
-
-
-
-            <div>hand: {hand}</div>
-            <div>selected:  {selected?.id} name {selected?.name}</div>
-            <div className="displayedItems">
-                {
-                    fams
-                        // .map((family, index) => ({ ...family, index }))
-                        .filter((family) => family.category === formValue)
-                        .map((family, index) => (
-                            <ItemComponent
-                                family={family}
-                                key={index}
-                                hand={hand}
-                                parentSelected={setSelected}
-                            />
-                        ))
-                }
+            <div className="displayWrap">
+                <div className="displayedItems">
+                    {
+                        (!loading) ? (
+                            bagView ? (
+                                bag
+                                    .map((family, index) => (
+                                        <ItemComponent
+                                            family={family}
+                                            key={index}
+                                            hand={hand}
+                                            parentSelected={setSelected}
+                                        />
+                                    ))
+                            ) :
+                                fams
+                                    .filter((family) => (family.category === formValue))
+                                    .map((family, index) => (
+                                        <ItemComponent
+                                            family={family}
+                                            key={index}
+                                            hand={hand}
+                                            parentSelected={setSelected}
+                                        />
+                                    ))
+                        ) : (
+                            <img className='loading' src={wafflebite} alt="wafflebite" />
+                        )
+                    }
+                </div>
             </div>
-        </>
+
+            <Dialog
+                open={orderId !== 0}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle> Your order number is {orderId}.</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Your order has been placed!
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
+        </div>
     );
 };
-
 export default Customer;

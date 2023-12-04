@@ -21,13 +21,12 @@ import useStyles from './Styles/useStyles.ts';
 import axios from 'axios';
 import MessLogo from './MessLogo.tsx';
 
-
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage ,showAccessibilityModal, setShowAccessibilityModal } = useModal();
+  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
   const [selectedRole, setSelectedRole] = useState('');
 
   const classes = useStyles();
@@ -37,7 +36,7 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (event:any) => {
+  const handleMouseDownPassword = (event: any) => {
     event.preventDefault();
   };
 
@@ -65,14 +64,14 @@ const LoginPage = () => {
         const { token } = response.data;
         localStorage.setItem('token', token);
 
-        const decodedUser:any = jwtDecode(token);
-        setUser({...decodedUser });
+        const decodedUser: any = jwtDecode(token);
+        setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       } else {
         setErrorMessage(response.data.message);
         setShowErrorModal(true);
       }
-    } catch (error:any) {
+    } catch (error: any) {
       setErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
       setShowErrorModal(true);
     }
@@ -88,7 +87,7 @@ const LoginPage = () => {
 
         const decodedUser: any = jwtDecode(token);
         console.log(decodedUser);
-        setUser({...decodedUser });
+        setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       }
     } catch (error: any) {
@@ -121,7 +120,7 @@ const LoginPage = () => {
   }
 
   const handleAccessMenu = () => {
-    navigate('/dynamic-menu');
+    navigate('/customer-menu');
   };
 
   const handleAccessKiosk = () => {
@@ -141,7 +140,11 @@ const LoginPage = () => {
       navigate('/cashier');
     } else if (role === 'manager') {
       navigate('/manager');
-    } else if (role === 'admin') {
+    } else if (role === 'customer') {
+      console.log('customer');
+      navigate('/customer-kiosk');
+    }
+    else if (role === 'admin') {
       setShowRoleSelectionModal(true);
     }
   };
@@ -206,7 +209,7 @@ const LoginPage = () => {
               />
             </div>
           </div>
-          <Divider orientation="vertical" flexItem sx={{backgroundColor:'#ffffff'} } />
+          <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff' }} />
           <div className="guest-options">
             <h1>Guest Options</h1>
             <button className="login-button" onClick={handleAccessKiosk}>Customer Kiosk</button>

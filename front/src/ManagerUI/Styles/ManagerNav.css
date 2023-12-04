@@ -1,95 +1,45 @@
+.lhs {
+    width: 300px;
+}
+
 .manager-nav-container {
-    color: var(--text-color);
-    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    background-color: #1a1a1a;
     display: flex;
     flex-direction: column;
     padding: 1rem;
-
 }
 
-.menu-icon {
-    color: var(--icon-color);
-    font-size: 2rem;
-    margin: 10px;
-}
-
-.drawer {
-    width: 15%;
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
-
-.mess-logo {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+.nav-item {
+    width: calc(100% - 2rem);
+    margin: 0.5rem 1rem;
     align-self: center;
-    justify-self: center;
 }
 
-.manager-nav .MuiListItem-root {
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem;
-}
-
-.manager-nav .MuiButton-root {
-    width: 60%;
-    padding: 0.8rem;
-    font-size: 1.25rem;
+.nav-item button {
+    width: 100%;
+    padding: 1rem 0;
     text-align: center;
     background-color: transparent;
-    border-radius: var(--border-radius);
-    color: var(--input-text-color);
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    border-radius: 6px;
+    border: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 1.25rem;
 }
 
-.manager-nav .MuiButton-root:hover {
+.nav-item button:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    color: var(--icon-hover-color);
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
-.manager-nav .MuiButton-root.Mui-selected,
-.manager-nav .MuiButton-root:active {
+.nav-item button:focus {
+    outline: none;
+}
+
+.nav-item.active button {
     background-color: rgba(255, 255, 255, 0.15);
     transform: scale(1.05);
-}
-
-.user-profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    color: var(--text-color);
-}
-
-.user-profile img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-
-.user-name {
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
-}
-
-.user-role {
-    font-size: 0.9rem;
-    color: var(--mess-color);
-}
-
-.sign-out-button {
-    margin-top: 1rem;
-    padding: 0.8rem;
-    font-size: 1rem;
-    background-color: var(--mess-color);
-    color: var(--background-color);
-    border-radius: var(--border-radius);
-    transition: background-color 0.3s ease;
-    
-}
-
-.sign-out-button:hover {
-    background-color: var(--mess-secondary-color);
 }

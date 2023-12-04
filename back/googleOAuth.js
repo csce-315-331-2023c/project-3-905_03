@@ -30,28 +30,43 @@ router.post('/auth/google/login', async (req, res) => {
     try {
         const googleUser = await verifyGoogleToken(idToken);
 
-        const query = 'SELECT * FROM employees WHERE email = $1';
-        const dbRes = await pool.query(query, [googleUser.email]);
-        const user = dbRes.rows[0];
+    
+        const employeeQuery = 'SELECT * FROM employees WHERE email = $1';
+        const employeeRes = await pool.query(employeeQuery, [googleUser.email]);
+        const employee = employeeRes.rows[0];
 
-        if (!user) {
-            return res.status(404).json({ message: 'Google OAuth Sign-In Failure: invalid credentials' });
+   
+        let customer = null;
+        if (!employee) {
+            const customerQuery = 'SELECT * FROM customers WHERE email = $1';
+            const customerRes = await pool.query(customerQuery, [googleUser.email]);
+            customer = customerRes.rows[0];
         }
 
-        const userForToken = {
-            email: user.email,
-            firstName: user.first_name,
-            lastName: user.last_name,
-            role: user.roles,
-            profilePic: user.profile_pic,
-        };
-
-        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        res.status(200).json({ token });
+    
+        if (employee || customer) {
+            const user = employee || customer;
+            const userForToken = {
+                email: user.email,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                role: user.roles || 'customer', 
+                profilePic: user.profile_pic,
+            };
+            console.log(userForToken);
+            const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+            
+            res.status(200).json({ token });
+        } else {
+            res.status(404).json({ message: "Invalid Credentials: User Not Found" });
+        }
     } catch (error) {
         res.status(500).json({ message: 'Internal Error: server is not responding' });
     }
 });
+
+
+
+
 
 module.exports = router;

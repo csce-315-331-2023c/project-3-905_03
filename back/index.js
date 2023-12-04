@@ -327,6 +327,34 @@ app.post('/getToppingsInFamily', (req, res) => {
 });
 
 /**
+ * get served item info given item id
+ */
+app.post('/getServedItemInfo', async (req, res) => {
+    let client;
+    let { item_id } = req.body;
+    
+    try {
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+        const result = await client.query("SELECT * FROM served_items WHERE item_id = $1", [item_id]);
+
+        res.status(200).json({ message: 'success!', data: result.rows});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
+
+/**
  * return stock items in json form
  */
 app.get('/getStockItems', (req, res) => {
@@ -874,10 +902,43 @@ app.post('/submitOrder', async (req, res) => {
 /**
  * delete order
  */
+app.post('/deleteOrder', async (req, res) => {
+    let client;
+
+    try {
+        let { order_id } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const orderItemIdsResult = await client.query('SELECT order_item_id FROM orderserveditem WHERE order_id = $1', [order_id]);
+        const orderItemIds = orderItemIdsResult.rows;
+        for (const orderItemId of orderItemIds) {
+            await client.query('DELETE FROM order_served_item_topping WHERE order_served_item_id = $1', [orderItemId.order_item_id]);
+        }
+        await client.query('DELETE FROM orderserveditem WHERE order_id = $1', [order_id]);
+        await client.query('DELETE FROM orders WHERE order_id = $1', [order_id]);
+
+        res.status(200).json({ message: 'success!'});
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
 
 /**
  * edit order
  */
+
 /**
  * change order status to pending given order_id
  */
@@ -1154,7 +1215,7 @@ app.post('/editTopping', async (req, res) => {
 /**
  * get all families
  */
-app.get('/getFamilies', async (req, res) => {
+app.get('/getAllFamilies', async (req, res) => {
     let client;
 
     try {

@@ -1,0 +1,54 @@
+.kitchen-display-container {
+    display: grid;
+    grid-template-rows: 1fr 100px;    
+    grid-template-columns: 1fr;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+.order-container {
+    grid-row: 1;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.buttons-container {
+    grid-row: 2;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    height: 100px;
+}
+
+.pendingOrder {
+    border: 2px solid green;
+    padding-left: 10px;;
+}
+
+.lateOrder {
+    border: 2px solid red;
+}
+
+.selectedOrder {
+    background-color: var(--primary);
+}
+
+.orderInfo {
+    display: flex;
+    justify-content: space-between;
+}
+
+.toppingName {
+    margin-left: 20px;
+}
+
+.buttons-container button {
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: 24px;
+    margin: 2px;
+}
+

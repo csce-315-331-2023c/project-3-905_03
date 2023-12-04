@@ -22,7 +22,7 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection }) => {
         setIsDrawerOpen(false);
     };
 
-    const navItems = ['Menu', 'Inventory', 'Orders', 'Analytics'];
+    const navItems = ['Menu', 'Families', 'Inventory', 'Orders', 'Analytics'];
 
     return (
         <div>

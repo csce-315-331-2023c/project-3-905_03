@@ -3,6 +3,7 @@ import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import axios from 'axios';
 import "../Styles/Table.css";
 import ViewOrderModal from './ViewOrderModal';
+import EditOrderModal from './EditOrderModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -10,18 +11,28 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, TableCell, Typography } from '@mui/material';
 import {Popover, Box} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Row {
     employee_id: number;
     order_id: number;
     order_total: string;
     takeout: string;
-    split: string;
     order_date: string;
     formatted_order_date: string;
+    status: string;
 }
 
 function OrdersTable4() {
@@ -33,6 +44,9 @@ function OrdersTable4() {
     const [modalOpen, setModalOpen] = useState<number | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [editOrderModalOpen, setEditOrderModalOpen] = useState<number | null>(null);
+    const [editRow, setEditRow] = useState<number | null>(null);
+    const [editData, setEditData] = useState< Row | null>(null);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
@@ -62,6 +76,7 @@ function OrdersTable4() {
             .then(res => {
                 const data: Row[] = res.data.data;
                 setRows(data);
+                setIsLoading(false);
             })
             .catch(err => console.log(err));
     }
@@ -81,6 +96,52 @@ function OrdersTable4() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleCancelEdit = () => {
+        setEditRow(null);
+        setEditData(null);
+    };
+
+    const handleConfirmEdit = () => {
+        if (editData) {
+            axios.post('/changeOrderStatus', {order_id: editData.order_id, status: editData.status})
+                .then(() => {
+                    const newRows = [...rows];
+                    newRows[editRow as number] = editData;
+                    setRows(newRows);
+                    setEditRow(null);
+                    setEditData(null);
+                })
+                .catch(err => console.log(err));
+        }
+    };
+
+    const handleSelectChange = (event: SelectChangeEvent) => {
+        const val = event.target.value;
+        if (typeof val === 'string'){
+            setEditData(prevData => {
+                if (prevData) {
+                    return { ...prevData, status: val };
+                } else {
+                    return {
+                        employee_id: 0,
+                        order_id: 0,
+                        order_total: '',
+                        takeout: '',
+                        order_date: '',
+                        formatted_order_date: '',
+                        status: ''
+                    };
+                }
+            });
+
+        }
+    }
+
+    const handleEditRow = (tableMeta: MUIDataTableMeta) => {
+        setEditRow(tableMeta.rowIndex);
+        setEditData(rows[tableMeta.rowIndex]);
+    };
     
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
@@ -90,23 +151,118 @@ function OrdersTable4() {
         { name: 'order_id', label: 'Order ID', options: { filter: false, sort: true, }},
         { name: 'order_total', label: 'Order Total', options: { filter: false, sort: true, }},
         { name: 'takeout', label: 'Takeout', options: { filter: true, sort: true, }},
-        { name: 'split', label: 'Split', options: { filter: true, sort: true, }},
         { name: 'formatted_order_date', label: 'Order Date', options: { filter: false, sort: true, }},
+        { name: 'status', label: 'Order Status', options: { filter: true, sort: true, 
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return (
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                            <InputLabel id="demo-select-small-label">Status</InputLabel>
+                            <Select
+                                name='status'
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={editData?.status}
+                                label="Status"
+                                onChange={handleSelectChange}
+                            >
+                                <MenuItem value='fulfilled'>
+                                    <Box display='flex' alignItems='center'>
+                                        <TaskAltIcon style={{ color: 'green' }}/>
+                                        <Typography variant="body1" style={{ marginLeft: '5px' }}>
+                                            - Fulfilled
+                                        </Typography>
+                                    </Box>
+                                </MenuItem>
+                                <MenuItem value='pending'>
+                                    <Box display='flex' alignItems='center'>
+                                        <RadioButtonUncheckedIcon style={{ color: 'orange' }}/>
+                                        <Typography variant="body1" style={{ marginLeft: '5px' }}>
+                                            - Pending
+                                        </Typography>
+                                    </Box>
+                                </MenuItem>
+                                <MenuItem value='cancelled'>
+                                    <Box display='flex' alignItems='center'>
+                                        <HighlightOffIcon style={{ color: 'red' }}/>
+                                        <Typography variant="body1" style={{ marginLeft: '5px' }}>
+                                            - Cancelled
+                                        </Typography>
+                                    </Box>
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    );
+                } else {
+                    if (value === "fulfilled") {
+                        return (
+                            <span title='Fulfilled'>
+                                <IconButton onClick={() => handleEditRow(tableMeta)}>
+                                    <TaskAltIcon style={{ color: 'green' }}/>
+                                </IconButton>
+                            </span>
+                        );
+                    } else if (value === "cancelled") {
+                        return (
+                            <span title='Cancelled'>
+                                <IconButton onClick={() => handleEditRow(tableMeta)}>
+                                    <HighlightOffIcon style={{ color: 'red' }}/>
+                                </IconButton>
+                            </span>
+                        );
+                    } else if (value === "pending") {
+                        return (
+                            <span title='Pending'>
+                                <IconButton onClick={() => handleEditRow(tableMeta)}>
+                                    <RadioButtonUncheckedIcon style={{ color: 'orange' }}/>
+                                </IconButton>
+                            </span>
+                        );
+                    }
+                }
+            },
+        }},
         {
             name: 'Actions',
             options: {
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
-                    return (
-                        <span>
-                            <IconButton onClick={() => setModalOpen(tableMeta.rowData[1])}>
-                                <VisibilityIcon/>
-                            </IconButton>
-                            <IconButton onClick={() => deleteOrder(tableMeta.rowData[1])}>
-                                <DeleteIcon/>
-                            </IconButton>
-                            {modalOpen === tableMeta.rowData[1] && <ViewOrderModal key={tableMeta.rowData[1]} closeModal={() => setModalOpen(null)} order_id={tableMeta.rowData[1]} openParentModal={() => setModalOpen(tableMeta.rowData[1])}/>}
-                        </span>
-                    );
+                    if (editRow === tableMeta.rowIndex) {
+                        return (
+                            <span>
+                                <IconButton onClick={handleConfirmEdit} sx={{ marginRight: '5px' }}>
+                                    <CheckIcon />
+                                </IconButton>
+                                <IconButton onClick={handleCancelEdit}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </span>
+                        );
+                    } else {
+                        return (
+                            <span>
+                                <IconButton onClick={() => setModalOpen(tableMeta.rowData[1])}>
+                                    <VisibilityIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => setEditOrderModalOpen(tableMeta.rowData[1])}>
+                                    <EditIcon/>
+                                </IconButton>
+                                <IconButton onClick={() => deleteOrder(tableMeta.rowData[1])}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                                {modalOpen === tableMeta.rowData[1] && <ViewOrderModal 
+                                key={tableMeta.rowData[1]} 
+                                closeModal={() => setModalOpen(null)} 
+                                order_id={tableMeta.rowData[1]} 
+                                openParentModal={() => setModalOpen(tableMeta.rowData[1])}/>}
+                                {editOrderModalOpen === tableMeta.rowData[1] && <EditOrderModal 
+                                key={tableMeta.rowData[1]} 
+                                closeModal={() => setEditOrderModalOpen(null)} 
+                                orderID={tableMeta.rowData[1]} />}
+                            </span>
+                        );
+                    }
                 },
                 filter: false,
                 sort: false,
@@ -154,7 +310,7 @@ function OrdersTable4() {
                             <button onClick={handleSearch}>Search</button>
                         </Box>
                     </Popover>
-                    <IconButton onClick={() => refreshOrders()} aria-label='Refresh'>
+                    <IconButton onClick={() => { refreshOrders(); setIsLoading(true); }} aria-label='Refresh'>
                         <RefreshIcon/>
                     </IconButton>
                 </div>

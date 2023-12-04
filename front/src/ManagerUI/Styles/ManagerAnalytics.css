@@ -70,10 +70,3 @@ body {
         align-items: center;
     }
 }
-
-svg {
-    width: 125px;
-    height: 70px;
-    justify-self: center;
-    align-self: center;
-}

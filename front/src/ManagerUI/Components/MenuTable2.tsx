@@ -11,11 +11,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 interface Row {
     item_id: number;
     served_item: string;
     item_price: number;
+    family_id?: number;
     family_name: string;
 }
 
@@ -25,25 +31,53 @@ function MenuTable() {
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [familyNames, setFamilyNames] = useState<string[]>([]);
 
-    useEffect(() => {
+
+    const fetchMenuItems = () => {
         Promise.all([
             axios.get('/getServedItems'),
-            axios.get('/getItemCategories')
+            // axios.get('/getItemCategories')
         ])
-        .then(([servedItemsRes, itemCategoryRes]) => {
+        .then(([servedItemsRes]) => {
             const servedItemsData: Row[] = servedItemsRes.data.data;
-            const itemCategoryData: { family_category: string }[] = itemCategoryRes.data.data;
+            
+            const familyCategoryPromises = servedItemsData.map((item) =>
+                axios.post('/getItemFamily', {family_id: item.family_id})
+            );
     
-            const data = servedItemsData.map((item, index) => ({
-                ...item,
-                item_category: itemCategoryData[index].family_category
-            }));
-    
-            setRows(data);
-            setIsLoading(false);
+            Promise.all(familyCategoryPromises)
+                .then((familyCategories) => {
+                    const data = servedItemsData.map((item, index) => ({
+                        ...item,
+                        family_name: familyCategories[index].data.data.family_name,
+                    }));
+
+                    setRows(data);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error fetching family categories:', error);
+                    // Handle the error appropriately
+                });
         })
-    }, []);
+        .catch((error) => {
+            console.error('Error fetching served items:', error);
+            // Handle the error appropriately
+        });
+    }
+
+    const fetchItemFamilies = () => {
+        axios.get('/getAllFamilies')
+            .then((res) => {
+                const data: Array<{ family_name: string }> = res.data.data;
+                const familyNames: string[] = data.map(item => item.family_name);
+                setFamilyNames(familyNames);
+            })
+            .catch(err => console.log(err));
+    };
+
+    useEffect(() => { fetchMenuItems(); fetchItemFamilies(); }, []);
 
     const handleDeleteRow = (targetIndex: number) => {
         axios.post('/deleteServedItem', rows[targetIndex])
@@ -58,7 +92,7 @@ function MenuTable() {
     const handleAddRow = (newRow: Row) => {
         axios.post('/addServedItem', newRow)
             .then(() => {
-                setRows(prevRows => [...prevRows, newRow]);
+                fetchMenuItems();
             })
             .catch(err => console.log(err));
     };
@@ -75,7 +109,7 @@ function MenuTable() {
 
     const handleConfirmEdit = () => {
         if (editData) {
-            axios.post('/editStockItem', editData)
+            axios.post('/editServedItem', editData)
                 .then(() => {
                     const newRows = [...rows];
                     newRows[editRow as number] = editData;
@@ -96,11 +130,32 @@ function MenuTable() {
                     item_id: 0, // default value
                     served_item: '', // default value
                     item_price: 0, // default value
+                    family_id: 0, // default value
                     family_name: '', // default value
                 };
             }
         });
     };
+
+    const handleSelectChange = (event: SelectChangeEvent) => {
+        const val = event.target.value;
+        if (typeof val === 'string'){
+            setEditData(prevData => {
+                if (prevData) {
+                    return { ...prevData, family_name: val };
+                } else {
+                    return {
+                        item_id: 0, // default value
+                        served_item: '', // default value
+                        item_price: 0, // default value
+                        family_id: 0, // default value
+                        family_name: '', // default value
+                    };
+                }
+            });
+
+        }
+    }
 
     const columns = [
         { name: 'item_id', label: 'Item ID', options: {sort: true, filter: false} },
@@ -118,7 +173,31 @@ function MenuTable() {
                 }
                 return value;
             }} },
-        { name: 'item_category', label: 'Item Category', options: {sort: true, filter: true} },
+        { name: 'family_name', label: 'Family Name', options: {sort: true, filter: true,
+            customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
+                if (editRow === tableMeta.rowIndex) {
+                    return (
+                    <div>
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                            <InputLabel id="demo-select-small-label">Family Name</InputLabel>
+                            <Select
+                                name='family_name'
+                                labelId="demo-select-small-label"
+                                id="demo-select-small"
+                                value={editData?.family_name}
+                                label="Family"
+                                onChange={handleSelectChange}
+                            >
+                                {familyNames.map((familyName, index) => (
+                                    <MenuItem key={index} value={familyName}>{familyName}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                    );
+                }
+                return value;
+            }} },
         {
             name: 'Actions',
             options: {
@@ -159,9 +238,14 @@ function MenuTable() {
         jumpToPage: true,
         customToolbar: () => {
             return (
-                <IconButton onClick={() => setModalOpen(true)}>
-                    <AddIcon />
-                </IconButton>
+                <div>
+                    <IconButton onClick={() => setModalOpen(true)}>
+                        <AddIcon />
+                    </IconButton>
+                    <IconButton onClick={() => { fetchMenuItems(); setIsLoading(true); }} aria-label='Refresh'>
+                        <RefreshIcon/>
+                    </IconButton>
+                </div>
             );
         },
     };

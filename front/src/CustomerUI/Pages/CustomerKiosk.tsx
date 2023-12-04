@@ -23,9 +23,6 @@ import {
 } from '@mui/icons-material';
 import { TransitionProps } from '@mui/material/transitions';
 
-
-const BASE_URL = 'http://localhost:8080';
-
 const Customer = () => {
     const [state, upd] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -123,7 +120,7 @@ const Customer = () => {
 
     const getFams = async () => {
         try {
-            const res = await axios.get('/getFamilyItems', { baseURL: BASE_URL });
+            const res = await axios.get('/getFamilyItems');
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
@@ -149,7 +146,7 @@ const Customer = () => {
 
     const getSizes = async (familyId: number) => {
         try {
-            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
+            const res = await axios.post('/getServedItemsInFamily', { family_id: familyId });
             const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_id: number }, index: number) => {
                 const { served_item, item_price, item_id } = itemData;
                 return {
@@ -167,7 +164,7 @@ const Customer = () => {
 
     const getToppings = async (familyId: number) => {
         try {
-            const res = await axios.post('/getToppingsInFamily', { family_id: familyId }, { baseURL: BASE_URL });
+            const res = await axios.post('/getToppingsInFamily', { family_id: familyId });
             const retToppings: Topping[] = res.data.data.map((toppingData: { topping: string, topping_price: number }, index: number) => {
                 const { topping, topping_price } = toppingData;
                 return {

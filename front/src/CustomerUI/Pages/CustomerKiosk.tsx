@@ -9,8 +9,19 @@ import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button, Switch } from '@mui/material';
-import { ShoppingBag, ShoppingBagOutlined, Remove, Undo, Add } from '@mui/icons-material';
+import {
+    Radio, RadioGroup,
+    FormControlLabel, FormControl, FormLabel,
+    Button, Switch,
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Slide
+} from '@mui/material';
+import {
+    ShoppingBag, ShoppingBagOutlined,
+    Remove, Undo, Add
+} from '@mui/icons-material';
+import { TransitionProps } from '@mui/material/transitions';
+
 
 const BASE_URL = 'http://localhost:8080';
 
@@ -19,6 +30,7 @@ const Customer = () => {
     const [loading, setLoading] = useState(true);
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
     const [orderId, setOrderId] = useState<number>(0);
+
 
     const [bagView, setBagView] = useState(false);
     const [bag, setBag] = useState<Family[]>([]);
@@ -30,6 +42,11 @@ const Customer = () => {
 
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
+
+    const handleClose = () => { 
+        setOrderId(0); 
+        window.location.reload();
+    };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelected(undefined);
@@ -73,7 +90,7 @@ const Customer = () => {
         bag.forEach((family) => {
             const chosenItem = family.options.find((option) => option.chosen === true);
             console.log("ID", chosenItem?.id);
-            if (chosenItem) 
+            if (chosenItem)
                 currOrder.addItem({ ...chosenItem, toppings: family.toppings });
         });
 
@@ -153,6 +170,15 @@ const Customer = () => {
         }
     }
 
+    const Transition = React.forwardRef(function Transition(
+        props: TransitionProps & {
+            children: React.ReactElement<any, any>;
+        },
+        ref: React.Ref<unknown>,
+    ) {
+        return <Slide direction="up" ref={ref} {...props} />;
+    });
+
 
     useEffect(() => {
         getFams();
@@ -182,6 +208,7 @@ const Customer = () => {
 
     const imgClick = () => {
         console.log(fams);
+        window.location.reload();
     };
 
 
@@ -294,6 +321,24 @@ const Customer = () => {
                     }
                 </div>
             </div>
+
+            <Dialog
+                open={orderId !== 0}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle> Your order number is {orderId}.</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Your order has been placed!
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

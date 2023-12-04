@@ -936,8 +936,69 @@ app.post('/deleteOrder', async (req, res) => {
 });
 
 /**
- * edit order
+ * get info about order for edit order functionality
  */
+app.post('/editOrderGetInfo', async (req, res) => {
+    let client;
+
+    try {
+        let { order_id } = req.body;
+
+        client = new Client({
+            host: 'csce-315-db.engr.tamu.edu',
+            user: 'csce315_905_03user',
+            password: '90503',
+            database: 'csce315_905_03db'
+        });
+
+        await client.connect();
+
+        const orderResult = await client.query('SELECT * FROM orders WHERE order_id = $1', [order_id]);
+        const order = orderResult.rows[0];
+        
+        let orderInfo = {
+            order_id: order_id,
+            employee_id: order.employee_id,
+            order_total: order.order_total,
+            takeout: order.takeout,
+            order_date: order.order_date,
+            receipt: []
+        };
+
+        const orderItemIdsResult = await client.query('SELECT order_item_id, item_id FROM orderserveditem WHERE order_id = $1', [order_id]);
+        const orderItemIds = orderItemIdsResult.rows;
+
+        let receiptInfo = []; // Initialize receiptInfo as an array
+
+        for (const orderItemId of orderItemIds) {
+            const itemInfoResult = await client.query('SELECT* FROM served_items WHERE item_id = $1', [orderItemId.item_id]);
+            const itemInfo = itemInfoResult.rows[0];
+            itemInfo.toppings = []; // Initialize toppings as an array
+
+            const toppingIdsResult = await client.query('SELECT topping_id FROM order_served_item_topping WHERE order_served_item_id = $1', [orderItemId.order_item_id]);
+            const toppingIds = toppingIdsResult.rows;
+
+            for(const toppingId of toppingIds){
+                const toppingInfoResult = await client.query('SELECT* FROM served_items_topping WHERE topping_id = $1', [toppingId.topping_id]);
+                const toppingInfo = toppingInfoResult.rows[0];
+                itemInfo.toppings.push(toppingInfo); // Push toppingInfo into toppings array
+            }
+
+            receiptInfo.push(itemInfo); // Push itemInfo into receiptInfo array
+        }
+        console.log(receiptInfo);
+
+        orderInfo.receipt = receiptInfo;
+
+        res.status(200).json({ message: "success!", data: orderInfo });
+    } catch (error) {
+        res.status(400).send(error.message);
+    } finally {
+        if (client) {
+            client.end();
+        }
+    }
+});
 
 /**
  * change order status to pending given order_id

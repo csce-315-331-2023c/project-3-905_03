@@ -140,18 +140,25 @@ export class Order {
     this.receipt = [];
   }
 
-  checkout(): any {
-    // implementation for checkout
-    console.log("checkout ! ! !");
-    console.log(this);
 
-    axios.post('/submitOrder', {receipt: this.getReceipt(), total: this.getOrderTotal(), sender_id: this.sender_id, split: this.split, dineIn: this.dineIn})
-      .then(res => {
-        return res.data.data;
-      })
-      .catch(err => {
-        console.log(err);
-        return err;
+  async checkout(): Promise<number> {
+    try {
+      const res = await axios.post('/submitOrder', {
+        receipt: this.getReceipt(),
+        total: this.getOrderTotal(),
+        sender_id: this.sender_id,
+        split: this.split,
+        dineIn: this.dineIn
       });
+  
+      console.log("res", res.data);
+      const orderId: string = res.data.OrderId.toString();
+      const lastTwoDigits: string = orderId.substring(orderId.length - 2);
+      return Number(lastTwoDigits);
+    } catch (err) {
+      console.log(err);
+      return -1;
+    }
   }
+  
 }

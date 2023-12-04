@@ -18,7 +18,7 @@ const Customer = () => {
     const [state, upd] = useState(false);
     const [loading, setLoading] = useState(true);
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
-    const [checkoutReturn, setCheckoutReturn] = useState<number>(0);
+    const [orderId, setOrderId] = useState<number>(0);
 
     const [bagView, setBagView] = useState(false);
     const [bag, setBag] = useState<Family[]>([]);
@@ -67,7 +67,7 @@ const Customer = () => {
         upd(a => !a);
     };
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         //make the order
         console.log("bag", bag)
         bag.forEach((family) => {
@@ -78,12 +78,9 @@ const Customer = () => {
         });
 
         currOrder.sender_id = 0; // id of logged in user
-        setCheckoutReturn(currOrder.checkout());
-        console.log("checkoutReturn", checkoutReturn);
-
-        setCurrOrder(new Order());
-        setSelected(undefined); 
-        upd(a => !a);
+        const order = await currOrder.checkout();
+        setOrderId(order);
+        console.log("order", order);
     };
 
     const getTotal = () => {
@@ -167,7 +164,13 @@ const Customer = () => {
             setLoading(false);
     }, [fams]);
 
-    use
+    useEffect(() => {
+        console.log("checkoutReturn", orderId);
+        // setCurrOrder(new Order());
+        // setSelected(undefined); 
+        // upd(a => !a);
+    }, [orderId]);
+
 
     useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);

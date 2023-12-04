@@ -45,7 +45,6 @@ const Customer = () => {
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-
     const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -58,6 +57,7 @@ const Customer = () => {
     const handleClose = () => {
         setOrderId(0);
         window.location.reload();
+        // logout
     };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,19 +97,20 @@ const Customer = () => {
     };
 
     const handleCheckout = async () => {
-        //make the order
-        console.log("bag", bag)
-        bag.forEach((family) => {
-            const chosenItem = family.options.find((option) => option.chosen === true);
-            console.log("ID", chosenItem?.id);
-            if (chosenItem)
-                currOrder.addItem({ ...chosenItem, toppings: family.toppings });
-        });
+        if (bag.length > 0 && confirm("Are you sure?") == true) {//make the order
+            console.log("bag", bag)
+            bag.forEach((family) => {
+                const chosenItem = family.options.find((option) => option.chosen === true);
+                console.log("ID", chosenItem?.id);
+                if (chosenItem)
+                    currOrder.addItem({ ...chosenItem, toppings: family.toppings });
+            });
 
-        currOrder.sender_id = 0; // id of logged in user
-        const order = await currOrder.checkout();
-        setOrderId(order);
-        console.log("order", order);
+            currOrder.sender_id = 0; // id of logged in user
+            const order = await currOrder.checkout();
+            setOrderId(order);
+            console.log("order", order);
+        }
     };
 
     const getTotal = () => {
@@ -194,6 +195,7 @@ const Customer = () => {
 
     useEffect(() => {
         getFams();
+        // sign in pop up
     }, []);
 
     // loading animation

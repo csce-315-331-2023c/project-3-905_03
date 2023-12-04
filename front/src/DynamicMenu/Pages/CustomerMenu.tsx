@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Styles/DynamicMenu.css';
+import '../Styles/CustomerMenu.css';
 import logo from '../../assets/messLogo-removebg.png';
 import nuttellaWaffle from '../../assets/nuttellaWaffle.jpg';
 import originalFrenchToast from '../../assets/originalFrenchToast.jpg';
@@ -20,24 +20,15 @@ import Weather from '../../SharedComponents/Weather';
 
 import Carousel from 'react-material-ui-carousel'
 
-const DynamicMenu: React.FC = () => {
+const CustomerMenu: React.FC = () => {
     return (
-        <div className="dynamic-menu-container">
+        <div className="customer-menu-container">
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
             </div>
-
-            <Carousel className ="Carousel"
-                autoPlay={true}
-                interval={7500}
-                animation="slide"
-                duration={500}
-                swipe={true}
-                navButtonsAlwaysInvisible={true}
-                indicators={false}
-            > 
-                <div className="slide">
+            <div className="menu-container">
+                <div className="side-left">
                     <div className="WandTContainer">
                         <h1>Waffles And Toast</h1>
                         {<WandTItems />}  
@@ -56,7 +47,7 @@ const DynamicMenu: React.FC = () => {
                         {<DrinkItems />}  
                     </div>
                 </div>
-                <div className="slide">
+                <div className="side-right">
                     <div className="entreeContainer">
                         <h1>Entrees</h1>
                         {<EntreeItems />}  
@@ -77,9 +68,9 @@ const DynamicMenu: React.FC = () => {
                         <Weather />
                     </div>
                 </div>
-                </Carousel>
+            </div>
         </div>
     );
 };
 
-export default DynamicMenu;
+export default CustomerMenu;

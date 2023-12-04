@@ -131,7 +131,7 @@ const LoginPage = () => {
   }
 
   const handleAccessMenu = () => {
-    navigate('/dynamic-menu');
+    navigate('/customer-menu');
   };
 
   const handleAccessKiosk = () => {

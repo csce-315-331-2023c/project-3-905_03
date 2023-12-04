@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import ItemCard from '../Components/ItemCard';
+import ItemCard from '../../CashierUI/Components/ItemCard';
 import "../Styles/Cashier.css";
 import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
 import { FaCheck } from 'react-icons/fa';
 import { Order, Item, Topping } from "../../Order.ts";
 import { BsFillTrashFill } from "react-icons/bs";
-import OrderConfirmationModal from "../Components/OrderConfirmationModal.tsx";
+import OrderConfirmationModal from "../../CashierUI/Components/OrderConfirmationModal.tsx";
 
-const Cashier = () => {
+interface EditOrderModalProps {
+    orderID: number;
+}
+
+const Cashier: React.FC<EditOrderModalProps> = ({ orderID }) => {
     interface displayItem {
         family_id: number;
         family_name: string;

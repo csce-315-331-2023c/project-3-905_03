@@ -10,7 +10,8 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, TableCell } from '@mui/material';
 import {Popover, Box} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -36,6 +37,7 @@ function OrdersTable4() {
     const [modalOpen, setModalOpen] = useState<number | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [editOrderModalOpen, setEditOrderModalOpen] = useState<number | null>(null);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
@@ -99,24 +101,24 @@ function OrdersTable4() {
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (value === "fulfilled") {
                     return (
-                        <span>
+                        <span title='Fulfilled'>
                             <TaskAltIcon style={{ color: 'green' }}/>
                         </span>
                     );
                 } else if (value === "cancelled") {
                     return (
-                        <span>
+                        <span title='Cancelled'>
                             <HighlightOffIcon style={{ color: 'red' }}/>
                         </span>
                     );
                 } else if (value === "pending") {
                     return (
-                        <span>
+                        <span title='Pending'>
                             <RadioButtonUncheckedIcon style={{ color: 'orange' }}/>
                         </span>
                     );
                 }
-            }
+            },
         }},
         {
             name: 'Actions',
@@ -126,6 +128,9 @@ function OrdersTable4() {
                         <span>
                             <IconButton onClick={() => setModalOpen(tableMeta.rowData[1])}>
                                 <VisibilityIcon/>
+                            </IconButton>
+                            <IconButton onClick={() => setEditOrderModalOpen(tableMeta.rowData[1])}>
+                                <EditIcon/>
                             </IconButton>
                             <IconButton onClick={() => deleteOrder(tableMeta.rowData[1])}>
                                 <DeleteIcon/>

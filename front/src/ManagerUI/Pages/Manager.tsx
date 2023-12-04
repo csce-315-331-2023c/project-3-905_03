@@ -9,7 +9,7 @@ import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
 
 const ManagerGUI: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<string>('Menu');
+  const [activeSection, setActiveSection] = useState<string>('Orders');
 
 
   const componentMapping: { [key: string]: React.FC } = {

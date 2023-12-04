@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import AddFamilyModal from './AddFamilyModal';
+import DescriptionModal from './DescriptionModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -29,6 +30,7 @@ interface Row {
 function FamilyTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [dModalOpen, setDModalOpen] = useState<number | null>(null);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -161,9 +163,10 @@ function FamilyTable() {
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 return (
                     <span>
-                        <IconButton onClick={handleConfirmEdit}>
+                        <IconButton onClick={() => {setDModalOpen(tableMeta.rowData[1])}}>
                             <VisibilityIcon/>
                         </IconButton>
+                        {dModalOpen === tableMeta.rowData[1] && <DescriptionModal key={tableMeta.rowData[1]} closeModal={() => {setDModalOpen(null); fetchFamilies();}} family_id={tableMeta.rowData[0]} family_description={tableMeta.rowData[3]}/>}
                     </span>
                 );
             }} },

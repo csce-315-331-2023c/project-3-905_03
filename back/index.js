@@ -26,7 +26,19 @@ app.get('/test', (req, res) => {
 });
 
 /**
- * return served items in json form
+ * Handles the GET request for served items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all served items from the database along with their ingredients.
+ * Each served item is an object that includes the item_id, served_item, item_price, family_id, and an array of ingredients.
+ * The function connects to the database, executes a SQL query to get the served items, and then for each served item, executes another SQL query to get its ingredients.
+ * The function then sends a response with the status code and a JSON object containing a message and the data (all served items with their ingredients).
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getServedItems', async (req, res) => {
     let client;
@@ -71,7 +83,17 @@ app.get('/getServedItems', async (req, res) => {
 });
 
 /**
- * return entree items in json form
+ * Handles the GET request for family items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all family items from the database.
+ * The function connects to the database, executes a SQL query to get the family items, and then sends a response with the status code and a JSON object containing the data (all family items).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getFamilyItems', (req, res) => {
 
@@ -100,7 +122,18 @@ app.get('/getFamilyItems', (req, res) => {
 });
 
 /**
- * return each served item's category in json form
+ * Handles the GET request for item categories.
+ * 
+ * @remarks
+ * This function is responsible for fetching all item categories from the database.
+ * The function connects to the database, executes a SQL query to get the served items, and then for each served item, executes another SQL query to get its category.
+ * The function then sends a response with the status code and a JSON object containing the data (all item categories).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getItemCategories', (req, res) => {
 
@@ -138,7 +171,17 @@ app.get('/getItemCategories', (req, res) => {
 });
 
 /**
- * return each served item's family name in json form
+ * Handles the POST request for getting a specific item family.
+ * 
+ * @remarks
+ * This function is responsible for fetching a specific item family from the database based on the family_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get the family name of the served item with the provided family_id, and then sends a response with the status code and a JSON object containing the data (family name).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getItemFamily', (req, res) => {
 
@@ -170,7 +213,17 @@ app.post('/getItemFamily', (req, res) => {
 });
 
 /**
- * return entree items in json form
+ * Handles the GET request for entree items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all entree items from the database.
+ * The function connects to the database, executes a SQL query to get the served items where the family category is 'entree', and then sends a response with the status code and a JSON object containing the data (all entree items).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getEntreeItems', (req, res) => {
 
@@ -199,7 +252,17 @@ app.get('/getEntreeItems', (req, res) => {
 });
 
 /**
- * return w&t items in json form
+ * Handles the GET request for W&T items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all W&T items from the database.
+ * The function connects to the database, executes a SQL query to get the served items where the family category is 'w&t', and then sends a response with the status code and a JSON object containing the data (all W&T items).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getW&TItems', (req, res) => {
 
@@ -228,7 +291,17 @@ app.get('/getW&TItems', (req, res) => {
 });
 
 /**
- * return side items in json form
+ * Handles the GET request for side items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all side items from the database.
+ * The function connects to the database, executes a SQL query to get the served items where the family category is 'side', and then sends a response with the status code and a JSON object containing the data (all side items).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getSideItems', (req, res) => {
 
@@ -257,7 +330,17 @@ app.get('/getSideItems', (req, res) => {
 });
 
 /**
- * return drink items in json form
+ * Handles the GET request for drink items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all drink items from the database.
+ * The function connects to the database, executes a SQL query to get the served items where the family category is 'drink', and then sends a response with the status code and a JSON object containing the data (all drink items).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getDrinkItems', (req, res) => {
 
@@ -286,7 +369,17 @@ app.get('/getDrinkItems', (req, res) => {
 });
 
 /**
- * return special items in json form
+ * Handles the GET request for special items.
+ * 
+ * @remarks
+ * This function is responsible for fetching all special items from the database.
+ * The function connects to the database, executes a SQL query to get the served items where the family category is 'special', and then sends a response with the status code and a JSON object containing the data (all special items).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getSpecialItems', (req, res) => {
 
@@ -345,7 +438,17 @@ app.post('/getServedItemsInFamily', (req, res) => {
 });
 
 /**
- * return served item's corresponding add-ons in family given family id
+ * Handles the POST request for getting served items in a specific family.
+ * 
+ * @remarks
+ * This function is responsible for fetching all served items from a specific family from the database based on the family_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get the served items where the family_id matches the provided family_id, and then sends a response with the status code and a JSON object containing the data (all served items in the specific family).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getToppingsInFamily', (req, res) => {
     let { family_id } = req.body;
@@ -375,7 +478,17 @@ app.post('/getToppingsInFamily', (req, res) => {
 });
 
 /**
- * get served item info given item id
+ * Handles the POST request for getting specific served item information.
+ * 
+ * @remarks
+ * This function is responsible for fetching information of a specific served item from the database based on the item_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get the served item where the item_id matches the provided item_id, and then sends a response with the status code and a JSON object containing the data (information of the specific served item).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getServedItemInfo', async (req, res) => {
     let client;
@@ -403,7 +516,17 @@ app.post('/getServedItemInfo', async (req, res) => {
 });
 
 /**
- * return stock items in json form
+ * Handles the POST request for getting specific served item information.
+ * 
+ * @remarks
+ * This function is responsible for fetching information of a specific served item from the database based on the item_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get the served item where the item_id matches the provided item_id, and then sends a response with the status code and a JSON object containing the data (information of the specific served item).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getStockItems', (req, res) => {
 
@@ -430,7 +553,17 @@ app.get('/getStockItems', (req, res) => {
 });
 
 /**
- * get 20 most recent orders
+ * Handles the GET request for recent orders.
+ * 
+ * @remarks
+ * This function is responsible for fetching the most recent 1000 orders from the database.
+ * The function connects to the database, executes a SQL query to get the most recent 1000 orders ordered by order_id in descending order, and then sends a response with the status code and a JSON object containing the data (recent orders).
+ * If an error occurs, the function logs the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getRecentOrders', (req, res) => {
 
@@ -457,7 +590,17 @@ app.get('/getRecentOrders', (req, res) => {
 });
 
 /**
- * get orders between 2 dates
+ * Handles the POST request for getting orders between two dates.
+ * 
+ * @remarks
+ * This function is responsible for fetching all orders from the database that were placed between the start_date and end_date provided in the request body.
+ * The function connects to the database, executes a SQL query to get all orders where the order_date is between start_date and end_date, and then sends a response with the status code and a JSON object containing the data (orders between the two dates).
+ * If an error occurs, the function logs the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getOrdersBetweenDates', (req, res) => {
 
@@ -486,7 +629,17 @@ app.post('/getOrdersBetweenDates', (req, res) => {
 });
 
 /**
- * get order items for a given order id
+ * Handles the POST request for getting items in a specific order.
+ * 
+ * @remarks
+ * This function is responsible for fetching all items in a specific order from the database based on the order_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get all items where the order_id matches the provided order_id, and then sends a response with the status code and a JSON object containing the data (items in the specific order).
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getOrderItems', (req, res) => {
     let { order_id } = req.body;
@@ -541,7 +694,17 @@ app.post('/getOrderItems', (req, res) => {
 });
 
 /**
- * get item toppings for a given order id and item id
+ * Handles the POST request for getting toppings of a specific order item.
+ * 
+ * @remarks
+ * This function is responsible for fetching all toppings of a specific order item from the database based on the order_item_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get all toppings where the order_served_item_id matches the provided order_item_id, and then sends a response with the status code and a JSON object containing the data (toppings of the specific order item).
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getOrderItemToppings', (req, res) => {
     let { order_item_id } = req.body;
@@ -584,7 +747,17 @@ app.post('/getOrderItemToppings', (req, res) => {
 });
 
 /**
- * add entry to served items table in database
+ * Handles the POST request for adding a new served item.
+ * 
+ * @remarks
+ * This function is responsible for adding a new served item to the database. The served item information is provided in the request body.
+ * The function connects to the database, gets the maximum item_id from the served_items table, increments it by 1 to get the new item_id, gets the family_id corresponding to the provided family_name, and then inserts a new record into the served_items table with the new item_id, served_item, item_price, and family_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addServedItem', (req, res) => {
 
@@ -633,7 +806,17 @@ app.post('/addServedItem', (req, res) => {
 });
 
 /**
- * get family names given item category
+ * Handles the POST request for getting families in a specific category.
+ * 
+ * @remarks
+ * This function is responsible for fetching all families in a specific category from the database based on the family_category provided in the request body.
+ * The function connects to the database, executes a SQL query to get all families where the family_category matches the provided family_category, and then sends a response with the status code and a JSON object containing the data (families in the specific category).
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getFamilies', (req, res) => {
     let { family_category } = req.body;
@@ -660,7 +843,17 @@ app.post('/getFamilies', (req, res) => {
 
 
 /**
- * add entry to stock items table in database
+ * Handles the POST request for adding a new stock item.
+ * 
+ * @remarks
+ * This function is responsible for adding a new stock item to the database. The stock item information is provided in the request body.
+ * The function connects to the database, gets the maximum stock_id from the stock_items table, increments it by 1 to get the new stock_id, and then inserts a new record into the stock_items table with the new stock_id, stock_item, cost, stock_quantity, and max_amount.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addStockItem', (req, res) => {
 
@@ -700,8 +893,17 @@ app.post('/addStockItem', (req, res) => {
 
 
 /**
- * add entry to served item stock item table in database
- * given stock_name, find its id, then add entry
+ * Handles the POST request for adding a new served item stock item.
+ * 
+ * @remarks
+ * This function is responsible for adding a new served item stock item to the database. The item_id and stock_item are provided in the request body.
+ * The function connects to the database, gets the stock_id corresponding to the provided stock_item, gets the maximum served_stock_id from the serveditemstockitem table, increments it by 1 to get the new served_stock_id, and then inserts a new record into the serveditemstockitem table with the new served_stock_id, item_id, and stock_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addServedItemStockItem', (req, res) => {
 
@@ -752,10 +954,17 @@ app.post('/addServedItemStockItem', (req, res) => {
 
 
 /**
- * edit served_items entry 
- * will be provided with all values
- * delete all current entries with item_id in serveditemstockitem
- * given sting list of ingredients, find their ids, then add entry
+ * Handles the POST request for editing a served item.
+ * 
+ * @remarks
+ * This function is responsible for editing a served item in the database. The item_id, served_item, item_price, family_name, and ingredients are provided in the request body.
+ * The function connects to the database, gets the family_id corresponding to the provided family_name, updates the served_items table with the new served_item, item_price, and family_id, deletes the old entries from the serveditemstockitem table for the provided item_id, gets the stock_id for each provided ingredient, and then inserts new entries into the serveditemstockitem table with the provided item_id and the obtained stock_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editServedItem', async (req, res) => {
     let client;
@@ -803,8 +1012,17 @@ app.post('/editServedItem', async (req, res) => {
 });
 
 /**
- * edit stock_items entry
- * will be provided with all values
+ * Handles the POST request for editing a stock item.
+ * 
+ * @remarks
+ * This function is responsible for editing a stock item in the database. The stock_id, stock_item, cost, stock_quantity, and max_amount are provided in the request body.
+ * The function connects to the database, and updates the stock_items table with the new stock_item, cost, stock_quantity, and max_amount for the provided stock_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editStockItem', (req, res) => {
     let { stock_id, stock_item, cost, stock_quantity, max_amount } = req.body;
@@ -829,8 +1047,17 @@ app.post('/editStockItem', (req, res) => {
 });
 
 /**
- * Delete served_items entry
- * will be provided with id
+ * Handles the POST request for deleting a served item.
+ * 
+ * @remarks
+ * This function is responsible for deleting a served item from the database. The item_id is provided in the request body.
+ * The function connects to the database, deletes the entries from the serveditemstockitem table for the provided item_id, and then deletes the entry from the served_items table for the provided item_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteServedItem', (req, res) => {
     let { item_id } = req.body;
@@ -865,8 +1092,17 @@ app.post('/deleteServedItem', (req, res) => {
 });
 
 /**
- * Delete stock_items entry
- * will be provided with id
+ * Handles the POST request for deleting a stock item.
+ * 
+ * @remarks
+ * This function is responsible for deleting a stock item from the database. The stock_id is provided in the request body.
+ * The function connects to the database, and deletes the entry from the stock_items table for the provided stock_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteStockItem', (req, res) => {
     let { stock_id } = req.body;
@@ -892,13 +1128,17 @@ app.post('/deleteStockItem', (req, res) => {
 });
 
 /**
- * given sender_id (for now assume is given to you), a list of item ids, order total, takeout, and split, submit the order to the database
- * get max order id
- * get the date
- * add to orders table
- * for each item add to orderserveditems table
- * for each item in the list of item_ids, get the ingredients used from the serveditemstockitem table
- * for each of these ingredients decrement the stock_quantity in the stock_items table
+ * Handles the POST request for submitting an order.
+ * 
+ * @remarks
+ * This function is responsible for submitting an order to the database. The sender_id, a list of item_ids, order total, takeout, and split are provided in the request body.
+ * The function connects to the database, gets the maximum order_id from the orders table, gets the current date, adds a new record to the orders table, for each item in the list of item_ids, gets the ingredients used from the serveditemstockitem table, for each of these ingredients, decrements the stock_quantity in the stock_items table.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/submitOrder', async (req, res) => {
     let client;
@@ -972,7 +1212,17 @@ app.post('/submitOrder', async (req, res) => {
 });
 
 /**
- * delete order
+ * Handles the POST request for deleting an order.
+ * 
+ * @remarks
+ * This function is responsible for deleting an order from the database. The order_id is provided in the request body.
+ * The function connects to the database, gets the order_item_id for each item in the order from the orderserveditem table, deletes the entries from the order_served_item_topping table for each obtained order_item_id, deletes the entries from the orderserveditem table for the provided order_id, and then deletes the entry from the orders table for the provided order_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteOrder', async (req, res) => {
     let client;
@@ -1008,7 +1258,17 @@ app.post('/deleteOrder', async (req, res) => {
 });
 
 /**
- * get info about order for edit order functionality
+ * Handles the POST request for getting information about an order for the edit order functionality.
+ * 
+ * @remarks
+ * This function is responsible for fetching information about an order from the database. The order_id is provided in the request body.
+ * The function connects to the database, gets the order from the orders table, gets the order_item_id and item_id for each item in the order from the orderserveditem table, gets the item information from the served_items table, gets the topping_id for each topping on the item from the order_served_item_topping table, gets the topping information from the served_items_topping table, and then sends a response with the status code and a JSON object containing the order information.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editOrderGetInfo', async (req, res) => {
     let client;
@@ -1072,7 +1332,17 @@ app.post('/editOrderGetInfo', async (req, res) => {
 });
 
 /**
- * submit order for edit order funcitonality
+ * Handles the POST request for submitting the edited order.
+ * 
+ * @remarks
+ * This function is responsible for submitting the edited order to the database. The order_id, receipt, total, sender_id, and dineIn are provided in the request body.
+ * The function connects to the database, deletes the old entries from the order_served_item_topping table, orderserveditem table, and orders table for the provided order_id, gets the current date and time, inserts a new record into the orders table, for each item in the receipt, inserts a new record into the orderserveditem table, decrements the stock_quantity in the stock_items table for each ingredient used, and if the item has toppings, inserts new records into the order_served_item_topping table.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editOrderSubmit', async (req, res) => {
     let client;
@@ -1148,7 +1418,17 @@ app.post('/editOrderSubmit', async (req, res) => {
 });
 
 /**
- * change order status to given status given order_id and status
+ * Handles the POST request for changing the status of an order.
+ * 
+ * @remarks
+ * This function is responsible for changing the status of an order in the database. The order_id and status are provided in the request body.
+ * The function connects to the database, and updates the status in the orders table for the provided order_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/changeOrderStatus', async (req, res) => {
     let client;
@@ -1175,7 +1455,17 @@ app.post('/changeOrderStatus', async (req, res) => {
 });
 
 /**
- * change order status to pending given order_id
+ * Handles the POST request for setting an order's status to 'pending'.
+ * 
+ * @remarks
+ * This function is responsible for setting an order's status to 'pending' in the database. The order_id is provided in the request body.
+ * The function connects to the database, and updates the status in the orders table for the provided order_id to 'pending'.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/pendingOrder', async (req, res) => {
     let client;
@@ -1203,7 +1493,17 @@ app.post('/pendingOrder', async (req, res) => {
 });
 
 /**
- * change order status to fulfilled given order_id
+ * Handles the POST request for setting an order's status to 'fulfilled'.
+ * 
+ * @remarks
+ * This function is responsible for setting an order's status to 'fulfilled' in the database. The order_id is provided in the request body.
+ * The function connects to the database, and updates the status in the orders table for the provided order_id to 'fulfilled'.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/fulfillOrder', async (req, res) => {
     let client;
@@ -1231,7 +1531,17 @@ app.post('/fulfillOrder', async (req, res) => {
 });
 
 /**
- * change order status to cancelled given order_id
+ * Handles the POST request for setting an order's status to 'cancelled'.
+ * 
+ * @remarks
+ * This function is responsible for setting an order's status to 'cancelled' in the database. The order_id is provided in the request body.
+ * The function connects to the database, and updates the status in the orders table for the provided order_id to 'cancelled'.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/cancelOrder', async (req, res) => {
     let client;
@@ -1259,7 +1569,17 @@ app.post('/cancelOrder', async (req, res) => {
 });
 
 /**
- * get all pending orders
+ * Handles the GET request for fetching all pending orders.
+ * 
+ * @remarks
+ * This function is responsible for fetching all orders with a status of 'pending' from the database.
+ * The function connects to the database, and retrieves all records from the orders table where the status is 'pending'.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getPendingOrders', async (req, res) => {
     let client;
@@ -1286,11 +1606,17 @@ app.get('/getPendingOrders', async (req, res) => {
 });
 
 /**
- * delete an order
- */
-
-/**
- * get all toppings
+ * Handles the GET request for fetching all toppings.
+ * 
+ * @remarks
+ * This function is responsible for fetching all toppings from the database.
+ * The function connects to the database, and retrieves all records from the served_items_topping table.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getToppings', async (req, res) => {
     let client;
@@ -1318,10 +1644,17 @@ app.get('/getToppings', async (req, res) => {
 });
 
 /**
- * add topping
- * family_ids is an array of family ids ex : [0,1,2] we can change this if needed
- * I am imaging when manager is adding a topping, they will select which families it applies to similar to how 
- * they select what ingredients are in a served_item
+ * Handles the POST request for adding a new topping.
+ * 
+ * @remarks
+ * This function is responsible for adding a new topping to the database. The family_ids, topping, and topping_price are provided in the request body.
+ * The function connects to the database, gets the maximum topping_id from the served_items_topping table, increments it by 1, and for each family_id in the family_ids array, inserts a new record into the served_items_topping table with the incremented topping_id, the family_id, the topping, and the topping_price.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addTopping', async (req, res) => {
     let client;
@@ -1355,8 +1688,17 @@ app.post('/addTopping', async (req, res) => {
 });
 
 /**
- * delete a topping
- * currently this is deleting a topping from all families just by using its name
+ * Handles the POST request for deleting all instances of a specific topping.
+ * 
+ * @remarks
+ * This function is responsible for deleting all instances of a specific topping from the database. The topping is provided in the request body.
+ * The function connects to the database, and deletes all records from the served_items_topping table where the topping matches the provided topping.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteAllOfTopping', async (req, res) => {
     let client;
@@ -1386,8 +1728,17 @@ app.post('/deleteAllOfTopping', async (req, res) => {
 });
 
 /**
- * delete a topping
- * deletes a specific topping using its topping_id
+ * Handles the POST request for deleting a specific topping.
+ * 
+ * @remarks
+ * This function is responsible for deleting a specific topping from the database. The topping_id is provided in the request body.
+ * The function connects to the database, and deletes the record from the served_items_topping table where the topping_id matches the provided topping_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteIndividualTopping', async (req, res) => {
     let client;
@@ -1417,8 +1768,17 @@ app.post('/deleteIndividualTopping', async (req, res) => {
 });
 
 /**
- * edit a topping
- * currently this is editing the 
+ * Handles the POST request for editing a specific topping.
+ * 
+ * @remarks
+ * This function is responsible for editing a specific topping in the database. The topping_id, topping, and topping_price are provided in the request body.
+ * The function connects to the database, and updates the record in the served_items_topping table where the topping_id matches the provided topping_id, setting the topping and topping_price to the provided values.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editTopping', async (req, res) => {
     let client;
@@ -1448,7 +1808,17 @@ app.post('/editTopping', async (req, res) => {
 });
 
 /**
- * get all families
+ * Handles the POST request for editing a specific topping.
+ * 
+ * @remarks
+ * This function is responsible for editing a specific topping in the database. The topping_id, topping, and topping_price are provided in the request body.
+ * The function connects to the database, and updates the record in the served_items_topping table where the topping_id matches the provided topping_id, setting the topping and topping_price to the provided values.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getAllFamilies', async (req, res) => {
     let client;
@@ -1476,7 +1846,17 @@ app.get('/getAllFamilies', async (req, res) => {
 });
 
 /**
- * add family
+ * Handles the POST request for adding a new family of served items.
+ * 
+ * @remarks
+ * This function is responsible for adding a new family of served items to the database. The family_name, family_category, and family_description are provided in the request body.
+ * The function connects to the database, gets the maximum family_id from the served_items_family table, increments it by 1, and inserts a new record into the served_items_family table with the incremented family_id, the family_name, the family_category, and the family_description.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addFamily', async (req, res) => {
     let client;
@@ -1508,8 +1888,17 @@ app.post('/addFamily', async (req, res) => {
 });
 
 /**
- * delete a family
- * will need to look into edge case for when an item in the family exists. maybe reasign that item item to the Special family?
+ * Handles the POST request for deleting a specific family of served items.
+ * 
+ * @remarks
+ * This function is responsible for deleting a specific family of served items from the database. The family_id is provided in the request body.
+ * The function connects to the database, and deletes the record from the served_items_family table where the family_id matches the provided family_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteFamily', async (req, res) => {
     let client;
@@ -1539,7 +1928,17 @@ app.post('/deleteFamily', async (req, res) => {
 });
 
 /**
- * edit a Family
+ * Handles the POST request for editing a specific family of served items.
+ * 
+ * @remarks
+ * This function is responsible for editing a specific family of served items in the database. The family_id, family_name, family_category, and family_description are provided in the request body.
+ * The function connects to the database, and updates the record in the served_items_family table where the family_id matches the provided family_id, setting the family_name, family_category, and family_description to the provided values.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editFamily', async (req, res) => {
     let client;
@@ -1569,7 +1968,17 @@ app.post('/editFamily', async (req, res) => {
 });
 
 /**
- * edit a Family's Description
+ * Handles the POST request for editing the description of a specific family of served items.
+ * 
+ * @remarks
+ * This function is responsible for editing the description of a specific family of served items in the database. The family_id and family_description are provided in the request body.
+ * The function connects to the database, and updates the record in the served_items_family table where the family_id matches the provided family_id, setting the family_description to the provided value.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editFamilyDescription', async (req, res) => {
     let client;
@@ -1599,7 +2008,17 @@ app.post('/editFamilyDescription', async (req, res) => {
 });
 
 /**
- * get all  employees
+ * Handles the POST request for editing the description of a specific family of served items.
+ * 
+ * @remarks
+ * This function is responsible for editing the description of a specific family of served items in the database. The family_id and family_description are provided in the request body.
+ * The function connects to the database, and updates the record in the served_items_family table where the family_id matches the provided family_id, setting the family_description to the provided value.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getEmployees', async (req, res) => {
     let client;
@@ -1631,7 +2050,17 @@ app.get('/getEmployees', async (req, res) => {
 });
 
 /**
- * add an employee
+ * Handles the POST request for adding a new employee.
+ * 
+ * @remarks
+ * This function is responsible for adding a new employee to the database. The employee's details are provided in the request body.
+ * The function connects to the database, gets the maximum employee_id from the employees table, increments it by 1, and inserts a new record into the employees table with the incremented employee_id and the provided employee details.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addEmployee', async (req, res) => {
     let client;
@@ -1668,7 +2097,17 @@ app.post('/addEmployee', async (req, res) => {
 });
 
 /**
- * delete an employee
+ * Handles the POST request for deleting a specific employee.
+ * 
+ * @remarks
+ * This function is responsible for deleting a specific employee from the database. The employee_id is provided in the request body.
+ * The function connects to the database, and deletes the record from the employees table where the employee_id matches the provided employee_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteEmployee', async (req, res) => {
     let client;
@@ -1698,7 +2137,17 @@ app.post('/deleteEmployee', async (req, res) => {
 });
 
 /**
- * edit an employee
+ * Handles the POST request for deleting a specific employee.
+ * 
+ * @remarks
+ * This function is responsible for deleting a specific employee from the database. The employee_id is provided in the request body.
+ * The function connects to the database, and deletes the record from the employees table where the employee_id matches the provided employee_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editEmployee', async (req, res) => {
     let client;
@@ -1728,7 +2177,17 @@ app.post('/editEmployee', async (req, res) => {
 });
 
 /**
- * get all customers
+ * Handles the GET request for fetching all customers.
+ * 
+ * @remarks
+ * This function is responsible for fetching all customers from the database.
+ * The function connects to the database, and retrieves all records from the customers table.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.get('/getCustomers', async (req, res) => {
     let client;
@@ -1756,7 +2215,17 @@ app.get('/getCustomers', async (req, res) => {
 });
 
 /**
- * add customers
+ * Handles the POST request for adding a new customer.
+ * 
+ * @remarks
+ * This function is responsible for adding a new customer to the database. The customer's details are provided in the request body.
+ * The function connects to the database, gets the maximum user_id from the customers table, increments it by 1, and inserts a new record into the customers table with the incremented user_id and the provided customer details.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/addCustomer', async (req, res) => {
     let client;
@@ -1793,7 +2262,17 @@ app.post('/addCustomer', async (req, res) => {
 });
 
 /**
- * delete a Customer
+ * Handles the POST request for deleting a specific customer.
+ * 
+ * @remarks
+ * This function is responsible for deleting a specific customer from the database. The user_id is provided in the request body.
+ * The function connects to the database, and deletes the record from the customers table where the user_id matches the provided user_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/deleteCustomer', async (req, res) => {
     let client;
@@ -1823,7 +2302,17 @@ app.post('/deleteCustomer', async (req, res) => {
 });
 
 /**
- * edit a Customer
+ * Handles the POST request for deleting a specific customer.
+ * 
+ * @remarks
+ * This function is responsible for deleting a specific customer from the database. The user_id is provided in the request body.
+ * The function connects to the database, and deletes the record from the customers table where the user_id matches the provided user_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/editCustomer', async (req, res) => {
     let client;
@@ -1878,7 +2367,19 @@ app.post('/editCustomer', async (req, res) => {
 
 // REPORTS
 
-{ /* Managerial Analytics / Reports */ }
+/**
+ * Handles the GET request for generating a restock report.
+ * 
+ * @remarks
+ * This function is responsible for generating a restock report from the database. The report includes stock items where the stock quantity is less than or equal to a third of the maximum amount.
+ * The function connects to the database, and retrieves the relevant records from the stock_items table.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.get('/generateRestockReport', async (req, res) => {
     const restockQuery = `
         SELECT stock_id, stock_item, cost, stock_quantity, max_amount
@@ -1909,8 +2410,19 @@ app.get('/generateRestockReport', async (req, res) => {
     }
 });
 
-
-
+/**
+ * Handles the POST request for generating a sales report.
+ * 
+ * @remarks
+ * This function is responsible for generating a sales report from the database. The report includes the number of sales for each served item between the provided start and end dates.
+ * The function connects to the database, and retrieves the relevant records from the orders, orderServedItem, and served_items tables.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.post('/generateSalesReport', async (req, res) => {
     const { startDate, endDate } = req.body;
     const salesReportQuery = `
@@ -1946,6 +2458,19 @@ app.post('/generateSalesReport', async (req, res) => {
     }
 });
 
+/**
+ * Handles the POST request for generating an excess report.
+ * 
+ * @remarks
+ * This function is responsible for generating an excess report from the database. The report includes stock items where the sold quantity is less than 10% of the stock quantity between the provided start and end dates.
+ * The function connects to the database, and retrieves the relevant records from the orders, orderServedItem, serveditemstockitem, and stock_items tables.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.post('/generateExcessReport', async (req, res) => {
     const { startDate, endDate } = req.body;
 
@@ -1988,7 +2513,19 @@ app.post('/generateExcessReport', async (req, res) => {
     }
 });
 
-
+/**
+ * Handles the POST request for generating an excess report.
+ * 
+ * @remarks
+ * This function is responsible for generating an excess report from the database. The report includes stock items where the sold quantity is less than 10% of the stock quantity between the provided start and end dates.
+ * The function connects to the database, and retrieves the relevant records from the orders, orderServedItem, serveditemstockitem, and stock_items tables.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.post('/generateUsageReport', async (req, res) => {
     const { startDate, endDate } = req.body;
     const usageQuery = `
@@ -2027,7 +2564,19 @@ app.post('/generateUsageReport', async (req, res) => {
     }
 });
 
-
+/**
+ * Handles the POST request for generating a frequent pairs report.
+ * 
+ * @remarks
+ * This function is responsible for generating a frequent pairs report from the database. The report includes the pairs of served items that occur together in the same order most frequently between the provided start and end dates.
+ * The function connects to the database, and retrieves the relevant records from the orders, orderServedItem, and served_items tables.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.post('/generateFreqPairsReport', async (req, res) => {
     const { startDate, endDate } = req.body;
 

@@ -38,6 +38,7 @@ interface Row {
     email: string;
     role: string;
     created_at: string;
+    formatted_created_at?: string;
     additional_info: AdditionalInfo;
 
 }
@@ -98,6 +99,7 @@ function EmployeesTable() {
                     email: '',
                     role: '',
                     created_at: '',
+                    formatted_created_at: '',
                     additional_info: {
                         phone: '',
                         pay_rate: 0,
@@ -145,6 +147,7 @@ function EmployeesTable() {
                         email: '',
                         role: '',
                         created_at: '',
+                        formatted_created_at: '',
                         additional_info: {
                             phone: '',
                             pay_rate: 0,
@@ -221,7 +224,7 @@ function EmployeesTable() {
                     </span>
                 );
             }} },
-        { name: 'created_at', label: 'Date Created', options: {sort: true, filter: false} },
+        { name: 'formatted_created_at', label: 'Date Created', options: {sort: true, filter: false} },
         {
             name: 'Actions',
             options: {

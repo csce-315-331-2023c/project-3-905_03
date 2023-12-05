@@ -59,7 +59,7 @@ app.get('/getServedItems', async (req, res) => {
             const stock_ids_used = stock_ids_usedResult.rows;
 
             for (const stock_id of stock_ids_used) {
-                const stockInfoResult = await client.query('SELECT * FROM stock_items WHERE stock_id = $1', [stock_id.stock_id]);
+                const stockInfoResult = await client.query('SELECT stock_item FROM stock_items WHERE stock_id = $1', [stock_id.stock_id]);
                 const stockInfo = stockInfoResult.rows[0];
                 ingredientsInfo.push(stockInfo);
             }

@@ -1615,8 +1615,12 @@ app.get('/getEmployees', async (req, res) => {
         await client.connect();
 
         const result = await client.query('SELECT * FROM employees');
+        const employees = result.rows.map(employee => {
+            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, ...additional_info } = employee;
+            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, additional_info };
+        });
 
-        res.status(200).json({ message: 'success!', data: result.rows});
+        res.status(200).json({ message: 'success!', data: employees });
     } catch (error) {
         res.status(400).send(error.message);
     } finally {

@@ -84,7 +84,6 @@ input[type="text"] {
     border-radius: var(--border-radius);
     padding: 0.6em 1em;
     font-size: .8rem;
-    border: 1px solid var(--background-color);
     color: var(--primary-color);
 }
 

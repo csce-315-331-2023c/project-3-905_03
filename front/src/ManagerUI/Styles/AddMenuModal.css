@@ -39,6 +39,7 @@
 .modal .btn {
     display: block;
     margin: auto;
+    margin-top: 1rem;
 }
 
 .ingredient-select {

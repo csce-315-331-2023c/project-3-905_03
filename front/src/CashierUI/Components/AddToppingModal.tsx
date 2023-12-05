@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Multiselect } from 'multiselect-react-dropdown';
 import axios from 'axios';
 import { Item, Topping } from '../../Order';
+import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 /**
  * Interface for displayItem
@@ -75,7 +76,7 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
      * Handle change in checbox selection
      * @param {ChangeEvent<HTMLInputElement>} e - Event
      */
-    const handleSelectChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         console.log(value);
         setOptions(prevOptions =>
@@ -108,23 +109,27 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
                 if (target.className === "modal-container") closeModal();
             }}>
             <div className='modal' style={{color: 'black'}}>
-                <h3>Add Topping</h3>
-                <form action="">
-                    <div className='form-group'>
-                        {
-                            // Map over options and render a checkbox for each option
-                            options.map((option, idx) => (
-                            <div key={idx} style={{display: 'flex', alignItems: 'center'}}>
-                                <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}>
-                                    <input type="checkbox" name={option.name} value={option.name} onChange={handleSelectChange}/>
-                                    <label htmlFor={option.name}><i>{option.name} + ${option.price}</i></label>
-                                </div>
-                            </div>
-                            ))
-                        }
-                    </div>
-                    <button className='btn' onClick={handleSubmit}>Submit</button>
-                </form>
+                <h3>Add Toppings</h3>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                        >
+                        <div /*style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} */>
+                            {
+                                // Map over options and render a checkbox for each option
+                                options.map((option, idx) => (
+                                    <FormGroup>
+                                        <FormControlLabel control={<Checkbox onChange={handleSelectChange} value={option.name}/>} label={<i>{option.name} + ${option.price}</i>}/>
+                                    </FormGroup>
+                                ))
+                            }
+                        </div>
+                        <button className='btn' onClick={handleSubmit}>Submit</button>
+                    </Box>
             </div>
         </div>
     );

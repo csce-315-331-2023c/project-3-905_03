@@ -1,3 +1,4 @@
+import { Box, TextField } from '@mui/material';
 import React, { useState, ChangeEvent, useEffect } from 'react';
 
 interface Row {
@@ -25,8 +26,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
 
     );
 
-
-    const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormState({
             ...formState,
@@ -48,21 +48,21 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
                 if (target.className === "modal-container") closeModal();
             }}>
             <div className='modal'>
-                <form action="">
-                    <div className='form-group'>
-                        <label htmlFor="first_name" className='form-label'>First Name</label>
-                        <input name="first_name" type="text" value={formState.first_name} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="last_name" className='form-label'>Last Name</label>
-                        <input name="last_name" type="text" value={formState.last_name} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="email" className='form-label'>Email</label>
-                        <input name="email" type="text" value={formState.email} onChange={handleFormChange} />
-                    </div>
-                    <button className='btn' onClick={handleSubmit}>Submit</button>
-                </form>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    >
+                        <div>
+                            <TextField name="first_name" label="First Name" value={formState.first_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                            <TextField name="last_name" label="Last Name" value={formState.last_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                            <TextField name="email" label="Email" value={formState.email} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        </div>
+                        <button className='btn' onClick={handleSubmit}>Submit</button>
+                </Box>
             </div>
         </div>
     )

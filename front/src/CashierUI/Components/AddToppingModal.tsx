@@ -107,17 +107,18 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
                 const target = e.target as HTMLTextAreaElement;
                 if (target.className === "modal-container") closeModal();
             }}>
-            // Modal
-            <div className='modal'>
+            <div className='modal' style={{color: 'black'}}>
                 <h3>Add Topping</h3>
                 <form action="">
                     <div className='form-group'>
                         {
                             // Map over options and render a checkbox for each option
                             options.map((option, idx) => (
-                            <div key={idx}>
-                                <input type="checkbox" name={option.name} value={option.name} onChange={handleSelectChange}/>
-                                <label htmlFor={option.name}><i>{option.name} + ${option.price}</i></label>
+                            <div key={idx} style={{display: 'flex', alignItems: 'center'}}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}>
+                                    <input type="checkbox" name={option.name} value={option.name} onChange={handleSelectChange}/>
+                                    <label htmlFor={option.name}><i>{option.name} + ${option.price}</i></label>
+                                </div>
                             </div>
                             ))
                         }

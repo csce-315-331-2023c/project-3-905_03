@@ -106,6 +106,7 @@ function MenuTable() {
         axios.post('/addServedItem', newRow)
             .then(() => {
                 fetchMenuItems();
+                fetchAllIngredients();
             })
             .catch(err => console.log(err));
     };
@@ -304,7 +305,7 @@ function MenuTable() {
                     <IconButton onClick={() => setModalOpen(true)}>
                         <AddIcon />
                     </IconButton>
-                    <IconButton onClick={() => { fetchMenuItems(); setIsLoading(true); }} aria-label='Refresh'>
+                    <IconButton onClick={() => { fetchMenuItems(); fetchAllIngredients(); setIsLoading(true); }} aria-label='Refresh'>
                         <RefreshIcon/>
                     </IconButton>
                 </div>

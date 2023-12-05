@@ -29,7 +29,7 @@ router.post('/auth/manual/login', async (req, res) => {
                     email: user.email,
                     firstName: user.first_name,
                     lastName: user.last_name,
-                    role: user.roles,
+                    role: user.role,
                     profilePic: user.profile_pic,
                 };
 

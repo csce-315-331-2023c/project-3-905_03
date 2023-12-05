@@ -2033,10 +2033,10 @@ app.get('/getEmployees', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM employees');
+        const result = await client.query(`SELECT *, to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as formatted_created_at FROM employees order by employee_id`);
         const employees = result.rows.map(employee => {
-            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, ...additional_info } = employee;
-            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, additional_info };
+            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, formatted_created_at, ...additional_info } = employee;
+            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, formatted_created_at, additional_info };
         });
 
         res.status(200).json({ message: 'success!', data: employees });
@@ -2203,7 +2203,7 @@ app.get('/getCustomers', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM customers');
+        const result = await client.query(`SELECT *, to_char(created_at::timestamp, 'YYYY-MM-DD HH24:MI:SS') as formatted_created_at FROM customers`);
 
         res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {

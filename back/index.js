@@ -2203,7 +2203,7 @@ app.get('/getCustomers', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM customers');
+        const result = await client.query(`SELECT *, to_char(created_at::timestamp, 'YYYY-MM-DD HH24:MI:SS') as formatted_created_at FROM customers`);
 
         res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {

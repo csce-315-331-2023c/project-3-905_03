@@ -1724,9 +1724,9 @@ app.post('/editEmployee', async (req, res) => {
 });
 
 /**
- * get all users
+ * get all customers
  */
-app.get('/getUsers', async (req, res) => {
+app.get('/getCustomers', async (req, res) => {
     let client;
 
     try {
@@ -1739,7 +1739,7 @@ app.get('/getUsers', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM users');
+        const result = await client.query('SELECT * FROM customers');
 
         res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {
@@ -1752,13 +1752,13 @@ app.get('/getUsers', async (req, res) => {
 });
 
 /**
- * add users
+ * add customers
  */
-app.post('/addUser', async (req, res) => {
+app.post('/addCustomer', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email} = req.body;
+        let {first_name, last_name, email, password, profile_pic} = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1769,9 +1769,14 @@ app.post('/addUser', async (req, res) => {
 
         await client.connect();
 
-        let maxUser_id = await client.query('SELECT MAX(user_id) FROM users');
-        let user_id = (maxUser_id.rows[0].max || 0) + 1;
-        await client.query('INSERT INTO users (user_id, first_name, last_name, email) VALUES ($1, $2, $3, $4)', [user_id, first_name, last_name, email]);
+        const currentDate = new Date();
+        const formattedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' + currentDate.getDate().toString().padStart(2, '0');
+        const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
+        const created_at = formattedDate + ' ' + formattedTime;
+
+        let maxUser_id = await client.query('SELECT MAX(user_id) FROM customers');
+        let user_id = (parseInt(maxUser_id.rows[0].max || 0)) + 1;
+        await client.query('INSERT INTO customers (user_id, first_name, last_name, email, password, profile_pic, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)', [user_id, first_name, last_name, email, password, profile_pic, created_at]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {
@@ -1784,9 +1789,9 @@ app.post('/addUser', async (req, res) => {
 });
 
 /**
- * delete a User
+ * delete a Customer
  */
-app.post('/deleteUser', async (req, res) => {
+app.post('/deleteCustomer', async (req, res) => {
     let client;
 
     try {
@@ -1801,7 +1806,7 @@ app.post('/deleteUser', async (req, res) => {
 
         await client.connect();
 
-        await client.query('DELETE FROM users WHERE user_id = $1', [ user_id ]);
+        await client.query('DELETE FROM customers WHERE user_id = $1', [ user_id ]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {
@@ -1814,13 +1819,13 @@ app.post('/deleteUser', async (req, res) => {
 });
 
 /**
- * edit a User
+ * edit a Customer
  */
-app.post('/editUser', async (req, res) => {
+app.post('/editCustomer', async (req, res) => {
     let client;
 
     try {
-        let {user_id, first_name, last_name, email} = req.body;
+        let {user_id, first_name, last_name, email, password, profile_pic} = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1831,7 +1836,7 @@ app.post('/editUser', async (req, res) => {
 
         await client.connect();
 
-        await client.query('UPDATE users SET first_name = $2, last_name = $3, email = $4 WHERE user_id = $1', [user_id, first_name, last_name, email]);
+        await client.query('UPDATE customers SET first_name = $2, last_name = $3, email = $4, password = $5, profile_pic = $6 WHERE user_id = $1', [user_id, first_name, last_name, email, password, profile_pic]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {

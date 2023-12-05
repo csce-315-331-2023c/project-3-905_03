@@ -109,6 +109,10 @@
 .displayWrap {
   height: 75vh;
   overflow: auto;
+
+  /* im gettin quirky */
+  background: radial-gradient(circle, var(--background), var(--secondary));
+  filter: url(#grainy);
 }
 
 .displayedItems {

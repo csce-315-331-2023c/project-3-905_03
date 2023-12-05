@@ -34,14 +34,9 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   const compWidth = (isWaffles) ? "80%" : "";
   const compStyle = isWaffles ? { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' } : {};
 
-
-
-
-
-  const assetsDir = "../../assets/food/";
-  const imagePath = `${assetsDir}${family.name}.jpg`;
+  const foodDir = "../../assets/food/";
+  const imagePath = `${foodDir}${family.name}.jpg`;
   console.log("image path", imagePath);
-
 
   const loadImage = async () => {
     try {

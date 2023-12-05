@@ -7,7 +7,7 @@
   background-color: var(--primary);
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   height: 5vh;
 }
 

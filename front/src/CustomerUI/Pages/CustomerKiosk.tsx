@@ -240,7 +240,8 @@ const Customer = () => {
                 <button onClick={handleZoomIn}><ZoomInIcon className="header-icon"/></button>
                 <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon"/></button>
                 <button><TranslateIcon className="header-icon"/></button>
-                <button onClick={handleAccessLogin}><HomeIcon className="header-icon"/></button>
+                <button onClick={handleAccessLogin}><HomeIcon className="header-icon" /></button>
+                <button>User Profile</button>
             </div>
             <div className="top">
 

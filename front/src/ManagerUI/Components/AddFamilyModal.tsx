@@ -4,6 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Box, TextField } from '@mui/material';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
     family_id: number;
@@ -21,6 +22,7 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
     const [formState, setFormState] = useState<Row>(
         { family_id: 0, family_name: "", family_category: "", family_description: "" }
     );
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -47,12 +49,13 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
         }
     }
 
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
+
     return (
-        <div className='modal-container'
-            onClick={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                if (target.className === "modal-container") closeModal();
-            }}>
+        <div className='modal-container'>
             <div className='modal'>
                 <Box
                 component="form"
@@ -83,9 +86,13 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
                             </Select>
                         </FormControl>
                     </div>
-                        <button className='btn' onClick={handleSubmit}>Submit</button>
+                    <div style={{ display: 'inline-flex', gap: '20px'}}>
+                        <button className='btn' onClick={handleConfirmation}>Submit</button>
+                        <button className='btn' onClick={() => closeModal()}>Cancel</button>
+                    </div>
                 </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSubmit} />}
         </div>
     )
 }

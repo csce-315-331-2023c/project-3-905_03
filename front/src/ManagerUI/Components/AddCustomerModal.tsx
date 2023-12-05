@@ -1,5 +1,6 @@
 import { Box, TextField } from '@mui/material';
 import React, { useState, ChangeEvent, useEffect } from 'react';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
     user_id: number;
@@ -23,8 +24,8 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
             email: '',
             created_at: '',
         }
-
     );
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -41,12 +42,13 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
 
     };
 
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
+
     return (
-         <div className='modal-container' style={{overflowY: 'scroll'}}
-            onClick={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                if (target.className === "modal-container") closeModal();
-            }}>
+         <div className='modal-container' style={{overflowY: 'scroll'}}>
             <div className='modal'>
                 <Box
                     component="form"
@@ -61,9 +63,13 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
                             <TextField name="last_name" label="Last Name" value={formState.last_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                             <TextField name="email" label="Email" value={formState.email} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                         </div>
-                        <button className='btn' onClick={handleSubmit}>Submit</button>
+                        <div style={{ display: 'inline-flex', gap: '20px'}}>
+                            <button className='btn' onClick={handleConfirmation}>Submit</button>
+                            <button className='btn' onClick={() => closeModal()}>Cancel</button>
+                        </div>
                 </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSubmit}/>}
         </div>
     )
 }

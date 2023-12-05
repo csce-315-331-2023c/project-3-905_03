@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Box, TextField } from '@mui/material';
+import ConfirmationModal from './ConfirmationModal';
 
 interface AdditionalInfo {
     phone: string;
@@ -54,6 +55,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
             },
         }
     );
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,27 +66,10 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
         });
     };
 
-    const handleFormChange2 = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormState(prevState => ({
-            ...prevState,
-            additional_info: {
-                ...prevState.additional_info,
-                [name]: value
-            }
-        }));
-    };
-
-    const handleFormChange3 = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormState(prevState => ({
-            ...prevState,
-            additional_info: {
-                ...prevState.additional_info,
-                [name]: value
-            }
-        }));
-    };
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
@@ -104,11 +89,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
     }
 
     return (
-         <div className='modal-container' style={{overflowY: 'scroll'}}
-            onClick={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                if (target.className === "modal-container") closeModal();
-            }}>
+         <div className='modal-container' style={{overflowY: 'scroll'}}>
             <div className='modal'>
                 <Box
                     component="form"
@@ -146,9 +127,13 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
                         <TextField name="emergency_contact_last_name" label="Emergency Contact Last Name" value={formState.additional_info.emergency_contact_last_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                         <TextField name="emergency_contact_phone" label="Emergency Contact Phone" value={formState.additional_info.emergency_contact_phone} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                     </div>
-                    <button className='btn' onClick={handleSubmit}>Submit</button>
+                    <div style={{ display: 'inline-flex', gap: '20px'}}>
+                        <button className='btn' onClick={handleConfirmation}>Submit</button>
+                        <button className='btn' onClick={() => closeModal()}>Cancel</button>
+                    </div>
                 </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSubmit} />}
         </div>
     )
 }

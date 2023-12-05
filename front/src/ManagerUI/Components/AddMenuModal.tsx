@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Box, TextField } from '@mui/material';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
     item_id: number;
@@ -35,6 +36,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
     const [familyMenu, setFamilyMenu] = useState<string | null>(null);
     const [familyOptions, setFamilyOptions] = useState<string[]>([]);
     const [category, setCategory] = useState('');
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
 
 
@@ -95,6 +97,11 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
         });
     };
 
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
+
     return (
         <div className='modal-container'
             onClick={(e) => {
@@ -150,13 +157,14 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                                 
                             </div>
                         )}
-                        <div style={{ display: 'flex', gap: '5px'}}>
-                            <button className='btn' onClick={handleSubmit}>Submit</button>
+                        <div style={{ display: 'inline-flex', gap: '20px'}}>
+                            <button className='btn' onClick={handleConfirmation}>Submit</button>
                             <button className='btn' onClick={() => closeModal()}>Cancel</button>
                         </div>
                     </div>
                 </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSubmit}/> }
         </div>
     )
 }

@@ -217,6 +217,7 @@ const Customer = () => {
                         <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
                         <FormControlLabel value="side" control={<Radio />} label="Sides" />
                         <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
+                        <FormControlLabel value="special" control={<Radio />} label="Specials" />
                     </RadioGroup>
                 </FormControl>
                 <div className='total'>Total: ${bagTotal}</div>

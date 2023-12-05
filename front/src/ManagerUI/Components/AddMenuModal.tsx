@@ -6,7 +6,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Box, TextField } from '@mui/material';
+import { Autocomplete, Box, Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
 import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
@@ -50,8 +50,9 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
             .catch(er => console.log(er));
     }, []);
 
-    const handleSelectChange = (selectedIngredients: any[]) => {
-        setSelectedOptions(selectedIngredients);
+
+    const handleIngredientsChange = (event: SelectChangeEvent<typeof selectedOptions>) => {
+        setSelectedOptions(event.target.value as typeof selectedOptions);
     };
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,18 +121,22 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                     <div>
                         <TextField name="served_item" label="Item Name" value={formState.served_item} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                         <TextField name="item_price" label="Price" value={formState.item_price} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <Multiselect isObject={false} options={options} className='ingredient-select' onSelect={handleSelectChange} onRemove={handleSelectChange}/>
-                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                            <InputLabel id="demo-select-small-label">Family</InputLabel>
+                        <FormControl sx={{ m: 1, minWidth: '41.5%' }} size="small">
+                            <InputLabel id="demo-multiple-checkbox-label">Select Ingredients</InputLabel>
                             <Select
-                                labelId="demo-select-small-label"
-                                id="demo-select-small"
-                                value={formState.family_name}
-                                label="Family"
-                                onChange={handleChange2}
-                            >
-                                {familyOptions.map((familyOption, idx) => (
-                                    <MenuItem key={idx} value={familyOption}>{familyOption}</MenuItem>
+                                labelId="demo-multiple-checkbox-label"
+                                id="demo-multiple-checkbox"
+                                multiple
+                                value={selectedOptions}
+                                onChange={handleIngredientsChange}
+                                input={<OutlinedInput label="Select Ingredients" />}
+                                renderValue={(selected) => (selected as string[]).join(', ')}
+                                >
+                                {options.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        <Checkbox checked={selectedOptions.indexOf(option) > -1} />
+                                        <ListItemText primary={option} />
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -152,10 +157,20 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                             </Select>
                         </FormControl>
                         {familyMenu && (
-                            <div className='form-group'>
-                                <label htmlFor="Assign Family" className='form-label'>Assign Family</label>
-                                
-                            </div>
+                            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                                <InputLabel id="demo-select-small-label">Family</InputLabel>
+                                <Select
+                                    labelId="demo-select-small-label"
+                                    id="demo-select-small"
+                                    value={formState.family_name}
+                                    label="Family"
+                                    onChange={handleChange2}
+                                >
+                                    {familyOptions.map((familyOption, idx) => (
+                                        <MenuItem key={idx} value={familyOption}>{familyOption}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         )}
                         <div style={{ display: 'inline-flex', gap: '20px'}}>
                             <button className='btn' onClick={handleConfirmation}>Submit</button>

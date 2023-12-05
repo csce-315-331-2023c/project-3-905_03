@@ -18,6 +18,7 @@ import SideItems from '../Components/SideItems';
 import DrinkItems from '../Components/DrinkItems';
 import SpecialItems from '../Components/SpecialItems';
 import Weather from '../../SharedComponents/Weather';
+import HomeIcon from '@mui/icons-material/Home';
 
 const CustomerMenu: React.FC = () => {
 
@@ -32,7 +33,7 @@ const CustomerMenu: React.FC = () => {
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
-                <button className="login-button" onClick={handleAccessLogin}>Back</button>
+                <button className="login-button" onClick={handleAccessLogin}><HomeIcon className="header-icon"/></button>
             </div>
             <div className="menu-container">
                 <div className="side-left">

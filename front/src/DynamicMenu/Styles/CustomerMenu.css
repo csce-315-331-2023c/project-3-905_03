@@ -38,6 +38,11 @@
     height: 80px;
 }
 
+.customer-menu-container .header .header-icon {
+    width: 40px;
+    height: 40px;
+  }
+
 .customer-menu-container .header .login-button:hover {
     color: var(--text);
 }

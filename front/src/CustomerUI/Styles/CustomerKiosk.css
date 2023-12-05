@@ -3,11 +3,29 @@
   background-color: var(--background);
 }
 
-.placeholder {
-  background-color: white;
-  display: flex;
+.customer-header {
+  background-color: var(--primary);
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   height: 5vh;
 }
+
+.customer-header button {
+  background-color: var(--primary);
+  color: var(--secondary);
+}
+
+.customer-header button:hover{
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+
+.customer-header .header-icon {
+  width: 40px;
+  height: 40px;
+}
+
 .top {
   display: grid;
   justify-items: center;

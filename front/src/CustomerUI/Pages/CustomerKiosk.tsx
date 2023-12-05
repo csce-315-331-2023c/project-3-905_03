@@ -58,6 +58,7 @@ const Customer = () => {
 
     const handleAdd = () => {
         if (selected) {
+            console.log("selected", selected);
             setSelected({ ...selected, id: selected.id + 1000 });
             setBag([...bag, selected]);
             setSelected(undefined);
@@ -84,6 +85,7 @@ const Customer = () => {
             bag.forEach((family) => {
                 const chosenItem = family.options.find((option) => option.chosen === true);
                 console.log("ID", chosenItem?.id);
+                console.log("toppings", family?.toppings);
                 if (chosenItem)
                     currOrder.addItem({ ...chosenItem, toppings: family.toppings });
             });
@@ -194,18 +196,13 @@ const Customer = () => {
         setBagTotal(getTotal());
     }, [bag]);
 
-    const imgClick = () => {
-        console.log(fams);
-        window.location.reload();
-    };
-
     return (
         <div className='customer'>
             <div className='placeholder'></div>
             <div className="top">
 
                 <FormControl className='sections' component='fieldset'>
-                    <FormLabel component="legend">Sections</FormLabel>
+                    <FormLabel className='sectionsLabel' component="legend">Sections</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-controlled-radio-buttons-group"
                         name="controlled-radio-buttons-group"
@@ -267,10 +264,10 @@ const Customer = () => {
                         (!loading) ? (
                             bagView ? (
                                 bag
-                                    .map((family, index) => (
+                                    .map((family) => (
                                         <ItemComponent
                                             family={family}
-                                            key={index}
+                                            key={family.name}
                                             hand={hand}
                                             parentSelected={setSelected}
                                         />
@@ -278,10 +275,10 @@ const Customer = () => {
                             ) :
                                 fams
                                     .filter((family) => (family.category === formValue))
-                                    .map((family, index) => (
+                                    .map((family) => (
                                         <ItemComponent
                                             family={family}
-                                            key={index}
+                                            key={family.name}
                                             hand={hand}
                                             parentSelected={setSelected}
                                         />

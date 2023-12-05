@@ -907,7 +907,7 @@ app.post('/addStockItem', (req, res) => {
  */
 app.post('/addServedItemStockItem', (req, res) => {
 
-    let { item_id, stock_item } = req.body;
+    let { stock_item } = req.body;
 
     const client = new Client({
         host: 'csce-315-db.engr.tamu.edu',
@@ -917,39 +917,49 @@ app.post('/addServedItemStockItem', (req, res) => {
     })
 
     client.connect();
-
-    // Query database to find matching stock_item id
-    client.query('SELECT stock_id FROM stock_items WHERE stock_item = $1', [stock_item], (err, result) => {
+    client.query('SELECT MAX(item_id) FROM served_items', (err, result) => {
         if (err) {
             res.status(400).send(err.message);
             client.end();
             return;
         } else {
-            let stock_id = result.rows[0].stock_id;
+            let temp_item_id = result.rows[0].max || 0
+            let item_id = temp_item_id + 1;
 
-            // Query the database for the max served_stock_id
-            client.query('SELECT MAX(served_stock_id) FROM serveditemstockitem', (err, result) => {
+            // Query database to find matching stock_item id
+            client.query('SELECT stock_id FROM stock_items WHERE stock_item = $1', [stock_item], (err, result) => {
                 if (err) {
                     res.status(400).send(err.message);
                     client.end();
                     return;
+                } else {
+                    let stock_id = result.rows[0].stock_id;
+
+                    // Query the database for the max served_stock_id
+                    client.query('SELECT MAX(served_stock_id) FROM serveditemstockitem', (err, result) => {
+                        if (err) {
+                            res.status(400).send(err.message);
+                            client.end();
+                            return;
+                        }
+
+                        let maxServedStockId = result.rows[0].max || 0; // If no records exist, default to 0
+                        let newServedStockId = maxServedStockId + 1;
+
+                        // Insert the new entry with the incremented served_stock_id
+                        client.query('INSERT INTO serveditemstockitem (served_stock_id, item_id, stock_id) VALUES ($1, $2, $3)', [newServedStockId, item_id, stock_id], (err, result) => {
+                            if (!err) {
+                                res.status(200).send('success!');
+                            } else {
+                                res.status(400).send(err.message);
+                            }
+                            client.end();
+                        });
+                    });
                 }
-
-                let maxServedStockId = result.rows[0].max || 0; // If no records exist, default to 0
-                let newServedStockId = maxServedStockId + 1;
-
-                // Insert the new entry with the incremented served_stock_id
-                client.query('INSERT INTO serveditemstockitem (served_stock_id, item_id, stock_id) VALUES ($1, $2, $3)', [newServedStockId, item_id, stock_id], (err, result) => {
-                    if (!err) {
-                        res.status(200).send('success!');
-                    } else {
-                        res.status(400).send(err.message);
-                    }
-                    client.end();
-                });
             });
         }
-    });
+    });                     
 });
 
 

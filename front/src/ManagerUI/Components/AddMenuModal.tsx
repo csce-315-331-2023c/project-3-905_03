@@ -62,7 +62,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
         e.preventDefault()
         onSubmit(formState)
         const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('/addServedItemStockItem', (formState.served_item, selectedOption))
+            axios.post('/addServedItemStockItem', { stock_item: selectedOption })
         );
         Promise.all(axiosRequests)
             .then(responses => {
@@ -153,6 +153,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                         </div>
                     )}
                     <button className='btn' onClick={handleSubmit}>Submit</button>
+                    <button className='btn' onClick={() => closeModal()}>Cancel</button>
                 </form>
             </div>
         </div>

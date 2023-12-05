@@ -4,10 +4,10 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import ItemCard from '../Components/ItemCard';
 import "../Styles/Cashier.css";
-import { dropLastWord } from "../../SharedComponents/itemFormattingUtils";
 import { FaCheck } from 'react-icons/fa';
 import { Order, Item, Topping } from "../../Order.ts";
-import { BsFillTrashFill } from "react-icons/bs";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton } from "@mui/material";
 import OrderConfirmationModal from "../Components/OrderConfirmationModal.tsx";
 
 const Cashier = () => {
@@ -133,7 +133,9 @@ const Cashier = () => {
                                 <td>{order.getItemPrice(row)}</td>
                                 <td>
                                     <span className="actions">
-                                        <BsFillTrashFill onClick={() => deleteItemFromOrder(row)} />
+                                        <IconButton onClick={() => deleteItemFromOrder(row)}>
+                                            <DeleteIcon style={{color: 'white'}}/>
+                                        </IconButton>
                                     </span>
                                 </td>
                             </tr>
@@ -152,10 +154,10 @@ const Cashier = () => {
                         </tr>
                     </tbody>
                 </table>
-                <div className="button-container" style={{ display: 'flex', width: '100%', marginTop: '3%'}}>
+                <div className="button-container" style={{ display: 'flex', width: '110%', marginTop: '3%'}}>
                     <button className="login-button" onClick={() => {submitOrder()}}>Submit Order</button>
                     <button className="login-button" onClick={() => {setTakeout(takeout === 0 ? 1 : 0); takeoutAction()}}
-                        style={{ backgroundColor: takeout === 1 ? 'green' : '#1a1a1a' }}>
+                        style={{ backgroundColor: takeout === 1 ? 'green' : '#2c5dba' }}>
                         Takeout
                         {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
                     </button>

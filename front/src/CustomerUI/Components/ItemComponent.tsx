@@ -3,12 +3,14 @@ import { useEffect, useState, useMemo } from 'react';
 import { Item, Topping, Family } from '../../Order.ts';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
+import unknownImage from '../../assets/food/unknown.jpg';
 import "../Styles/ItemComponent.css";
 
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Paper, FormGroup, Checkbox } from '@mui/material';
-
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-
+import {
+  Radio, RadioGroup, Checkbox,
+  FormControlLabel, FormControl, FormLabel, FormGroup,
+  Paper
+} from '@mui/material';
 
 interface Props {
   family: Family;
@@ -16,8 +18,6 @@ interface Props {
   hand: number;
   parentSelected: any;
 }
-
-const assetsDir = "../../assets/";
 
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
   const [state, upd] = useState(false);
@@ -28,9 +28,25 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
 
+  const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
+
   const isWaffles = useMemo(() => family.name === "Waffles", [family.name]);
   const compWidth = (isWaffles) ? "80%" : "";
   const compStyle = isWaffles ? { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' } : {};
+
+  const foodDir = "../../assets/food/";
+  const imagePath = `${foodDir}${family.name}.jpg`;
+  console.log("image path", imagePath);
+
+  const loadImage = async () => {
+    try {
+      const image = await import(`../../assets/food/${family.name}.jpg`);
+      setImageSrc(image.default);
+    } catch (error) {
+      console.error("Image loading failed:", error);
+      setImageSrc(unknownImage);
+    }
+  };
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
@@ -54,8 +70,10 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   }
 
   useEffect(() => {
-    setSelectedOption(getSize(myFamily.options[0].name));
+    setSelectedOption(getSize(myFamily.options[0].name)); // bugged
+    console.log(family.name); // bugged
 
+    loadImage();
   }, []);
 
   // set price
@@ -84,8 +102,8 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
     >
       <div className='name'>{family.name}</div>
       <div className='price'>$ {family.price}</div>
+      <img className='image' src={imageSrc} alt= {family.name} />
 
-      {/* <img src={assetsDir + "family.name" + ".png"} alt={assetsDir + "unknown.jpg"} className='image' /> */}
       {
         myFamily.description !== "null" && (
           <div className='description'>{myFamily.description}</div>

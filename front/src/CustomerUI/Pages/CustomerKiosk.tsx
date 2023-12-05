@@ -4,7 +4,6 @@ import axios from 'axios';
 import "../Styles/CustomerKiosk.css";
 import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
-import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
@@ -12,7 +11,7 @@ import wafflebite from '../../assets/wafflebite.gif';
 import {
     Radio, RadioGroup,
     FormControlLabel, FormControl, FormLabel,
-    Button, Switch,
+    Button,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Slide,
     Avatar, Popover
@@ -35,36 +34,22 @@ const Customer = () => {
     const [bagTotal, setBagTotal] = useState<string>("");
 
     const [formValue, setFormValue] = useState('w&t');
-    const [filters, setFilters] = useState({ gf: false, vegan: false });
     const [fams, setFams] = useState<Family[]>([]);
 
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
+    
     const handleClose = () => {
         setOrderId(0);
         window.location.reload();
-        // logout
+        // logout !!
     };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelected(undefined);
         setFormValue(event.target.value);
     };
-
-    // const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setFilters({ ...filters, [event.target.name]: event.target.checked });
-    // };
 
     const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrOrder(currOrder.setDineIn(event.target.value === 'dine-in'));
@@ -94,7 +79,7 @@ const Customer = () => {
     };
 
     const handleCheckout = async () => {
-        if (bag.length > 0 && confirm("Are you sure?") == true) {//make the order
+        if (bag.length > 0 && confirm("Want to confirm your checkout? (payment options)") == true) {//make the order
             console.log("bag", bag)
             bag.forEach((family) => {
                 const chosenItem = family.options.find((option) => option.chosen === true);
@@ -202,14 +187,6 @@ const Customer = () => {
     }, [fams]);
 
     useEffect(() => {
-        console.log("checkoutReturn", orderId);
-        // setCurrOrder(new Order());
-        // setSelected(undefined); 
-        // upd(a => !a);
-    }, [orderId]);
-
-
-    useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
@@ -222,37 +199,10 @@ const Customer = () => {
         window.location.reload();
     };
 
-
-    // .filter((family) => {
-    //     if(family.toppings.length > 0) 
-    //         return family.toppings.some((topping) => 
-    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
-    //         );
-    // })
     return (
         <div className='customer'>
+            <div className='placeholder'></div>
             <div className="top">
-                <img className='title' src={mess} alt="mess" onClick={imgClick} />
-
-                <Button className='profile' onClick={handlePopoverClick}>
-                    <Avatar className="avatar" src="" />
-                </Button>
-                <Popover
-                    id={id}
-                    open={open}
-                    anchorEl={anchorEl}
-                    onClose={handlePopoverClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                >
-
-                </Popover>
 
                 <FormControl className='sections' component='fieldset'>
                     <FormLabel component="legend">Sections</FormLabel>
@@ -269,18 +219,6 @@ const Customer = () => {
                         <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
                     </RadioGroup>
                 </FormControl>
-
-                {/* <FormControl className='filters'>
-                    <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
-                    <FormControlLabel
-                        control={<Switch name="gf" onChange={handleFilters} />}
-                        label="Gluten Free"
-                    />
-                    <FormControlLabel
-                        control={<Switch name="vegan" onChange={handleFilters} />}
-                        label="Vegan"
-                    />
-                </FormControl> */}
                 <div className='total'>Total: ${bagTotal}</div>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
@@ -361,7 +299,7 @@ const Customer = () => {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle> Your order number is {orderId}.</DialogTitle>
+                <DialogTitle> Your order number is <b>{orderId}</b>.</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         Your order has been placed!

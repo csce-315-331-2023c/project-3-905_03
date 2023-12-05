@@ -14,7 +14,7 @@ import {
 
 interface Props {
   family: Family;
-  key: number;
+  key: string;
   hand: number;
   parentSelected: any;
 }
@@ -34,10 +34,6 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
   const compWidth = (isWaffles) ? "80%" : "";
   const compStyle = isWaffles ? { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' } : {};
 
-  const foodDir = "../../assets/food/";
-  const imagePath = `${foodDir}${family.name}.jpg`;
-  console.log("image path", imagePath);
-
   const loadImage = async () => {
     try {
       const image = await import(`../../assets/food/${family.name}.jpg`);
@@ -50,6 +46,17 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
 
   const handleOptions = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value);
+    setMyFamily(prevFamily => {
+      const updatedOptions = prevFamily.options.map(option => {
+        if (getSize(option.name) === event.target.value) {
+          option.chosen = true;
+        } else {
+          option.chosen = false;
+        }
+        return option;
+      });
+      return { ...prevFamily, options: updatedOptions };
+    });
   }
 
   const handleToppings = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,12 +73,21 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
 
     if (topping) {
       setToppingPrice(prevPrice => prevPrice + topping.price * (index === -1 ? 1 : -1));
-    } console.log(selectedToppings);
+      setMyFamily(prevFamily => {
+        const updatedToppings = prevFamily.toppings.map(topping => {
+          if (topping.name === selectedTopping) {
+            topping.chosen = !topping.chosen;
+          }
+          return topping;
+        });
+        return { ...prevFamily, toppings: updatedToppings };
+      });
+    } 
+    console.log(selectedToppings);
   }
 
   useEffect(() => {
     setSelectedOption(getSize(myFamily.options[0].name)); // bugged
-    console.log(family.name); // bugged
 
     loadImage();
   }, []);
@@ -147,8 +163,9 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
                 onChange={handleToppings}
               >
                 {
-                  myFamily.toppings.map((topping) => (
+                  myFamily.toppings.map((topping, index) => (
                     <FormControlLabel
+                      key={index}
                       control={<Checkbox />}
                       value={topping.name}
                       label={`${topping.name} - ${topping.price}`}

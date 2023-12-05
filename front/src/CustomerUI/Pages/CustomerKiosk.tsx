@@ -4,6 +4,13 @@ import axios from 'axios';
 import "../Styles/CustomerKiosk.css";
 import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import TranslateIcon from '@mui/icons-material/Translate';
+import HomeIcon from '@mui/icons-material/Home';
+import FormatColorResetIcon from '@mui/icons-material/FormatColorReset';
+import { useNavigate } from 'react-router-dom';
+
 
 import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
@@ -196,9 +203,45 @@ const Customer = () => {
         setBagTotal(getTotal());
     }, [bag]);
 
+    const [zoomFactor, setZoomFactor] = useState(1);
+    
+    const handleZoomIn = () => {
+        const newZoomFactor = zoomFactor + 0.1;
+        setZoomFactor(newZoomFactor);
+        (document.body.style as any).zoom = `${newZoomFactor}`;
+    };
+    
+    const handleZoomOut = () => {
+        const newZoomFactor = zoomFactor - 0.1;
+        setZoomFactor(newZoomFactor);
+        (document.body.style as any).zoom = `${newZoomFactor}`;
+    };
+
+    const [isGrayscale, setIsGrayscale] = useState(false);
+
+    const handleColorReset = () => {
+        setIsGrayscale(!isGrayscale);
+    };
+
+    useEffect(() => {
+        document.body.style.filter = isGrayscale ? 'grayscale(100%) contrast(1.25)' : 'none';
+    }, [isGrayscale]);
+
+    const navigate = useNavigate();
+
+    const handleAccessLogin = () => {
+        navigate('/');
+    }
+
     return (
         <div className='customer'>
-            <div className='placeholder'></div>
+            <div className='customer-header'>
+                <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
+                <button onClick={handleZoomIn}><ZoomInIcon className="header-icon"/></button>
+                <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon"/></button>
+                <button><TranslateIcon className="header-icon"/></button>
+                <button onClick={handleAccessLogin}><HomeIcon className="header-icon"/></button>
+            </div>
             <div className="top">
 
                 <FormControl className='sections' component='fieldset'>

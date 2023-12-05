@@ -50,7 +50,7 @@ router.post('/auth/google/login', async (req, res) => {
                 email: user.email,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                role: user.roles || 'customer', 
+                role: user.role || 'customer', 
                 profilePic: user.profile_pic,
             };
             console.log(userForToken);

@@ -212,7 +212,7 @@ const Customer = () => {
     };
     
     const handleZoomOut = () => {
-        const newZoomFactor = zoomFactor - 0.1;
+        const newZoomFactor = zoomFactor > 1 ? zoomFactor - 0.1 : 1;
         setZoomFactor(newZoomFactor);
         (document.body.style as any).zoom = `${newZoomFactor}`;
     };

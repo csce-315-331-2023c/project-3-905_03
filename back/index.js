@@ -1463,7 +1463,7 @@ app.get('/getAllFamilies', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM served_items_family');
+        const result = await client.query('SELECT * FROM served_items_family ORDER BY family_id');
 
         res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {

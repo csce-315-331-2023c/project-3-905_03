@@ -2035,8 +2035,8 @@ app.get('/getEmployees', async (req, res) => {
 
         const result = await client.query('SELECT * FROM employees');
         const employees = result.rows.map(employee => {
-            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, ...additional_info } = employee;
-            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, additional_info };
+            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, ...additional_info } = employee;
+            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, additional_info };
         });
 
         res.status(200).json({ message: 'success!', data: employees });

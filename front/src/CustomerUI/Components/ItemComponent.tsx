@@ -102,7 +102,7 @@ export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelect
     >
       <div className='name'>{family.name}</div>
       <div className='price'>$ {family.price}</div>
-      <img className='image' src={imageSrc} alt="{family.name} picture" />
+      <img className='image' src={imageSrc} alt= {family.name} />
 
       {
         myFamily.description !== "null" && (

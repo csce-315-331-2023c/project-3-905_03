@@ -1,16 +1,13 @@
-:root {
-  --text: #150f05;
-  --background: #f7eede;
-  --primary: #2c5dba;
-  --secondary: #f1dcb6;
-  --accent: #2e62c2;
-}
-
 .customer {
   color: var(--text);
   background-color: var(--background);
 }
 
+.placeholder {
+  background-color: white;
+  display: flex;
+  height: 5vh;
+}
 .top {
   display: grid;
   justify-items: center;
@@ -18,7 +15,7 @@
   gap: 30px;
   grid-auto-rows: minmax(80px, auto);
 
-  height: 25vh;
+  height: 20vh;
 }
 
 .top > * {
@@ -114,19 +111,11 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-
-  margin-top: 20px;
+/* 
+  margin-top: 20px; */
+  padding-top: 2vh;
   overflow: auto;
 }
-
-/* .itemFamily {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  padding: 30px;
-  margin: 30px;
-} */
 
 .loading {
   display: flex;

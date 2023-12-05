@@ -39,20 +39,11 @@ const Customer = () => {
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
+    
     const handleClose = () => {
         setOrderId(0);
         window.location.reload();
-        // logout
+        // logout !!
     };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,6 +201,7 @@ const Customer = () => {
 
     return (
         <div className='customer'>
+            <div className='placeholder'></div>
             <div className="top">
 
                 <FormControl className='sections' component='fieldset'>

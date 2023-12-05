@@ -1463,7 +1463,7 @@ app.get('/getAllFamilies', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM served_items_family');
+        const result = await client.query('SELECT * FROM served_items_family ORDER BY family_id');
 
         res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {
@@ -1615,8 +1615,12 @@ app.get('/getEmployees', async (req, res) => {
         await client.connect();
 
         const result = await client.query('SELECT * FROM employees');
+        const employees = result.rows.map(employee => {
+            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, ...additional_info } = employee;
+            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, additional_info };
+        });
 
-        res.status(200).json({ message: 'success!', data: result.rows});
+        res.status(200).json({ message: 'success!', data: employees });
     } catch (error) {
         res.status(400).send(error.message);
     } finally {
@@ -1633,7 +1637,7 @@ app.post('/addEmployee', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email, password, roles, profile_pic, profile_complete, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
+        let {first_name, last_name, email, password, role, profile_pic, profile_complete, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1651,7 +1655,7 @@ app.post('/addEmployee', async (req, res) => {
 
         let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
         let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
-        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {
@@ -1700,7 +1704,7 @@ app.post('/editEmployee', async (req, res) => {
     let client;
 
     try {
-        let {employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = req.body;
+        let {employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1711,7 +1715,7 @@ app.post('/editEmployee', async (req, res) => {
 
         await client.connect();
 
-        await client.query('UPDATE employees SET first_name = $2, last_name = $3, email = $4, password = $5, roles = $6, profile_pic = $7, profile_complete = $8, created_at = $9, phone = $10, pay_rate = $11, alt_email = $12, prefered_name = $13, address = $14, emergency_contact_first_name = $15, emergency_contact_last_name = $16, emergency_contact_phone = $17 WHERE employee_id = $1', [ employee_id, first_name, last_name, email, password, roles, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('UPDATE employees SET first_name = $2, last_name = $3, email = $4, password = $5, role = $6, profile_pic = $7, profile_complete = $8, created_at = $9, phone = $10, pay_rate = $11, alt_email = $12, prefered_name = $13, address = $14, emergency_contact_first_name = $15, emergency_contact_last_name = $16, emergency_contact_phone = $17 WHERE employee_id = $1', [ employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {
@@ -1724,9 +1728,9 @@ app.post('/editEmployee', async (req, res) => {
 });
 
 /**
- * get all users
+ * get all customers
  */
-app.get('/getUsers', async (req, res) => {
+app.get('/getCustomers', async (req, res) => {
     let client;
 
     try {
@@ -1739,7 +1743,7 @@ app.get('/getUsers', async (req, res) => {
 
         await client.connect();
 
-        const result = await client.query('SELECT * FROM users');
+        const result = await client.query('SELECT * FROM customers');
 
         res.status(200).json({ message: 'success!', data: result.rows});
     } catch (error) {
@@ -1752,13 +1756,13 @@ app.get('/getUsers', async (req, res) => {
 });
 
 /**
- * add users
+ * add customers
  */
-app.post('/addUser', async (req, res) => {
+app.post('/addCustomer', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email} = req.body;
+        let {first_name, last_name, email, password, profile_pic} = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1769,9 +1773,14 @@ app.post('/addUser', async (req, res) => {
 
         await client.connect();
 
-        let maxUser_id = await client.query('SELECT MAX(user_id) FROM users');
-        let user_id = (maxUser_id.rows[0].max || 0) + 1;
-        await client.query('INSERT INTO users (user_id, first_name, last_name, email) VALUES ($1, $2, $3, $4)', [user_id, first_name, last_name, email]);
+        const currentDate = new Date();
+        const formattedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' + currentDate.getDate().toString().padStart(2, '0');
+        const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
+        const created_at = formattedDate + ' ' + formattedTime;
+
+        let maxUser_id = await client.query('SELECT MAX(user_id) FROM customers');
+        let user_id = (parseInt(maxUser_id.rows[0].max || 0)) + 1;
+        await client.query('INSERT INTO customers (user_id, first_name, last_name, email, password, profile_pic, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)', [user_id, first_name, last_name, email, password, profile_pic, created_at]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {
@@ -1784,9 +1793,9 @@ app.post('/addUser', async (req, res) => {
 });
 
 /**
- * delete a User
+ * delete a Customer
  */
-app.post('/deleteUser', async (req, res) => {
+app.post('/deleteCustomer', async (req, res) => {
     let client;
 
     try {
@@ -1801,7 +1810,7 @@ app.post('/deleteUser', async (req, res) => {
 
         await client.connect();
 
-        await client.query('DELETE FROM users WHERE user_id = $1', [ user_id ]);
+        await client.query('DELETE FROM customers WHERE user_id = $1', [ user_id ]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {
@@ -1814,13 +1823,13 @@ app.post('/deleteUser', async (req, res) => {
 });
 
 /**
- * edit a User
+ * edit a Customer
  */
-app.post('/editUser', async (req, res) => {
+app.post('/editCustomer', async (req, res) => {
     let client;
 
     try {
-        let {user_id, first_name, last_name, email} = req.body;
+        let {user_id, first_name, last_name, email, password, profile_pic} = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -1831,7 +1840,7 @@ app.post('/editUser', async (req, res) => {
 
         await client.connect();
 
-        await client.query('UPDATE users SET first_name = $2, last_name = $3, email = $4 WHERE user_id = $1', [user_id, first_name, last_name, email]);
+        await client.query('UPDATE customers SET first_name = $2, last_name = $3, email = $4, password = $5, profile_pic = $6 WHERE user_id = $1', [user_id, first_name, last_name, email, password, profile_pic]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {

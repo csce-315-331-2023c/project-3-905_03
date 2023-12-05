@@ -2153,7 +2153,8 @@ app.post('/editEmployee', async (req, res) => {
     let client;
 
     try {
-        let {employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = req.body;
+        let {employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, additional_info} = req.body;
+        let {phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = additional_info;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -2164,7 +2165,7 @@ app.post('/editEmployee', async (req, res) => {
 
         await client.connect();
 
-        await client.query('UPDATE employees SET first_name = $2, last_name = $3, email = $4, password = $5, role = $6, profile_pic = $7, profile_complete = $8, created_at = $9, phone = $10, pay_rate = $11, alt_email = $12, prefered_name = $13, address = $14, emergency_contact_first_name = $15, emergency_contact_last_name = $16, emergency_contact_phone = $17 WHERE employee_id = $1', [ employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('UPDATE employees SET first_name = $2, last_name = $3, email = $4, password = $5, role = $6, profile_pic = $7, profile_complete = $8, created_at = $9, phone = $10, pay_rate = $11, alt_email = $12, preferred_name = $13, address = $14, emergency_contact_first_name = $15, emergency_contact_last_name = $16, emergency_contact_phone = $17 WHERE employee_id = $1', [ employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
 
         res.status(200).json({ message: 'success!'});
     } catch (error) {

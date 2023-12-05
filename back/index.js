@@ -39,13 +39,13 @@ app.get('/getServedItems', async (req, res) => {
         });
 
         await client.connect();
-        const result = await client.query("SELECT * FROM served_items ORDER BY item_id");
+        const result = await client.query("SELECT item_id, served_item, item_price, family_id FROM served_items ORDER BY item_id");
         const servedItems = result.rows;
 
-        let allServedItems = []; // Array to hold all served items
+        let allServedItems = [];
 
         for (const servedItem of servedItems) {
-            let servedItemInfo = { // Create a new servedItemInfo for each served item
+            let servedItemInfo = {
                 item_id: servedItem.item_id,
                 served_item: servedItem.served_item,
                 item_price: servedItem.item_price,
@@ -53,19 +53,11 @@ app.get('/getServedItems', async (req, res) => {
                 ingredients: []
             };
 
-            let ingredientsInfo = []; // Create a new ingredientsInfo for each served item
+            const ingredientsResult = await client.query('SELECT stock_items.stock_item FROM serveditemstockitem JOIN stock_items ON serveditemstockitem.stock_id = stock_items.stock_id WHERE serveditemstockitem.item_id = $1', [servedItem.item_id]);
+            const ingredients = ingredientsResult.rows;
 
-            const stock_ids_usedResult = await client.query('SELECT stock_id FROM serveditemstockitem WHERE item_id = $1', [servedItem.item_id]);
-            const stock_ids_used = stock_ids_usedResult.rows;
-
-            for (const stock_id of stock_ids_used) {
-                const stockInfoResult = await client.query('SELECT stock_item FROM stock_items WHERE stock_id = $1', [stock_id.stock_id]);
-                const stockInfo = stockInfoResult.rows[0];
-                ingredientsInfo.push(stockInfo);
-            }
-
-            servedItemInfo.ingredients = ingredientsInfo;
-            allServedItems.push(servedItemInfo); // Add the servedItemInfo to the allServedItems array
+            servedItemInfo.ingredients = ingredients;
+            allServedItems.push(servedItemInfo);
         }
 
         res.status(200).json({ message: "success!", data: allServedItems });

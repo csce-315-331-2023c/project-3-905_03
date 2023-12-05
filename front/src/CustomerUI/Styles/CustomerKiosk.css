@@ -6,16 +6,19 @@
 .placeholder {
   background-color: white;
   display: flex;
-  height: 5vh;
+  height: 7.5vh;
 }
 .top {
   display: grid;
   justify-items: center;
+
   grid-template-columns: repeat(12, 1fr);
   gap: 30px;
   grid-auto-rows: minmax(80px, auto);
 
-  height: 20vh;
+  height: 12.5vh;
+  background-color: var(--background);
+  padding: 1vh;
 }
 
 .top > * {
@@ -99,7 +102,7 @@
 /* menu */
 
 .displayWrap {
-  height: 75vh;
+  height: 80vh;
   overflow: auto;
 
   /* im gettin quirky */
@@ -113,7 +116,7 @@
   justify-content: center;
 /* 
   margin-top: 20px; */
-  padding-top: 2vh;
+  padding-top: 1vh;
   overflow: auto;
 }
 

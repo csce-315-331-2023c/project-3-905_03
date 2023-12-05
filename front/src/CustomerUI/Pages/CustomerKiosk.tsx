@@ -79,7 +79,7 @@ const Customer = () => {
     };
 
     const handleCheckout = async () => {
-        if (bag.length > 0 && confirm("Are you sure?") == true) {//make the order
+        if (bag.length > 0 && confirm("Want to confirm your checkout? (payment options)") == true) {//make the order
             console.log("bag", bag)
             bag.forEach((family) => {
                 const chosenItem = family.options.find((option) => option.chosen === true);
@@ -299,7 +299,7 @@ const Customer = () => {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle> Your order number is {orderId}.</DialogTitle>
+                <DialogTitle> Your order number is <b>{orderId}</b>.</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         Your order has been placed!

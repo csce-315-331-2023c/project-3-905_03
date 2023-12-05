@@ -33,6 +33,14 @@
 .customer-menu-container .header img {
     width: 100px;
 }
+.customer-menu-container .header .login-button {
+    width: 100px;
+    height: 80px;
+}
+
+.customer-menu-container .header .login-button:hover {
+    color: var(--text);
+}
 
 .customer-menu-container .header-text {
     flex-grow: 1;
@@ -40,7 +48,7 @@
     font-size: 2.5rem;
     text-decoration: underline;
     text-decoration-color: var(--primary);
-    padding-right: 100px;
+    padding-right: 0;
 }
 
 .customer-menu-container .menu-container {

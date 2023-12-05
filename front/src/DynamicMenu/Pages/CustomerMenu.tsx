@@ -10,6 +10,7 @@ import brisketMac from '../../assets/brisketMac.jpg';
 import cajunMacAndCheese from '../../assets/cajunMacAndCheese.jpg';
 import eggSandwich from '../../assets/eggSandwich.jpg';
 
+import { useNavigate } from 'react-router-dom';
 
 import EntreeItems from '../Components/EntreeItems';
 import WandTItems from '../Components/WandTItems';
@@ -19,11 +20,19 @@ import SpecialItems from '../Components/SpecialItems';
 import Weather from '../../SharedComponents/Weather';
 
 const CustomerMenu: React.FC = () => {
+
+    const navigate = useNavigate();
+
+    const handleAccessLogin = () => {
+        navigate('/');
+    }
+    
     return (
         <div className="customer-menu-container">
             <div className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
+                <button className="login-button" onClick={handleAccessLogin}>Back</button>
             </div>
             <div className="menu-container">
                 <div className="side-left">

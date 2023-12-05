@@ -4,6 +4,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Box, TextField } from '@mui/material';
 
 interface AdditionalInfo {
     phone: string;
@@ -55,7 +56,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
     );
 
 
-    const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormState({
             ...formState,
@@ -109,21 +110,19 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
                 if (target.className === "modal-container") closeModal();
             }}>
             <div className='modal'>
-                <form action="">
-                    <div className='form-group'>
-                        <label htmlFor="first_name" className='form-label'>First Name</label>
-                        <input name="first_name" type="text" value={formState.first_name} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="last_name" className='form-label'>Last Name</label>
-                        <input name="last_name" type="text" value={formState.last_name} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="email" className='form-label'>Email</label>
-                        <input name="email" type="text" value={formState.email} onChange={handleFormChange} />
-                    </div>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    >
                     <div>
-                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                        <TextField name="first_name" label="First Name" value={formState.first_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="last_name" label="Last Name" value={formState.last_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="email" label="Email" value={formState.email} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <FormControl sx={{ m: 1, minWidth: '41.5%' }} size="medium">
                             <InputLabel id="demo-select-small-label">Assign Role</InputLabel>
                             <Select
                                 name='role'
@@ -138,41 +137,17 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
                                 <MenuItem value="cashier">Cashier</MenuItem>
                             </Select>
                         </FormControl>
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="phone" className='form-label'>Phone</label>
-                        <input name="phone" type="text" value={formState.additional_info.phone} onChange={handleFormChange2} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="pay_rate" className='form-label'>Pay Rate</label>
-                        <input name="pay_rate" type="number" value={formState.additional_info.pay_rate} onChange={handleFormChange2} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="alt_email" className='form-label'>Alternate Email</label>
-                        <input name="alt_email" type="text" value={formState.additional_info.alt_email} onChange={handleFormChange2} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="preferred_name" className='form-label'>Preferred Name</label>
-                        <input name="preferred_name" type="text" value={formState.additional_info.preferred_name} onChange={handleFormChange2} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="address" className='form-label'>Address</label>
-                        <textarea name="address" value={formState.additional_info.address} onChange={handleFormChange3} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="emergency_contact_first_name" className='form-label'>Emergency Contact First Name</label>
-                        <input name="emergency_contact_first_name" type="text" value={formState.additional_info.emergency_contact_first_name} onChange={handleFormChange2} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="emergency_contact_last_name" className='form-label'>Emergency Contact Last Name</label>
-                        <input name="emergency_contact_last_name" type="text" value={formState.additional_info.emergency_contact_last_name} onChange={handleFormChange2} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="emergency_contact_phone" className='form-label'>Emergency Contact Phone</label>
-                        <input name="emergency_contact_phone" type="text" value={formState.additional_info.emergency_contact_phone} onChange={handleFormChange2} />
+                        <TextField name="phone" label="Phone" value={formState.additional_info.phone} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="pay_rate" label="Pay Rate" value={formState.additional_info.pay_rate} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="alt_email" label="Alternate Email" value={formState.additional_info.alt_email} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="preferred_name" label="Preferred Name" value={formState.additional_info.preferred_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="address" label="Address" value={formState.additional_info.address} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="emergency_contact_first_name" label="Emergency Contact First Name" value={formState.additional_info.emergency_contact_first_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="emergency_contact_last_name" label="Emergency Contact Last Name" value={formState.additional_info.emergency_contact_last_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="emergency_contact_phone" label="Emergency Contact Phone" value={formState.additional_info.emergency_contact_phone} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                     </div>
                     <button className='btn' onClick={handleSubmit}>Submit</button>
-                </form>
+                </Box>
             </div>
         </div>
     )

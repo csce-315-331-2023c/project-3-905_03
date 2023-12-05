@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
+import axios from 'axios';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Box, TextField } from '@mui/material';
 
 interface Row {
     family_id: number;
@@ -17,12 +17,21 @@ interface AddFamilyModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
-const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit }) => {
+const AddFamilyModal3: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { family_id: 0, family_name: "", family_category: "", family_description: "" }
     );
 
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormState({
+            ...formState,
+            [name]: value
+        });
+    };
+
+    const handleFormChange2 = (e: ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormState({
             ...formState,
@@ -54,18 +63,17 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
                 if (target.className === "modal-container") closeModal();
             }}>
             <div className='modal'>
-                <Box
-                component="form"
-                sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' },
-                }}
-                noValidate
-                autoComplete="off"
-                >
+                <form action="">
+                    <div className='form-group'>
+                        <label htmlFor="family_name" className='form-label'>Family Name</label>
+                        <input name="family_name" type="text" value={formState.family_name} onChange={handleFormChange} />
+                    </div>
+                    <div className='form-group'>
+                        <label htmlFor="family_description" className='form-label'>Family Description</label>
+                        <textarea name="family_description" value={formState.family_description} onChange={handleFormChange2} />
+                    </div>
                     <div>
-                        <TextField name="family_name" label="Family Name" value={formState.family_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="family_description" multiline label="Family Description" value={formState.family_description} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <FormControl sx={{ m: 1, minWidth: '41.5%' }} size="medium">
+                        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                             <InputLabel id="demo-select-small-label">Category</InputLabel>
                             <Select
                                 name='family_category'
@@ -83,11 +91,11 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
                             </Select>
                         </FormControl>
                     </div>
-                        <button className='btn' onClick={handleSubmit}>Submit</button>
-                </Box>
+                    <button className='btn' onClick={handleSubmit}>Submit</button>
+                </form>
             </div>
         </div>
     )
 }
 
-export default AddFamilyModal;
+export default AddFamilyModal3;

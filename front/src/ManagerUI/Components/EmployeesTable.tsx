@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import AddEmployeeModal from './AddEmployeeModal';
-import DescriptionModal from './DescriptionModal';
+import AdditionalInfoModal from './AdditionalInfoModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -220,7 +220,11 @@ function EmployeesTable() {
                         <IconButton onClick={() => {setInfoModalOpen(tableMeta.rowData[1])}}>
                             <VisibilityIcon/>
                         </IconButton>
-                        {infoModalOpen === tableMeta.rowData[1] && <DescriptionModal key={tableMeta.rowData[1]} closeModal={() => {setInfoModalOpen(null); fetchEmployees();}} family_id={tableMeta.rowData[0]} family_description={tableMeta.rowData[3]}/>}
+                        {infoModalOpen === tableMeta.rowData[1] && <AdditionalInfoModal 
+                        key={tableMeta.rowData[1]} 
+                        closeModal={() => {setInfoModalOpen(null); fetchEmployees();}} 
+                        employee_id={tableMeta.rowData[0]} 
+                        additional_info={tableMeta.rowData[5]}/>}
                     </span>
                 );
             }} },

@@ -11,7 +11,7 @@ import wafflebite from '../../assets/wafflebite.gif';
 import {
     Radio, RadioGroup,
     FormControlLabel, FormControl, FormLabel,
-    Button, Switch,
+    Button,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Slide,
     Avatar, Popover
@@ -34,7 +34,6 @@ const Customer = () => {
     const [bagTotal, setBagTotal] = useState<string>("");
 
     const [formValue, setFormValue] = useState('w&t');
-    // const [filters, setFilters] = useState({ gf: false, vegan: false });
     const [fams, setFams] = useState<Family[]>([]);
 
     const [hand, setHand] = useState(0);
@@ -60,10 +59,6 @@ const Customer = () => {
         setSelected(undefined);
         setFormValue(event.target.value);
     };
-
-    // const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setFilters({ ...filters, [event.target.name]: event.target.checked });
-    // };
 
     const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrOrder(currOrder.setDineIn(event.target.value === 'dine-in'));
@@ -201,14 +196,6 @@ const Customer = () => {
     }, [fams]);
 
     useEffect(() => {
-        console.log("checkoutReturn", orderId);
-        // setCurrOrder(new Order());
-        // setSelected(undefined); 
-        // upd(a => !a);
-    }, [orderId]);
-
-
-    useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
@@ -221,37 +208,9 @@ const Customer = () => {
         window.location.reload();
     };
 
-
-    // .filter((family) => {
-    //     if(family.toppings.length > 0) 
-    //         return family.toppings.some((topping) => 
-    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
-    //         );
-    // })
     return (
         <div className='customer'>
             <div className="top">
-                <img className='title' src={mess} alt="mess" onClick={imgClick} />
-
-                <Button className='profile' onClick={handlePopoverClick}>
-                    <Avatar className="avatar" src="" />
-                </Button>
-                <Popover
-                    id={id}
-                    open={open}
-                    anchorEl={anchorEl}
-                    onClose={handlePopoverClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                >
-
-                </Popover>
 
                 <FormControl className='sections' component='fieldset'>
                     <FormLabel component="legend">Sections</FormLabel>
@@ -268,18 +227,6 @@ const Customer = () => {
                         <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
                     </RadioGroup>
                 </FormControl>
-
-                {/* <FormControl className='filters'>
-                    <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
-                    <FormControlLabel
-                        control={<Switch name="gf" onChange={handleFilters} />}
-                        label="Gluten Free"
-                    />
-                    <FormControlLabel
-                        control={<Switch name="vegan" onChange={handleFilters} />}
-                        label="Vegan"
-                    />
-                </FormControl> */}
                 <div className='total'>Total: ${bagTotal}</div>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}

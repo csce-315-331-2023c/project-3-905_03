@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import '../Styles/ManagerNav.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Drawer, List, ListItem, Button, IconButton } from '@mui/material';
-import MessLogo from '../../SharedComponents/MessLogo';
 import { useAuth } from '../../SharedComponents/AuthContext';
 import {useModal} from '../../SharedComponents/ModalContext'
 import { useNavigate } from 'react-router-dom';
@@ -30,6 +29,7 @@ interface ManagerNavProps {
 const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection, isDrawerOpen, setIsDrawerOpen }) => {
     const [openSection, setOpenSection] = useState<string>('');
     const { user, setUser } = useAuth();
+    // @ts-ignore
     const { errorMessage, setErrorMessage, showErrorModal, setShowErrorModal } = useModal();
 
     const navigate = useNavigate();

@@ -8,13 +8,11 @@ import { Translate } from '../../SharedComponents/Translate.tsx';
 
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import TranslateIcon from '@mui/icons-material/Translate';
 import HomeIcon from '@mui/icons-material/Home';
 import FormatColorResetIcon from '@mui/icons-material/FormatColorReset';
 import { useNavigate } from 'react-router-dom';
 
 
-import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
 
 import {
@@ -40,6 +38,7 @@ import { TransitionProps } from '@mui/material/transitions';
  * @returns The rendered `Customer` component
  */
 const Customer = () => {
+    // @ts-ignore
     const [state, upd] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isClicked, setIsClicked] = useState(false);
@@ -127,6 +126,7 @@ const Customer = () => {
     const getFams = async () => {
         try {
             const res = await axios.get('/getFamilyItems');
+            // @ts-ignore
             const familiesPromises = res.data.data.map(async (familyData: { family_id: number, family_name: string, family_category: string, family_description: string }, index: number) => {
                 const { family_id, family_name, family_category, family_description } = familyData;
                 const options = await getSizes(family_id);
@@ -153,6 +153,7 @@ const Customer = () => {
     const getSizes = async (familyId: number) => {
         try {
             const res = await axios.post('/getServedItemsInFamily', { family_id: familyId });
+            // @ts-ignore
             const retItems: Item[] = res.data.data.map((itemData: { served_item: string, item_price: number, item_id: number }, index: number) => {
                 const { served_item, item_price, item_id } = itemData;
                 return {

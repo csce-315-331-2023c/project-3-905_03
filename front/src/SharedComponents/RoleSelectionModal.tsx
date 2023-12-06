@@ -20,6 +20,7 @@ interface RoleSelectionModalProps {
  * This component creates a modal that allows the user to select a role.
  * The modal can be closed by clicking a button.
  */
+// @ts-ignore
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose }) => {
     const {  showRoleSelectionModal, setShowRoleSelectionModal} = useModal();
     const navigate = useNavigate();

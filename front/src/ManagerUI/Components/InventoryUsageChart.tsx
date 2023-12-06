@@ -22,6 +22,7 @@ const InventoryUsageChart = ({ data }: { data: InventoryUsageData[] }) => {
 
     return (
         <BarChart
+            // @ts-ignore
             dataset={data}
             width={1440}
             height={800}

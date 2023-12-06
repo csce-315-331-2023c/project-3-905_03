@@ -1,28 +1,29 @@
 import React from 'react';
 import { useEffect } from 'react';
-import {
-  Button, Popover
-} from '@mui/material';
 
-import TranslateIcon from '@mui/icons-material/Translate';
 
 export const Translate = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
+  // @ts-ignore
   const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  // @ts-ignore
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
 
   const open = Boolean(anchorEl);
+  // @ts-ignore
   const id = open ? 'simple-popover' : undefined;
 
 
   useEffect(() => {
     function initializeGoogleTranslate() {
+      // @ts-ignore
       if (window.google && window.google.translate) {
+        // @ts-ignore
         new window.google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
       } else {
         setTimeout(initializeGoogleTranslate, 500); // Retry initialization after a delay if the Google object is not available

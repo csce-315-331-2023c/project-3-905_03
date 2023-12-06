@@ -4,6 +4,7 @@ import { TextField, Button, Avatar, Typography, Grid, Box, Paper } from '@mui/ma
 
 
 const User: React.FC = () => {
+    // @ts-ignore
     const { user, setUser } = useAuth();
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');

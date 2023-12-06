@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, TableCell, Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import {Popover, Box} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -164,6 +164,7 @@ function OrdersTable4() {
         { name: 'takeout', label: 'Takeout', options: { filter: true, sort: true, }},
         { name: 'formatted_order_date', label: 'Order Date', options: { filter: false, sort: true, }},
         { name: 'status', label: 'Order Status', options: { filter: true, sort: true, 
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -238,6 +239,7 @@ function OrdersTable4() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (

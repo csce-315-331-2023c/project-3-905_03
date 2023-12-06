@@ -1,5 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';  
-import { Multiselect } from 'multiselect-react-dropdown';
+import React, { useState, useEffect } from 'react';  
 import axios from 'axios';
 import { Item, Topping } from '../../Order';
 import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
@@ -127,6 +126,7 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
                         <div /*style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} */>
                             {
                                 // Map over options and render a checkbox for each option
+                                // @ts-ignore
                                 options.map((option, idx) => (
                                     <FormGroup>
                                         <FormControlLabel control={<Checkbox onChange={handleSelectChange} value={option.name}/>} label={<i>{option.name} + ${option.price}</i>}/>

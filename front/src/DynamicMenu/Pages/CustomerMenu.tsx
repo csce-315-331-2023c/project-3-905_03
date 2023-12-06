@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import '../Styles/CustomerMenu.css';
-import logo from '../../assets/messLogo-removebg.png';
 import nuttellaWaffle from '../../assets/nuttellaWaffle.jpg';
 import originalFrenchToast from '../../assets/originalFrenchToast.jpg';
 import cookieButterWaffle from '../../assets/cookieButterWaffle.jpg';

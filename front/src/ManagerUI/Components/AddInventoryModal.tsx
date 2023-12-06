@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import axios from 'axios';
-import { Multiselect } from 'multiselect-react-dropdown';
 import { Box, TextField } from '@mui/material';
 import ConfirmationModal from './ConfirmationModal';
 
@@ -10,10 +9,6 @@ interface Row {
     cost: number;
     stock_quantity: number;
     max_amount: number;
-}
-
-interface relatedItemData {
-    data: Array<{ related_item: string }>
 }
 
 interface AddInventoryModalProps {
@@ -35,6 +30,7 @@ interface AddInventoryModalProps {
  * @returns The rendered `AddFamilyModal` component
  */
 const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSubmit, maxID }) => {
+    // @ts-ignore
     const [options, setOptions] = useState<string[]>([]);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [formState, setFormState] = useState<Row>(
@@ -60,6 +56,7 @@ const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSub
         });
     };
 
+    // @ts-ignore
     const handleSelectChange = (selectedList: any) => {
         setSelectedOptions(selectedList);
     };

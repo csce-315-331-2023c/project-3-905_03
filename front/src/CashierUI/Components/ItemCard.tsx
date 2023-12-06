@@ -33,10 +33,6 @@ interface Data {
     data: Items[];
 }
 
-interface Data2 {
-    data: Item[];
-}
-
 interface ItemCardProps {
     item: displayItem;
     addItem: (item: Item) => void;
@@ -57,10 +53,8 @@ interface ItemCardProps {
  * @returns The rendered `ItemCard` component
  */
 const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
-    const [state, upd] = useState(false);
     const [sizes, setSizes] = useState<Items[]>([]);
     const [isClicked, setIsClicked] = useState<boolean>(false);
-    const [toppingModal, setToppingModal] = useState<boolean>(false);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [sizeItem, setSizeItem] = useState<Item>({id: 0, name: "", price: 0, category: ""});
 

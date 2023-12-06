@@ -38,12 +38,15 @@ const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal, ge
         family_description: string;
     }
 
+    // @ts-ignore
     const [state, upd] = useState(false);
     const [items, setItems] = useState<displayItem[]>([]);
     const [order, setOrder] = useState<Order>(new Order());
     const [rows, setRows] = useState<Item[]>(order.getReceipt());
     const [takeout, setTakeout] = useState<number>(0);
+    // @ts-ignore
     const [orderTotal, setOrderTotal] = useState<string | null>(null);
+    // @ts-ignore
     const [orderTax, setOrderTax] = useState<string | null>(null);
 
     const fetchData = (url: string) => {

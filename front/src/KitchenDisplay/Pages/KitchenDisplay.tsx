@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../Styles/KitchenDisplay.css';
 import PendingOrder from '../Components/PendingOrder';
-import logo from '../../assets/messLogo-removebg.png';
 
 /**
  * `KitchenDisplay` is a React component that displays the kitchen orders.

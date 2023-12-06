@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -28,6 +28,7 @@ const Cashier = () => {
         family_description: string;
     }
 
+    // @ts-ignore
     const [state, upd] = useState(false);
     const [items, setItems] = useState<displayItem[]>([]);
     const [order, setOrder] = useState<Order>(new Order());

@@ -1,6 +1,5 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
-import axios from 'axios';
-import { Box, TextField } from '@mui/material';
+import React from 'react';
+import { Box } from '@mui/material';
 
 interface ConfirmationModalProps {
     closeModal: () => void;

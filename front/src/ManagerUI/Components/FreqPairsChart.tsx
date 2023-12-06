@@ -22,6 +22,7 @@ const FreqPairsChart = ({ data }: { data: FreqPairsData[] }) => {
 
     return (
         <BarChart
+            // @ts-ignore
             dataset={data}
             width={1440}
             height={800}

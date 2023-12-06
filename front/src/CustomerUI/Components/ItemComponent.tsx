@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
-import { Item, Topping, Family } from '../../Order.ts';
+import { Family } from '../../Order.ts';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
 
@@ -33,6 +33,7 @@ interface Props {
  * 
  * @returns void
  */
+// @ts-ignore
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
   const [state, upd] = useState(false);
   const [myFamily, setMyFamily] = useState<Family>(family);

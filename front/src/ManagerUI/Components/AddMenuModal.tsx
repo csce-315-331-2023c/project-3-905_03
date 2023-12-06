@@ -1,12 +1,11 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import { Multiselect } from 'multiselect-react-dropdown';
 import "../Styles/AddMenuModal.css";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Autocomplete, Box, Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
+import { Box, Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
 import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
@@ -84,7 +83,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
             axios.post('/addServedItemStockItem', { stock_item: selectedOption })
         );
         Promise.all(axiosRequests)
-            .then(responses => {
+            .then(() => {
                 closeModal();
             })
             .catch(error => {

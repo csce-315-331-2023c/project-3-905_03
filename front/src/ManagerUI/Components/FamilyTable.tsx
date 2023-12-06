@@ -138,6 +138,7 @@ function FamilyTable() {
     const columns = [
         { name: 'family_id', label: 'Family ID', options: {sort: true, filter: false} },
         { name: 'family_name', label: 'Family Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="family_name" label="Family Name" value={editData?.family_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -145,6 +146,7 @@ function FamilyTable() {
                 return value;
             }} },
         { name: 'family_category', label: 'Family Category', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -172,6 +174,7 @@ function FamilyTable() {
                 return value;
             }} },
         { name: 'family_description', label: 'Description', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 return (
                     <span>
@@ -185,6 +188,7 @@ function FamilyTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (

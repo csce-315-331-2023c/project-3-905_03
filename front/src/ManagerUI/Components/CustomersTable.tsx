@@ -115,6 +115,7 @@ function CustomersTable() {
     const columns = [
         { name: 'user_id', label: 'Customer ID', options: {sort: true, filter: false} },
         { name: 'first_name', label: 'First Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="first_name" label="First Name" value={editData?.first_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -122,6 +123,7 @@ function CustomersTable() {
                 return value;
             }} },
         { name: 'last_name', label: 'Last Name', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="last_name" label="Last Name" value={editData?.last_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -129,6 +131,7 @@ function CustomersTable() {
                 return value;
             }} },
         { name: 'email', label: 'Email', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="email" label="Email" value={editData?.email} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -139,6 +142,7 @@ function CustomersTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (

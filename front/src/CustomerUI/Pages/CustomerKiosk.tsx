@@ -4,6 +4,8 @@ import axios from 'axios';
 import "../Styles/CustomerKiosk.css";
 import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
+import { Translate } from '../../SharedComponents/Translate.tsx';
+
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import TranslateIcon from '@mui/icons-material/Translate';
@@ -20,8 +22,7 @@ import {
     FormControlLabel, FormControl, FormLabel,
     Button,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Slide,
-    Avatar, Popover
+    Slide
 } from '@mui/material';
 import {
     ShoppingBag, ShoppingBagOutlined,
@@ -46,7 +47,7 @@ const Customer = () => {
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
-    
+
     const handleClose = () => {
         setOrderId(0);
         window.location.reload();
@@ -204,13 +205,13 @@ const Customer = () => {
     }, [bag]);
 
     const [zoomFactor, setZoomFactor] = useState(1);
-    
+
     const handleZoomIn = () => {
         const newZoomFactor = zoomFactor + 0.1;
         setZoomFactor(newZoomFactor);
         (document.body.style as any).zoom = `${newZoomFactor}`;
     };
-    
+
     const handleZoomOut = () => {
         const newZoomFactor = zoomFactor > 1 ? zoomFactor - 0.1 : 1;
         setZoomFactor(newZoomFactor);
@@ -235,13 +236,16 @@ const Customer = () => {
 
     return (
         <div className='customer'>
+
+
             <div className='customer-header'>
-                <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
-                <button onClick={handleZoomIn}><ZoomInIcon className="header-icon"/></button>
-                <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon"/></button>
-                <button><TranslateIcon className="header-icon"/></button>
                 <button onClick={handleAccessLogin}><HomeIcon className="header-icon" /></button>
-                <button>User Profile</button>
+                <div className="header-icon" id='translate'><Translate /></div>
+                <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon" /></button>
+                {/* <button><TranslateIcon className="header-icon"/></button> */}
+                <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
+                <button onClick={handleZoomIn}><ZoomInIcon className="header-icon" /></button>
+
             </div>
             <div className="top">
 

@@ -32,6 +32,10 @@
   height: 40px;
 }
 
+#translate {
+  margin-top: 10px;
+}
+
 .top {
   display: grid;
   justify-items: center;

@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Item, Topping, Family } from '../../Order.ts';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
 
+
 import unknownImage from '../../assets/food/unknown.jpg';
 import "../Styles/ItemComponent.css";
 

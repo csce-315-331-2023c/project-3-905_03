@@ -5,21 +5,18 @@ import { jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
 import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
-import AccessibilityModal from './AccessibilityModal';
 import RoleSelectionModal from './RoleSelectionModal';
-import TranslateIcon from '@mui/icons-material/Translate';
 import { IconButton, InputAdornment } from '@mui/material';
 import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import Divider from '@mui/material/Divider';
 
 import './Styles/Login.css';
 import useStyles from './Styles/useStyles.ts';
 
 import axios from 'axios';
-import MessLogo from './MessLogo.tsx';
+import AppBar from './AppBar.tsx';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -47,10 +44,6 @@ const LoginPage = () => {
     }
   }, [showRoleSelectionModal, selectedRole, navigate]);
 
-  const logMessage = (action: string, message: string) => {
-    console.log(`Action: ${action} | Info: ${message}`);
-  };
-
   const handleManualLoginSubmit = async () => {
     try {
       const errors = validateForm();
@@ -59,12 +52,15 @@ const LoginPage = () => {
         setShowErrorModal(true);
         return;
       }
+      console.log('Client: Making a fetch request to /auth/manual/login with email:', email);
       const response = await axios.post('/auth/manual/login', { email, password });
       if (response.status === 200) {
         const { token } = response.data;
+        console.log('Client: Received data from /auth/manual/login', response.data);
         localStorage.setItem('token', token);
 
         const decodedUser: any = jwtDecode(token);
+        console.log('Client: decoded token => user: ', decodedUser);
         setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       } else {
@@ -72,7 +68,7 @@ const LoginPage = () => {
         setShowErrorModal(true);
       }
     } catch (error: any) {
-      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
+      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed');
       setShowErrorModal(true);
     }
   };
@@ -80,13 +76,15 @@ const LoginPage = () => {
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
     try {
+      console.log('Client: Google Login Success, requesting verification from server with token: ', idToken);
       const serverResponse = await axios.post('/auth/google/login', { idToken });
       if (serverResponse.status === 200) {
+        console.log('Client: Received data from /auth/google/login', serverResponse.data);
         const { token } = serverResponse.data;
         localStorage.setItem('token', token);
 
         const decodedUser: any = jwtDecode(token);
-        console.log(decodedUser);
+        console.log('Client: decoded token => user', decodedUser);
         setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       }
@@ -99,7 +97,6 @@ const LoginPage = () => {
 
 
   const handleGoogleLoginError = () => {
-    logMessage('GoogleLogin', 'Login failed');
     setErrorMessage('You are not authorized to access this application.');
     setShowErrorModal(true);
   };
@@ -141,7 +138,6 @@ const LoginPage = () => {
     } else if (role === 'manager') {
       navigate('/manager');
     } else if (role === 'customer') {
-      console.log('customer');
       navigate('/customer-kiosk');
     }
     else if (role === 'admin') {
@@ -152,9 +148,7 @@ const LoginPage = () => {
   return (
     <>
       <div className={`login-container ${showErrorModal || showRoleSelectionModal ? 'blur-background' : ''}`}>
-        <div className="logo-container">
-          <MessLogo />
-        </div>
+        <AppBar />
         <div className='login-top'>
           <div className="manual-login">
             <h1>Sign In</h1>
@@ -216,14 +210,6 @@ const LoginPage = () => {
             <button className="login-button" onClick={handleAccessMenu}>View Menu</button>
           </div>
         </div>
-        <div className="login-bottom">
-          <IconButton className="mui-icon-button"  >
-            <TranslateIcon sx={classes.iconButton} />
-          </IconButton>
-          <IconButton className="mui-icon-button" onClick={handleAccessibilityModal}>
-            <AccessibilityIcon sx={classes.iconButton} />
-          </IconButton>
-        </div>
       </div>
       <ErrorModal
         isOpen={showErrorModal}
@@ -233,10 +219,6 @@ const LoginPage = () => {
       <RoleSelectionModal
         isOpen={showRoleSelectionModal}
         onClose={handleRoleSelectionModal}
-      />
-      <AccessibilityModal
-        isOpen={showAccessibilityModal}
-        onClose={() => setShowAccessibilityModal(false)}
       />
     </>
   );

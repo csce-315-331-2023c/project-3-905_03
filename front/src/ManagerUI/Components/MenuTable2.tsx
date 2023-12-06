@@ -315,6 +315,16 @@ function MenuTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        // onRowsDelete: (rowsDeleted: any, newTableData: any) => {
+        //     const indicesToDelete = rowsDeleted.data.map((d: any) => d.index);
+        //     indicesToDelete.forEach((index: number) => {
+        //         const row: Row = rows[index];
+        //         console.log(row);
+        //         axios.post('/deleteServedItem', row)
+        //             .then(() => fetchMenuItems())
+        //             .catch(err => console.log(err));
+        //     });
+        // },
         customToolbar: () => {
             return (
                 <div>

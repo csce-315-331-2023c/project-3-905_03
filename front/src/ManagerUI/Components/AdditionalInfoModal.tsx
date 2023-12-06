@@ -62,7 +62,7 @@ const AdditionalInfoModal: React.FC<AdditionalInfoModalProps> = ({ closeModal, a
 
     const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => { 
         e.preventDefault();
-        axios.post('/editAdditionalInfo', { employee_id, additional_info: formState })
+        axios.post('/editEmployeeAdditionalInfo', { employee_id, additional_info: formState })
             .then(() => {
                 closeModal();
             })

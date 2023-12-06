@@ -8,16 +8,71 @@
 }
 
 .lhs {
-    flex: 1 0 15%;
-    color: #ffffff;
+    flex: 0 0 7.5%;
+
+    transition: flex-basis 0.3s ease;
     background-color: #ffffff;
 }
 
 .rhs {
+    display: flex;
+    flex-direction:rown;
+    align-content: flex-end;
+    justify-content: flex-end;
+
     background-color: #ffffff;
-    flex: 2 0 85%;
+    flex: 2 0 92.5%;
+
+    transition: flex-basis 0.3s ease;
     color: #ffffff;
     overflow-y: auto;
+    height:100%;
+
+}
+
+/* Styling for the ActiveComponent container */
+.active-component-container {
+    flex-grow: 1;
+    /* Allow it to grow and fill space */
+    overflow-y: auto;
+    /* Scrollbar for inner content if needed */
+}
+
+
+.lhs,
+.rhs {
+    transition: flex-basis 0.2s ease;
+}
+
+
+.menu-icon-rotate {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+
+.nav-item button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+
+.nav-item.active button {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.nav-item button:hover,
+.nav-item button:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.nav-item.active button {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
 }
 
 .lhs-closed {

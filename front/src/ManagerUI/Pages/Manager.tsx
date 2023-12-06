@@ -36,7 +36,9 @@ const ManagerGUI: React.FC = () => {
         />
       </div>
       <div className={`rhs ${!isDrawerOpen ? 'rhs-expanded' : ''}`}>
-        {ActiveComponent && <ActiveComponent isDrawerOpen={isDrawerOpen} />}
+        <div className="active-component-container">
+          {ActiveComponent && <ActiveComponent isDrawerOpen={isDrawerOpen} />}
+        </div>
       </div>
     </div>
   );

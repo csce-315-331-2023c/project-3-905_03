@@ -47,10 +47,6 @@ const LoginPage = () => {
     }
   }, [showRoleSelectionModal, selectedRole, navigate]);
 
-  const logMessage = (action: string, message: string) => {
-    console.log(`Action: ${action} | Info: ${message}`);
-  };
-
   const handleManualLoginSubmit = async () => {
     try {
       const errors = validateForm();
@@ -59,12 +55,15 @@ const LoginPage = () => {
         setShowErrorModal(true);
         return;
       }
+      console.log('Client: Making a fetch request to /auth/manual/login with email:', email);
       const response = await axios.post('/auth/manual/login', { email, password });
       if (response.status === 200) {
         const { token } = response.data;
+        console.log('Client: Received data from /auth/manual/login', response.data);
         localStorage.setItem('token', token);
 
         const decodedUser: any = jwtDecode(token);
+        console.log('Client: decoded token => user: ', decodedUser);
         setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       } else {
@@ -72,7 +71,7 @@ const LoginPage = () => {
         setShowErrorModal(true);
       }
     } catch (error: any) {
-      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed: Invalid Credentials');
+      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed');
       setShowErrorModal(true);
     }
   };
@@ -80,13 +79,15 @@ const LoginPage = () => {
   const handleGoogleLoginSuccess = async (response: any) => {
     const idToken = response.credential;
     try {
+      console.log('Client: Google Login Success, requesting verification from server with token: ', idToken);
       const serverResponse = await axios.post('/auth/google/login', { idToken });
       if (serverResponse.status === 200) {
+        console.log('Client: Received data from /auth/google/login', serverResponse.data);
         const { token } = serverResponse.data;
         localStorage.setItem('token', token);
 
         const decodedUser: any = jwtDecode(token);
-        console.log(decodedUser);
+        console.log('Client: decoded token => user', decodedUser);
         setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       }
@@ -99,7 +100,6 @@ const LoginPage = () => {
 
 
   const handleGoogleLoginError = () => {
-    logMessage('GoogleLogin', 'Login failed');
     setErrorMessage('You are not authorized to access this application.');
     setShowErrorModal(true);
   };
@@ -141,7 +141,6 @@ const LoginPage = () => {
     } else if (role === 'manager') {
       navigate('/manager');
     } else if (role === 'customer') {
-      console.log('customer');
       navigate('/customer-kiosk');
     }
     else if (role === 'admin') {
@@ -196,7 +195,7 @@ const LoginPage = () => {
             <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit
             </button>
-            {/* <div className="google-auth">
+            <div className="google-auth">
               <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
@@ -207,7 +206,7 @@ const LoginPage = () => {
                 logo_alignment='center'
                 width={250}
               /> 
-            </div>*/}
+            </div>
           </div>
           <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />
           <div className="guest-options">

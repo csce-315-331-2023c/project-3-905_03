@@ -3,8 +3,9 @@ import '../Styles/ManagerNav.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Drawer, List, ListItem, Button, IconButton } from '@mui/material';
 import MessLogo from '../../SharedComponents/MessLogo';
+import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../SharedComponents/AuthContext';
-import {useModal} from '../../SharedComponents/ModalContext'
+import { useModal } from '../../SharedComponents/ModalContext'
 import { useNavigate } from 'react-router-dom';
 
 interface ManagerNavProps {
@@ -42,8 +43,8 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection, isDrawerOpen,
         setErrorMessage('You are not signed in');
         setShowErrorModal(true);
     }
-        
-        
+
+
     const navItems = ['Menu', 'Families', 'Inventory', 'Orders', 'Analytics'];
 
 
@@ -51,40 +52,43 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection, isDrawerOpen,
         <div className="manager-nav-container">
             <IconButton
                 onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-                className="menu-icon"
-                style={{ fontSize: '2rem' }} // Increase the icon size
-                size = 'large'
+                className={`menu-icon ${isDrawerOpen ? '' : 'menu-icon-rotate'}`}
+                style={{ fontSize: 'large' }}
             >
                 <MenuIcon />
             </IconButton>
+            
 
             <Drawer
-                
                 anchor="left"
                 open={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
-                PaperProps={{ style: { width: isDrawerOpen ? '15%' : '5%' } }} // Adjust width
+                PaperProps={{ className: "manager-nav-drawer" }}
             >
-                <IconButton
-                    onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-                    className="menu-icon"
-                    style={{ fontSize: '2rem' }} // Increase the icon size
-                    size='large'
-                >
-                    <MenuIcon />
-                </IconButton>
-                <List>
-                    {navItems.map((item) => (
-                        <ListItem key={item} onClick={() => toggleSection(item)}>
-                            <Button variant="text" fullWidth sx={{ color: 'var(--mess-color)' }}>
-                                {item}
-                            </Button>
-                        </ListItem>
-                    ))}
-                </List>
-                <Button className="sign-out-button" onClick={handleSwitchUser}>Switch User</Button>
-                <Button className="sign-out-button" onClick={handleSignOut}>Sign Out</Button>
+                <div className='nav-top-section'>
+                    <IconButton className="close-icon" onClick={() => setIsDrawerOpen(false)} sx={{fontSize: 'large'} }>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+
+                
+                <div className='nav-middle-section'>
+                    <List>
+                        {navItems.map((item) => (
+                            <ListItem key={item} onClick={() => toggleSection(item)}>
+                                <Button variant="text" fullWidth sx={{ backgroundColor: '#ffffff' }}>
+                                    {item}
+                                </Button>
+                            </ListItem>
+                        ))}
+                    </List>
+                </div>
+                <div className="nav-bottom-section">
+                    <Button className="sign-out-button" onClick={handleSwitchUser}>Switch User</Button>
+                    <Button className="sign-out-button" onClick={handleSignOut}>Sign Out</Button>
+                </div>
             </Drawer>
+
 
         </div>
     );

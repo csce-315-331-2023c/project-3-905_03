@@ -14,33 +14,36 @@ const pool = new Pool({
 
 async function verifyGoogleToken(idToken) {
     try {
+        console.log('Server: Verifying Google ID token');
         const ticket = await client.verifyIdToken({
-            idToken: idToken,
+            idToken: idToken,   
             audience: process.env.GOOGLE_CLIENT_ID,
         });
+        console.log('Server: Google ID token verified successfully');
         return ticket.getPayload();
     } catch (error) {
         console.error('Error verifying Google token:', error);
-        throw new Error('Invalid Google ID token');
     }
 }
 
 router.post('/auth/google/login', async (req, res) => {
+    console.log('Server: Received Google login request with token:', req.body.idToken);
     const { idToken } = req.body;
     try {
+
         const googleUser = await verifyGoogleToken(idToken);
 
-    
         const employeeQuery = 'SELECT * FROM employees WHERE email = $1';
         const employeeRes = await pool.query(employeeQuery, [googleUser.email]);
         const employee = employeeRes.rows[0];
-
+        console.log('Server: Employee query result:', employeeRes.rows);
    
         let customer = null;
         if (!employee) {
             const customerQuery = 'SELECT * FROM customers WHERE email = $1';
             const customerRes = await pool.query(customerQuery, [googleUser.email]);
             customer = customerRes.rows[0];
+            console.log('Server: Customer query result:', customerRes.rows);
         }
 
     
@@ -50,14 +53,15 @@ router.post('/auth/google/login', async (req, res) => {
                 email: user.email,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                role: user.roles || 'customer', 
+                role: user.role || 'customer', 
                 profilePic: user.profile_pic,
             };
-            console.log(userForToken);
+            console.log('Server: Generating JWT token for user:', userForToken);
             const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
             
             res.status(200).json({ token });
         } else {
+            console.error('Server: Error in /auth/google/login', error);
             res.status(404).json({ message: "Invalid Credentials: User Not Found" });
         }
     } catch (error) {

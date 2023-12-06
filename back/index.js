@@ -2435,6 +2435,7 @@ app.get('/generateRestockReport', async (req, res) => {
     try {
         await client.connect();
         const result = await client.query(restockQuery);
+        console.log("generateRestockReport(): ", result.rows);
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Database Query Error', err);
@@ -2483,9 +2484,11 @@ app.post('/generateSalesReport', async (req, res) => {
     try {
         await client.connect();
         const { rows } = await client.query(salesReportQuery, [startDate, endDate]);
+        console.log("generateSalesReport(): ", rows);
         res.status(200).json(rows);
     } catch (err) {
         console.error('Database Query Error', err);
+        
         res.status(500).json({ error: err.message });
     } finally {
         try {
@@ -2538,6 +2541,7 @@ app.post('/generateExcessReport', async (req, res) => {
         await client.connect();
         const excessItemsResult = await client.query(combinedQuery, [startDate, endDate]);
         const excessItems = excessItemsResult.rows;
+        console.log("Excess Items", excessItems);
         res.status(200).json(excessItems);
     } catch (err) {
         console.error('Database Query Error', err);
@@ -2589,6 +2593,7 @@ app.post('/generateUsageReport', async (req, res) => {
             stock_id: row.stock_id,
             usage_count: parseInt(row.usage_count)
         }));
+        console.log("generateUsageReport(): ", usageQuantities);
         res.status(200).json(usageQuantities);
     } catch (err) {
         console.error('Database Query Error', err);
@@ -2643,6 +2648,7 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     try {
         await client.connect();
         const result = await client.query(freqPairsQuery, [startDate, endDate]);
+        console.log("generateFreqPairsReport(): ", result.rows);
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Database Query Error', err);

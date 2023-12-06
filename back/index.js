@@ -2666,7 +2666,7 @@ app.get('*', (req, res) => {
 
 app.listen(
     PORT,
-    () => console.log(`it alive on https://mess-waffles.onrender.com`)
+    () => console.log(`it alive on http://localhost:${PORT}`)
 )
 
 // when "get /arg" is called this function will be executed

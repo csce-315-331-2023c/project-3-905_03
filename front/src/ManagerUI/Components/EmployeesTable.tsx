@@ -60,6 +60,7 @@ function EmployeesTable() {
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState<number>(0);
 
     const fetchEmployees = () => {
         axios.get('/getEmployees')
@@ -283,6 +284,9 @@ function EmployeesTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>

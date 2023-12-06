@@ -58,6 +58,7 @@ function OrdersTable4() {
     const [editOrderModalOpen, setEditOrderModalOpen] = useState<number | null>(null);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState< Row | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(0);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
@@ -288,6 +289,9 @@ function OrdersTable4() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>

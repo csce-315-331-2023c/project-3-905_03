@@ -10,7 +10,7 @@ import brisketMac from '../../assets/brisketMac.jpg';
 import cajunMacAndCheese from '../../assets/cajunMacAndCheese.jpg';
 import eggSandwich from '../../assets/eggSandwich.jpg';
 
-import TranslateIcon from '@mui/icons-material/Translate';
+import { Translate } from '../../SharedComponents/Translate';
 import HomeIcon from '@mui/icons-material/Home';
 import FormatColorResetIcon from '@mui/icons-material/FormatColorReset';
 import { useNavigate } from 'react-router-dom';
@@ -44,8 +44,8 @@ const CustomerMenu: React.FC = () => {
     return (
         <div className="customer-menu-container">
             <div className='customer-menu-header'>
+                <button><Translate/></button>
                 <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon"/></button>
-                <button><TranslateIcon className="header-icon"/></button>
                 <button onClick={handleAccessLogin}><HomeIcon className="header-icon" /></button>
             </div>
             <div className="menu-container">

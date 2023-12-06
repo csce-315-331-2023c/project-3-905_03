@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import { Box, TextField } from '@mui/material';
 import ConfirmationModal from './ConfirmationModal';
@@ -30,54 +30,25 @@ interface AddInventoryModalProps {
  * @returns The rendered `AddFamilyModal` component
  */
 const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSubmit, maxID }) => {
-    // @ts-ignore
-    const [options, setOptions] = useState<string[]>([]);
-    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [formState, setFormState] = useState<Row>(
         { stock_id: maxID + 1, stock_item: "", cost: 0, stock_quantity: 0, max_amount: 0 }
     );
     const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
-    useEffect(() => {
-        axios.get('/getRelatedItems')
-            .then(res => {
-                const relatedItems: string[] = res.data.data.map((item: { related_item: string }) => item.related_item);
-
-                setOptions(relatedItems);
-            })
-            .catch(err => console.log(err));
-    }, []);
-
     const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
         setFormState({
             ...formState,
-            [name]: name === "stock_item" ? value : parseFloat(value)
+            [e.target.name]: e.target.value
         });
     };
 
-    // @ts-ignore
-    const handleSelectChange = (selectedList: any) => {
-        setSelectedOptions(selectedList);
-    };
-
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        if (formState.stock_item !== "" && formState.cost !== 0 && formState.stock_quantity !== 0 && formState.max_amount !== 0 && selectedOptions.length !== 0) {
+        console.log(formState);
+        if (formState.stock_item !== "" && formState.cost !== 0 && formState.stock_quantity !== 0 && formState.max_amount !== 0) {
             e.preventDefault();
             alert('Form submitted successfully!');
             onSubmit(formState);
-            
-            const axiosRequests = selectedOptions.map(selectedOption =>
-                axios.post('/addStockItemRelatedItem', { stock_item: formState.stock_item, related_item: selectedOption })
-            );
-    
-            Promise.all(axiosRequests)
-                .then(() => {
-                    closeModal();
-                })
-                .catch(error => {
-                    console.error('Error sending requests:', error);
-                });
+            closeModal();
         } else {
             e.preventDefault();
             alert('Please fill out the entire form before submitting.');

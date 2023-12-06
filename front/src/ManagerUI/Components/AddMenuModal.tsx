@@ -111,6 +111,10 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                 setFamilyOptions(familyNames);
             })
                 .catch(er => console.log(er));
+            setFormState({
+                ...formState,
+                item_category: val
+            })
         }
     };
 

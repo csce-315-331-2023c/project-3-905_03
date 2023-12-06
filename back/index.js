@@ -2147,11 +2147,11 @@ app.post('/deleteEmployee', async (req, res) => {
 });
 
 /**
- * Handles the POST request for deleting a specific employee.
+ * Handles the POST request for editing a specific employee's basic information.
  * 
  * @remarks
- * This function is responsible for deleting a specific employee from the database. The employee_id is provided in the request body.
- * The function connects to the database, and deletes the record from the employees table where the employee_id matches the provided employee_id.
+ * This function is responsible for editing a specific employee's basic information in the database. The employee's details are provided in the request body.
+ * The function connects to the database, and updates the record in the employees table where the employee_id matches the provided employee_id.
  * If an error occurs, the function sends a response with the status code and the error message.
  * 
  * @param req - The incoming request
@@ -2186,6 +2186,19 @@ app.post('/editEmployee', async (req, res) => {
     }
 });
 
+/**
+ * Handles the POST request for editing a specific employee's additional information.
+ * 
+ * @remarks
+ * This function is responsible for editing a specific employee's additional information in the database. The employee's details are provided in the request body.
+ * The function connects to the database, and updates the record in the employees table where the employee_id matches the provided employee_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.post('/editEmployeeAdditionalInfo', async (req, res) => {
     let client;
 

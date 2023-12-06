@@ -10,6 +10,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from "@mui/material";
 import OrderConfirmationModal from "../Components/OrderConfirmationModal.tsx";
 
+/**
+ * `Cashier` is a React component that handles the cashier functionality.
+ * 
+ * @remarks
+ * This component fetches the items from the server, manages the order state, and displays the items and the order.
+ * The user can add items to the order, remove items from the order, submit the order, and clear the order.
+ * The user can also choose whether the order is for dine-in or takeout.
+ * 
+ * @returns The rendered `Cashier` component
+ */
 const Cashier = () => {
     interface displayItem {
         family_id: number;

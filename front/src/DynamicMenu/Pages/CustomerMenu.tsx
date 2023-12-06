@@ -22,6 +22,15 @@ import DrinkItems from '../Components/DrinkItems';
 import SpecialItems from '../Components/SpecialItems';
 import Weather from '../../SharedComponents/Weather';
 
+/**
+ * `CustomerMenu` is a React component that displays the customer menu.
+ * 
+ * @remarks
+ * This component manages the grayscale state of the menu and provides navigation functionality.
+ * It displays the menu items in various categories, including waffles and toast, sides, drinks, entrees, specials, and weather.
+ * 
+ * @returns The rendered `CustomerMenu` component
+ */
 const CustomerMenu: React.FC = () => {
 
 

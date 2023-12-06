@@ -11,6 +11,15 @@ import DrinkItems from '../Components/DrinkItems';
 
 import Carousel from 'react-material-ui-carousel'
 
+/**
+ * `DynamicTVMenu1` is a React component that displays a dynamic TV menu.
+ * 
+ * @remarks
+ * This component displays a carousel of menu items, including waffles and toast, sides, and drinks, along with images of selected items.
+ * The carousel auto-plays, with each slide displayed for a certain duration.
+ * 
+ * @returns The rendered `DynamicTVMenu1` component
+ */
 const DynamicTVMenu1: React.FC = () => {
     return (
         <div className="dynamic-menu-container">

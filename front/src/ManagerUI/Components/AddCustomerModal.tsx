@@ -15,6 +15,18 @@ interface AddCustomerModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
+/**
+ * `AddCustomerModal` is a React component that displays a modal for adding a new customer.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new customer's first name, last name, and email.
+ * When the form is submitted, the new customer is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new customer
+ * 
+ * @returns The rendered `AddCustomerModal` component
+ */
 const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { 

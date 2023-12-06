@@ -30,6 +30,15 @@ import {
 } from '@mui/icons-material';
 import { TransitionProps } from '@mui/material/transitions';
 
+/**
+ * `Customer` is a React component that represents the customer kiosk interface.
+ * 
+ * @remarks
+ * This component manages the state of the customer's order, including the selected items, the total price, and the checkout process.
+ * It also handles the display of the interface, including the item selection, the shopping bag, and the checkout dialog.
+ * 
+ * @returns The rendered `Customer` component
+ */
 const Customer = () => {
     const [state, upd] = useState(false);
     const [loading, setLoading] = useState(true);

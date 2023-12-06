@@ -17,6 +17,17 @@ interface Props {
     family_id: number;
 }
 
+/**
+ * `ItemsInFamily` is a React component that fetches and displays the items in a specific family.
+ * 
+ * @remarks
+ * This component fetches the items in a specific family from the server, stores them in the state, and displays them.
+ * Each item is displayed with its size and price.
+ * 
+ * @param family_id - The ID of the family to fetch the items for
+ * 
+ * @returns The rendered `ItemsInFamily` component
+ */
 const ItemsInFamily: React.FC<Props> = ({ family_id }) => {
     const [items, setItems] = useState<Row[]>([]);
 

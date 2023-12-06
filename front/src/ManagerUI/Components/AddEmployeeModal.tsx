@@ -34,6 +34,18 @@ interface AddEmployeeModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
+/**
+ * `AddEmployeeModal` is a React component that displays a modal for adding a new employee.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new employee's details, including first name, last name, email, role, and additional information.
+ * When the form is submitted, the new employee is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new employee
+ * 
+ * @returns The rendered `AddEmployeeModal` component
+ */
 const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { 

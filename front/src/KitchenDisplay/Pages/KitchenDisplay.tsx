@@ -4,7 +4,16 @@ import '../Styles/KitchenDisplay.css';
 import PendingOrder from '../Components/PendingOrder';
 import logo from '../../assets/messLogo-removebg.png';
 
-
+/**
+ * `KitchenDisplay` is a React component that displays the kitchen orders.
+ * 
+ * @remarks
+ * This component fetches the pending orders from the server every 5 seconds and displays them.
+ * Each order can be selected, and the selected order can be fulfilled or cancelled.
+ * When an order is fulfilled or cancelled, the server is notified and the pending orders are refreshed.
+ * 
+ * @returns The rendered `KitchenDisplay` component
+ */
 const KitchenDisplay: React.FC = () => {
     interface orderRow {
         employee_id: number;

@@ -7,10 +7,12 @@ import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
 import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
+import EmployeesTable from '../Components/EmployeesTable';
+import CustomersTable from '../Components/CustomersTable';
 
 const ManagerGUI: React.FC = () => {
 
-  const [activeSection, setActiveSection] = useState<string>('Menu');
+  const [activeSection, setActiveSection] = useState<string>('Orders');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
 
 
@@ -22,6 +24,8 @@ const ManagerGUI: React.FC = () => {
     Orders: OrdersTable4,
     Analytics: ManagerAnalytics,
     User: User,
+    Employees: EmployeesTable,
+    Customers: CustomersTable,
   };
 
   const ActiveComponent = componentMapping[activeSection] || null;

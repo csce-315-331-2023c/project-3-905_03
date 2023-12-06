@@ -37,6 +37,8 @@
 .description {
   grid-column: 7 / 12;
   grid-row: 2 / 4;
+
+  margin: 4px;
 }
 
 .options {

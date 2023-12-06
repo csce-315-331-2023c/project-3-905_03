@@ -6,6 +6,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Autocomplete, Box, Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
     item_id: number;
@@ -34,6 +36,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
     const [familyMenu, setFamilyMenu] = useState<string | null>(null);
     const [familyOptions, setFamilyOptions] = useState<string[]>([]);
     const [category, setCategory] = useState('');
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
 
 
@@ -47,11 +50,12 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
             .catch(er => console.log(er));
     }, []);
 
-    const handleSelectChange = (selectedIngredients: any[]) => {
-        setSelectedOptions(selectedIngredients);
+
+    const handleIngredientsChange = (event: SelectChangeEvent<typeof selectedOptions>) => {
+        setSelectedOptions(event.target.value as typeof selectedOptions);
     };
 
-    const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormState({
             ...formState,
             [e.target.name]: e.target.value
@@ -62,7 +66,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
         e.preventDefault()
         onSubmit(formState)
         const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('/addServedItemStockItem', (formState.served_item, selectedOption))
+            axios.post('/addServedItemStockItem', { stock_item: selectedOption })
         );
         Promise.all(axiosRequests)
             .then(responses => {
@@ -94,6 +98,11 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
         });
     };
 
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
+
     return (
         <div className='modal-container'
             onClick={(e) => {
@@ -101,21 +110,36 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                 if (target.className === "modal-container") closeModal();
             }}>
             <div className='modal'>
-                <form action="">
-                    <div className='form-group'>
-                        <label htmlFor="name" className='form-label'>Item Name</label>
-                        <input name="served_item" value={formState.served_item} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="price" className='form-label'>Item Price</label>
-                        <input name="item_price" value={formState.item_price} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="Select Ingredient(s)" className='form-label'>Select Ingredients</label>
-                        <Multiselect isObject={false} options={options} className='ingredient-select' onSelect={handleSelectChange} onRemove={handleSelectChange}/>
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="Assign Category" className='form-label'>Assign Category</label>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    >
+                    <div>
+                        <TextField name="served_item" label="Item Name" value={formState.served_item} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="item_price" label="Price" value={formState.item_price} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <FormControl sx={{ m: 1, minWidth: '41.5%' }} size="small">
+                            <InputLabel id="demo-multiple-checkbox-label">Select Ingredients</InputLabel>
+                            <Select
+                                labelId="demo-multiple-checkbox-label"
+                                id="demo-multiple-checkbox"
+                                multiple
+                                value={selectedOptions}
+                                onChange={handleIngredientsChange}
+                                input={<OutlinedInput label="Select Ingredients" />}
+                                renderValue={(selected) => (selected as string[]).join(', ')}
+                                >
+                                {options.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        <Checkbox checked={selectedOptions.indexOf(option) > -1} />
+                                        <ListItemText primary={option} />
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                             <InputLabel id="demo-select-small-label">Category</InputLabel>
                             <Select
@@ -132,10 +156,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                                 <MenuItem value="special">Special</MenuItem>
                             </Select>
                         </FormControl>
-                    </div>
-                    {familyMenu && (
-                        <div className='form-group'>
-                            <label htmlFor="Assign Family" className='form-label'>Assign Family</label>
+                        {familyMenu && (
                             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                                 <InputLabel id="demo-select-small-label">Family</InputLabel>
                                 <Select
@@ -150,11 +171,15 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                                     ))}
                                 </Select>
                             </FormControl>
+                        )}
+                        <div style={{ display: 'inline-flex', gap: '20px'}}>
+                            <button className='btn' onClick={handleConfirmation}>Submit</button>
+                            <button className='btn' onClick={() => closeModal()}>Cancel</button>
                         </div>
-                    )}
-                    <button className='btn' onClick={handleSubmit}>Submit</button>
-                </form>
+                    </div>
+                </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSubmit}/> }
         </div>
     )
 }

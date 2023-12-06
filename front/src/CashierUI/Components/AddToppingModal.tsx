@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Multiselect } from 'multiselect-react-dropdown';
 import axios from 'axios';
 import { Item, Topping } from '../../Order';
+import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 /**
  * Interface for displayItem
@@ -75,7 +76,7 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
      * Handle change in checbox selection
      * @param {ChangeEvent<HTMLInputElement>} e - Event
      */
-    const handleSelectChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         console.log(value);
         setOptions(prevOptions =>
@@ -101,29 +102,32 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
      */
     return (
         // Modal container
-        <div className='modal-container'
-            // Close modal when clicking outside of the modal
-            onClick={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                if (target.className === "modal-container") closeModal();
-            }}>
-            // Modal
-            <div className='modal'>
-                <h3>Add Topping</h3>
-                <form action="">
-                    <div className='form-group'>
-                        {
-                            // Map over options and render a checkbox for each option
-                            options.map((option, idx) => (
-                            <div key={idx}>
-                                <input type="checkbox" name={option.name} value={option.name} onChange={handleSelectChange}/>
-                                <label htmlFor={option.name}><i>{option.name} + ${option.price}</i></label>
-                            </div>
-                            ))
-                        }
-                    </div>
-                    <button className='btn' onClick={handleSubmit}>Submit</button>
-                </form>
+        <div className='modal-container'>
+            <div className='modal' style={{color: 'black'}}>
+                <h3>Add Toppings</h3>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                        >
+                        <div /*style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} */>
+                            {
+                                // Map over options and render a checkbox for each option
+                                options.map((option, idx) => (
+                                    <FormGroup>
+                                        <FormControlLabel control={<Checkbox onChange={handleSelectChange} value={option.name}/>} label={<i>{option.name} + ${option.price}</i>}/>
+                                    </FormGroup>
+                                ))
+                            }
+                        </div>
+                        <div style={{ display: 'flex', gap: '5px'}}>
+                            <button className='btn' onClick={handleSubmit}>Submit</button>
+                            <button className='btn' onClick={() => closeModal()}>Cancel</button>
+                        </div>
+                    </Box>
             </div>
         </div>
     );

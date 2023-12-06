@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import axios from 'axios';
 import { Multiselect } from 'multiselect-react-dropdown';
+import { Box, TextField } from '@mui/material';
+import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
     stock_id: number;
@@ -26,6 +28,7 @@ const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSub
     const [formState, setFormState] = useState<Row>(
         { stock_id: maxID + 1, stock_item: "", cost: 0, stock_quantity: 0, max_amount: 0 }
     );
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
     useEffect(() => {
         axios.get('/getRelatedItems')
@@ -66,33 +69,35 @@ const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSub
             });
     };
 
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
+
     return (
-        <div className='modal-container'
-            onClick={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                if (target.className === "modal-container") closeModal();
-            }}>
+        <div className='modal-container'>
             <div className='modal'>
-                <form action="">
-                    <div className='form-group'>
-                        <label htmlFor="stock_item" className='form-label'>Stock Item</label>
-                        <input name="stock_item" type="text" value={formState.stock_item} onChange={handleFormChange} />
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    >
+                    <div>
+                        <TextField name="stock_item" label="Item Name" value={formState.stock_item} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="cost" label="Cost" value={formState.cost} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="stock_quantity" label="Quantity" value={formState.stock_quantity} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="max_amount" label="Maximum Amount" value={formState.max_amount} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
                     </div>
-                    <div className='form-group'>
-                        <label htmlFor="cost" className='form-label'>Cost</label>
-                        <input name="cost" type="number" value={formState.cost} onChange={handleFormChange} />
+                    <div style={{ display: 'inline-flex', gap: '20px'}}>
+                        <button className='btn' onClick={handleConfirmation}>Submit</button>
+                        <button className='btn' onClick={() => closeModal()}>Cancel</button>
                     </div>
-                    <div className='form-group'>
-                        <label htmlFor="stock_quantity" className='form-label'>Stock Quantity</label>
-                        <input name="stock_quantity" type="number" value={formState.stock_quantity} onChange={handleFormChange} />
-                    </div>
-                    <div className='form-group'>
-                        <label htmlFor="max_amount" className='form-label'>Maximum Amount</label>
-                        <input name="max_amount" type="number" value={formState.max_amount} onChange={handleFormChange} />
-                    </div>
-                    <button className='btn' onClick={handleSubmit}>Submit</button>
-                </form>
+                </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSubmit}/>}
         </div>
     );
 };

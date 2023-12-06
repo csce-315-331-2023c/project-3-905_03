@@ -43,9 +43,9 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ setActiveSection, isDrawerOpen,
         setErrorMessage('You are not signed in');
         setShowErrorModal(true);
     }
-
-
-    const navItems = ['Menu', 'Families', 'Inventory', 'Orders', 'Analytics'];
+        
+        
+    const navItems = ['Menu', 'Families', 'Inventory', 'Orders', 'Analytics', 'Employees', 'Customers'];
 
 
     return (

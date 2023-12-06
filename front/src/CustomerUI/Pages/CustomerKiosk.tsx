@@ -4,7 +4,13 @@ import axios from 'axios';
 import "../Styles/CustomerKiosk.css";
 import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
-import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import TranslateIcon from '@mui/icons-material/Translate';
+import HomeIcon from '@mui/icons-material/Home';
+import FormatColorResetIcon from '@mui/icons-material/FormatColorReset';
+import { useNavigate } from 'react-router-dom';
+
 
 import mess from '../../assets/messLogo-cropped.png';
 import wafflebite from '../../assets/wafflebite.gif';
@@ -12,7 +18,7 @@ import wafflebite from '../../assets/wafflebite.gif';
 import {
     Radio, RadioGroup,
     FormControlLabel, FormControl, FormLabel,
-    Button, Switch,
+    Button,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Slide,
     Avatar, Popover
@@ -35,36 +41,22 @@ const Customer = () => {
     const [bagTotal, setBagTotal] = useState<string>("");
 
     const [formValue, setFormValue] = useState('w&t');
-    const [filters, setFilters] = useState({ gf: false, vegan: false });
     const [fams, setFams] = useState<Family[]>([]);
 
     const [hand, setHand] = useState(0);
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const handlePopoverClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
+    
     const handleClose = () => {
         setOrderId(0);
         window.location.reload();
-        // logout
+        // logout !!
     };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelected(undefined);
         setFormValue(event.target.value);
     };
-
-    // const handleFilters = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     setFilters({ ...filters, [event.target.name]: event.target.checked });
-    // };
 
     const handleDineIn = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrOrder(currOrder.setDineIn(event.target.value === 'dine-in'));
@@ -73,6 +65,7 @@ const Customer = () => {
 
     const handleAdd = () => {
         if (selected) {
+            console.log("selected", selected);
             setSelected({ ...selected, id: selected.id + 1000 });
             setBag([...bag, selected]);
             setSelected(undefined);
@@ -94,11 +87,12 @@ const Customer = () => {
     };
 
     const handleCheckout = async () => {
-        if (bag.length > 0 && confirm("Are you sure?") == true) {//make the order
+        if (bag.length > 0 && confirm("Want to confirm your checkout? (payment options)") == true) {//make the order
             console.log("bag", bag)
             bag.forEach((family) => {
                 const chosenItem = family.options.find((option) => option.chosen === true);
                 console.log("ID", chosenItem?.id);
+                console.log("toppings", family?.toppings);
                 if (chosenItem)
                     currOrder.addItem({ ...chosenItem, toppings: family.toppings });
             });
@@ -202,14 +196,6 @@ const Customer = () => {
     }, [fams]);
 
     useEffect(() => {
-        console.log("checkoutReturn", orderId);
-        // setCurrOrder(new Order());
-        // setSelected(undefined); 
-        // upd(a => !a);
-    }, [orderId]);
-
-
-    useEffect(() => {
         setHand(typeof selected === 'undefined' ? -1 : selected.id);
     }, [selected]);
 
@@ -217,45 +203,50 @@ const Customer = () => {
         setBagTotal(getTotal());
     }, [bag]);
 
-    const imgClick = () => {
-        console.log(fams);
-        window.location.reload();
+    const [zoomFactor, setZoomFactor] = useState(1);
+    
+    const handleZoomIn = () => {
+        const newZoomFactor = zoomFactor + 0.1;
+        setZoomFactor(newZoomFactor);
+        (document.body.style as any).zoom = `${newZoomFactor}`;
+    };
+    
+    const handleZoomOut = () => {
+        const newZoomFactor = zoomFactor > 1 ? zoomFactor - 0.1 : 1;
+        setZoomFactor(newZoomFactor);
+        (document.body.style as any).zoom = `${newZoomFactor}`;
     };
 
+    const [isGrayscale, setIsGrayscale] = useState(false);
 
-    // .filter((family) => {
-    //     if(family.toppings.length > 0) 
-    //         return family.toppings.some((topping) => 
-    //             topping.name === (filters.gf ? 'Gluten Free' : topping.name)
-    //         );
-    // })
+    const handleColorReset = () => {
+        setIsGrayscale(!isGrayscale);
+    };
+
+    useEffect(() => {
+        document.body.style.filter = isGrayscale ? 'grayscale(100%) contrast(1.25)' : 'none';
+    }, [isGrayscale]);
+
+    const navigate = useNavigate();
+
+    const handleAccessLogin = () => {
+        navigate('/');
+    }
+
     return (
         <div className='customer'>
+            <div className='customer-header'>
+                <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
+                <button onClick={handleZoomIn}><ZoomInIcon className="header-icon"/></button>
+                <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon"/></button>
+                <button><TranslateIcon className="header-icon"/></button>
+                <button onClick={handleAccessLogin}><HomeIcon className="header-icon" /></button>
+                <button>User Profile</button>
+            </div>
             <div className="top">
-                <img className='title' src={mess} alt="mess" onClick={imgClick} />
-
-                <Button className='profile' onClick={handlePopoverClick}>
-                    <Avatar className="avatar" src="" />
-                </Button>
-                <Popover
-                    id={id}
-                    open={open}
-                    anchorEl={anchorEl}
-                    onClose={handlePopoverClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                >
-
-                </Popover>
 
                 <FormControl className='sections' component='fieldset'>
-                    <FormLabel component="legend">Sections</FormLabel>
+                    <FormLabel className='sectionsLabel' component="legend">Sections</FormLabel>
                     <RadioGroup
                         aria-labelledby="demo-controlled-radio-buttons-group"
                         name="controlled-radio-buttons-group"
@@ -267,20 +258,9 @@ const Customer = () => {
                         <FormControlLabel value="entree" control={<Radio />} label="Entrees" />
                         <FormControlLabel value="side" control={<Radio />} label="Sides" />
                         <FormControlLabel value="drink" control={<Radio />} label="Drinks" />
+                        <FormControlLabel value="special" control={<Radio />} label="Specials" />
                     </RadioGroup>
                 </FormControl>
-
-                {/* <FormControl className='filters'>
-                    <FormLabel id="demo-controlled-radio-buttons-group">Filters</FormLabel>
-                    <FormControlLabel
-                        control={<Switch name="gf" onChange={handleFilters} />}
-                        label="Gluten Free"
-                    />
-                    <FormControlLabel
-                        control={<Switch name="vegan" onChange={handleFilters} />}
-                        label="Vegan"
-                    />
-                </FormControl> */}
                 <div className='total'>Total: ${bagTotal}</div>
 
                 <Button className='bag' variant="outlined" onClick={() => setBagView(!bagView)}
@@ -328,10 +308,10 @@ const Customer = () => {
                         (!loading) ? (
                             bagView ? (
                                 bag
-                                    .map((family, index) => (
+                                    .map((family) => (
                                         <ItemComponent
                                             family={family}
-                                            key={index}
+                                            key={family.name}
                                             hand={hand}
                                             parentSelected={setSelected}
                                         />
@@ -339,10 +319,10 @@ const Customer = () => {
                             ) :
                                 fams
                                     .filter((family) => (family.category === formValue))
-                                    .map((family, index) => (
+                                    .map((family) => (
                                         <ItemComponent
                                             family={family}
-                                            key={index}
+                                            key={family.name}
                                             hand={hand}
                                             parentSelected={setSelected}
                                         />
@@ -361,7 +341,7 @@ const Customer = () => {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle> Your order number is {orderId}.</DialogTitle>
+                <DialogTitle> Your order number is <b>{orderId}</b>.</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         Your order has been placed!

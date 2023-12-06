@@ -2,11 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './Styles/Modal.css';
 
+/**
+ * Props for the AccessibilityModal component.
+ */
 interface AccessibilityModalProps {
+    /** Whether the modal is open. */
     isOpen: boolean;
+    /** Function to call when the modal should be closed. */
     onClose: () => void;
 }
 
+/**
+ * A modal for accessibility options.
+ *
+ * This component creates a modal that displays a message saying that the feature is not yet implemented.
+ * The modal can be closed by clicking a button.
+ */
 const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 

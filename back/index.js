@@ -408,7 +408,17 @@ app.get('/getSpecialItems', (req, res) => {
 });
 
 /**
- * return served items in family given family id
+ * Handles the POST request for getting served items in a specific family.
+ * 
+ * @remarks
+ * This function is responsible for fetching all served items from a specific family from the database based on the family_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get the served items where the family_id matches the provided family_id, and then sends a response with the status code and a JSON object containing the data (all served items in the specific family).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getServedItemsInFamily', (req, res) => {
     let { family_id } = req.body;

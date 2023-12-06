@@ -10,6 +10,16 @@ import '../Styles/Manager.css';
 import EmployeesTable from '../Components/EmployeesTable';
 import CustomersTable from '../Components/CustomersTable';
 
+/**
+ * `ManagerGUI` is a React component that displays the main interface for managers.
+ * 
+ * @remarks
+ * This component maintains the state for the active section and whether the navigation drawer is open.
+ * It maps section names to their corresponding components.
+ * It renders the `ManagerNav` component and the component for the active section.
+ * 
+ * @returns The rendered `ManagerGUI` component
+ */
 const ManagerGUI: React.FC = () => {
 
   const [activeSection, setActiveSection] = useState<string>('Orders');

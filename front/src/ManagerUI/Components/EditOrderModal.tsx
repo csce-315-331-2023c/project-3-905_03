@@ -15,6 +15,21 @@ interface EditOrderModalProps {
     getOrders: () => void;
 }
 
+/**
+ * `EditOrderModal` is a React component that displays a modal for editing an order.
+ * 
+ * @remarks
+ * This component displays a form for the user to edit an order's details, including items, toppings, and dine-in/takeout option.
+ * The user can add items to the order, remove items from the order, and add toppings to items.
+ * The user can also switch between dine-in and takeout.
+ * When the form is submitted, the edited order is sent to the server and the modal is closed.
+ * 
+ * @param orderID - The ID of the order to edit
+ * @param closeModal - Function to close the modal
+ * @param getOrders - Function to fetch the updated list of orders
+ * 
+ * @returns The rendered `EditOrderModal` component
+ */
 const EditOrderModal: React.FC<EditOrderModalProps> = ({ orderID, closeModal, getOrders }) => {
     interface displayItem {
         family_id: number;

@@ -23,6 +23,17 @@ interface Row {
     max_amount: number;
 }
 
+/**
+ * `InventoryTable2` is a React component that displays a table of inventory items.
+ * 
+ * @remarks
+ * This component fetches inventory data from the server and displays it in a table.
+ * The user can add, edit, and delete inventory items.
+ * The table includes columns for the item's stock ID, name, cost, quantity, and maximum amount.
+ * The name, cost, quantity, and maximum amount can be edited directly in the table.
+ * 
+ * @returns The rendered `InventoryTable2` component
+ */
 function InventoryTable2() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);

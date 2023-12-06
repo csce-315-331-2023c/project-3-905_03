@@ -12,6 +12,21 @@ interface ViewOrderModalProps {
     openParentModal: (order_id: number) => void
 }
 
+/**
+ * `ViewOrderModal` is a React component that displays a modal for viewing the details of an order.
+ * 
+ * @remarks
+ * This component fetches the order items for the given order ID from the server and displays them in a table.
+ * The user can view the add-ons for each order item.
+ * The table includes columns for the item ID, item name, price, and a button to view the add-ons.
+ * If the user clicks outside the modal, the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param order_id - The ID of the order to view
+ * @param openParentModal - Function to open the parent modal
+ * 
+ * @returns The rendered `ViewOrderModal` component
+ */
 const ViewOrderModal: React.FC<ViewOrderModalProps> = ({closeModal, order_id, openParentModal}) => {
     
     interface Row {

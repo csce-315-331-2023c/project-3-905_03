@@ -13,6 +13,16 @@ import InventoryUsageChart from './InventoryUsageChart';
 import FreqPairsChart from './FreqPairsChart';
 import CircularProgress from '@mui/material/CircularProgress';
 
+/**
+ * `ManagerAnalytics` is a React component that displays a dashboard for managers to view various reports.
+ * 
+ * @remarks
+ * This component allows the manager to generate and view different types of reports, including restock, sales, excess, usage, and frequency pairs reports.
+ * The manager can select a date range for the reports.
+ * The reports are displayed as charts.
+ * 
+ * @returns The rendered `ManagerAnalytics` component
+ */
 const ManagerAnalytics: React.FC = () => {
   const currentDateTime = new Date();
   const oneYearAgo = new Date(currentDateTime.getFullYear() - 1, currentDateTime.getMonth(), currentDateTime.getDate());

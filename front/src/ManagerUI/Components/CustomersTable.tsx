@@ -23,6 +23,16 @@ interface Row {
     formatted_created_at?: string;
 }
 
+/**
+ * `CustomersTable` is a React component that displays a table of customers.
+ * 
+ * @remarks
+ * This component fetches customer data from the server and displays it in a table.
+ * The user can add, edit, and delete customers.
+ * The table includes columns for the customer's ID, first name, last name, email, and the date the customer was created.
+ * 
+ * @returns The rendered `CustomersTable` component
+ */
 function CustomersTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);

@@ -6,11 +6,21 @@ import './Styles/RoleSelectionModal.css';
 import { useModal } from './ModalContext'
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Interface for the RoleSelectionModal component props.
+ */
 interface RoleSelectionModalProps {
     isOpen: boolean;
     onClose: (role?: string) => void;
 }
 
+/**
+ * A modal for selecting a role.
+ *
+ * This component creates a modal that allows the user to select a role.
+ * The modal can be closed by clicking a button.
+ */
+// @ts-ignore
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose }) => {
     const {  showRoleSelectionModal, setShowRoleSelectionModal} = useModal();
     const navigate = useNavigate();
@@ -23,6 +33,10 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
         return null;
     }
 
+    /**
+     * Handles the selection of a role.
+     * @param role - The role that was selected.
+     */
     const handleRoleSelect = (role: string) => {
         setTimeout(() => setShowRoleSelectionModal(false), 3); 
         navigate(`/${role}`)

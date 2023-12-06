@@ -13,6 +13,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     const { user } = useAuth();
     const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal } = useModal();
     const navigate = useNavigate();
+    // @ts-ignore
     const [selectedRole, setSelectedRole] = useState('');
 
     // useEffect(() => {

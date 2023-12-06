@@ -12,7 +12,8 @@ interface UserProps {
 }
 
 const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
-    const { user } = useAuth();
+    // @ts-ignore
+    const { user, setUser } = useAuth();
     const [currentPassword, setCurrentPassword] = React.useState('');
     const [newPassword, setNewPassword] = React.useState('');
     const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
@@ -26,7 +27,7 @@ const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
     }, [isOpen, initialSection]);
 
     if (!isOpen || !user) return null;
-
+    
     const modalRoot = document.getElementById('modal-root');
     if (!modalRoot) return null;
 

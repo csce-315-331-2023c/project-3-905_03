@@ -43,6 +43,16 @@ interface Row {
 
 }
 
+/**
+ * `EmployeesTable` is a React component that displays a table of employees.
+ * 
+ * @remarks
+ * This component fetches employee data from the server and displays it in a table.
+ * The user can add, edit, and delete employees.
+ * The table includes columns for the employee's ID, first name, last name, email, role, additional information, and the date the employee was created.
+ * 
+ * @returns The rendered `EmployeesTable` component
+ */
 function EmployeesTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -50,6 +60,7 @@ function EmployeesTable() {
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState<number>(0);
 
     const fetchEmployees = () => {
         axios.get('/getEmployees')
@@ -168,6 +179,7 @@ function EmployeesTable() {
     const columns = [
         { name: 'employee_id', label: 'Employee ID', options: {sort: true, filter: false} },
         { name: 'first_name', label: 'First Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="first_name" label="First Name" value={editData?.first_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -175,6 +187,7 @@ function EmployeesTable() {
                 return value;
             }} },
         { name: 'last_name', label: 'Last Name', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="last_name" label="Last Name" value={editData?.last_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -182,6 +195,7 @@ function EmployeesTable() {
                 return value;
             }} },
         { name: 'email', label: 'Email', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="email" label="Email" value={editData?.email} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -189,6 +203,7 @@ function EmployeesTable() {
                 return value;
             }} },
         { name: 'role', label: 'Role', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -214,6 +229,7 @@ function EmployeesTable() {
                 return value;
             }} },
         { name: 'additional_info', label: 'Additional Information', options: {sort: false, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 return (
                     <span>
@@ -232,6 +248,7 @@ function EmployeesTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -267,6 +284,9 @@ function EmployeesTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>

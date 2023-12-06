@@ -26,6 +26,17 @@ interface Row {
     ingredients?: string[];
 }
 
+/**
+ * `MenuTable` is a React component that displays a table of menu items.
+ * 
+ * @remarks
+ * This component fetches menu items, item families, and ingredients from the server and displays them in a table.
+ * The user can add, edit, and delete menu items.
+ * The table includes columns for the item's ID, name, price, family name, and ingredients.
+ * The name, price, family name, and ingredients can be edited directly in the table.
+ * 
+ * @returns The rendered `MenuTable` component
+ */
 function MenuTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -34,6 +45,7 @@ function MenuTable() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [familyNames, setFamilyNames] = useState<string[]>([]);
     const [allIngredients, setAllIngredients] = useState<string[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(0);
 
 
     const fetchMenuItems = () => {
@@ -194,6 +206,7 @@ function MenuTable() {
     const columns = [
         { name: 'item_id', label: 'Item ID', options: {sort: true, filter: false} },
         { name: 'served_item', label: 'Item Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="served_item" label="Item Name" value={editData?.served_item} onChange={handleInputChange} variant='outlined' sx={{ border: 'none' }}/>;
@@ -201,6 +214,7 @@ function MenuTable() {
                 return value;
             }} },
         { name: 'item_price', label: 'Price', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="item_price" label="Price" value={editData?.item_price} onChange={handleInputChange} variant='outlined' sx={{ border: 'none' }}/>;
@@ -208,6 +222,7 @@ function MenuTable() {
                 return value;
             }} },
         { name: 'family_name', label: 'Family Name', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -233,6 +248,7 @@ function MenuTable() {
                 return value;
             }} },
         { name: 'ingredients', label: 'Ingredients', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -264,6 +280,7 @@ function MenuTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -299,6 +316,9 @@ function MenuTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>

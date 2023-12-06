@@ -1,6 +1,18 @@
 import { ExcessData } from './ReportTypes';
 import { BarChart } from '@mui/x-charts';
 
+/**
+ * `ExcessInventoryChart` is a React component that displays a bar chart of excess inventory.
+ * 
+ * @remarks
+ * This component takes an array of excess inventory data and maps it to a format suitable for the `BarChart` component.
+ * If there is no data, it displays a message saying "No data available".
+ * The chart has two series: 'Total Sales' and 'Inventory Qty', and the x-axis is the stock ID.
+ * 
+ * @param data - The excess inventory data
+ * 
+ * @returns The rendered `ExcessInventoryChart` component or a message if there is no data
+ */
 const ExcessInventoryChart = ({ data }: { data: ExcessData[] }) => {
     if (data.length === 0) {
         return <p>No data available</p>;

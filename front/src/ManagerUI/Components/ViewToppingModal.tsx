@@ -10,6 +10,21 @@ interface ViewToppingModalProps {
     openModal: (order_item_id: number) => void  
 }
 
+/**
+ * `ViewToppingModal` is a React component that displays a modal for viewing the toppings of an order item.
+ * 
+ * @remarks
+ * This component fetches the toppings for the given order item ID from the server and displays them in a table.
+ * The user can view the ID, name, and price of each topping.
+ * If the order item has no toppings, it displays a message saying "This Item has No Add Ons".
+ * If the user clicks the back button, the modal is closed and the parent modal is opened.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param order_item_id - The ID of the order item to view
+ * @param openModal - Function to open the parent modal
+ * 
+ * @returns The rendered `ViewToppingModal` component
+ */
 const ViewToppingModal: React.FC<ViewToppingModalProps> = ({closeModal, order_item_id, openModal}) => {
     interface Row {
         topping_id: number;

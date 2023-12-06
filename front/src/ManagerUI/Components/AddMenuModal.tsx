@@ -1,12 +1,11 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import { Multiselect } from 'multiselect-react-dropdown';
 import "../Styles/AddMenuModal.css";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Autocomplete, Box, Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
+import { Box, Checkbox, ListItemText, OutlinedInput, TextField } from '@mui/material';
 import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
@@ -27,6 +26,21 @@ interface AddMenuModalProps {
     maxID: number
 }
 
+/**
+ * `AddMenuModal` is a React component that displays a modal for adding a new menu item.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new menu item's details, including name, price, ingredients, category, and family.
+ * The user can select ingredients from a dropdown.
+ * The category and family are also selected from dropdowns.
+ * When the form is submitted, the new menu item is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new menu item
+ * @param maxID - The maximum ID of the existing menu items
+ * 
+ * @returns The rendered `AddMenuModal` component
+ */
 const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID }) => {
     const [options, setOptions] = useState<any[]>([])
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -69,7 +83,7 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
             axios.post('/addServedItemStockItem', { stock_item: selectedOption })
         );
         Promise.all(axiosRequests)
-            .then(responses => {
+            .then(() => {
                 closeModal();
             })
             .catch(error => {

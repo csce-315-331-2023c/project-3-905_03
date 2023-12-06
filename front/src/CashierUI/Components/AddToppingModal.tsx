@@ -1,5 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';  
-import { Multiselect } from 'multiselect-react-dropdown';
+import React, { useState, useEffect } from 'react';  
 import axios from 'axios';
 import { Item, Topping } from '../../Order';
 import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
@@ -43,8 +42,19 @@ interface Data{
 }
 
 /**
- * AddToppingModal component
- * @param {AddToppingModalProps} props - Component props
+ * `AddToppingModal` is a React component that displays a modal for adding toppings to an item.
+ * 
+ * @remarks
+ * This component fetches the available toppings from the server, stores them in the state, and displays them in a modal.
+ * The user can select toppings and submit the form, which adds the toppings to the item and closes the modal.
+ * 
+ * @param item - The item to add toppings to
+ * @param sizeItem - The size of the item
+ * @param closeModal - Function to close the modal
+ * @param addTopping - Function to add the selected toppings to the item
+ * @param addItem - Function to add the item to the order
+ * 
+ * @returns The rendered `AddToppingModal` component
  */
 const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, closeModal, addTopping, addItem}) => {
     const [options, setOptions] = useState<Topping[]>([])
@@ -116,6 +126,7 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
                         <div /*style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} */>
                             {
                                 // Map over options and render a checkbox for each option
+                                // @ts-ignore
                                 options.map((option, idx) => (
                                     <FormGroup>
                                         <FormControlLabel control={<Checkbox onChange={handleSelectChange} value={option.name}/>} label={<i>{option.name} + ${option.price}</i>}/>

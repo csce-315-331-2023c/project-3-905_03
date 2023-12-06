@@ -1,7 +1,8 @@
 import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
-import { Item, Topping, Family } from '../../Order.ts';
+import { Family } from '../../Order.ts';
 import { getSize } from '../../SharedComponents/itemFormattingUtils.ts';
+
 
 import unknownImage from '../../assets/food/unknown.jpg';
 import "../Styles/ItemComponent.css";
@@ -19,6 +20,20 @@ interface Props {
   parentSelected: any;
 }
 
+/**
+ * Handles the POST request for editing a specific employee's additional information.
+ * 
+ * @remarks
+ * This function is responsible for editing a specific employee's additional information in the database. The employee's details are provided in the request body.
+ * The function connects to the database, and updates the record in the employees table where the employee_id matches the provided employee_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
+// @ts-ignore
 export const ItemComponent: React.FC<Props> = ({ family, key, hand, parentSelected }) => {
   const [state, upd] = useState(false);
   const [myFamily, setMyFamily] = useState<Family>(family);

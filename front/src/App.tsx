@@ -12,6 +12,16 @@ import ProtectedRoute from './SharedComponents/ProtectedRoute';
 import { AuthProvider } from './SharedComponents/AuthContext';
 import { ModalProvider } from './SharedComponents/ModalContext';
 
+/**
+ * `App` is the main React component that wraps all other components and provides routing.
+ * 
+ * @remarks
+ * This component sets up the authentication provider, Google OAuth provider, and the router.
+ * It defines routes for the login page, customer kiosk, dynamic menu, TV menus, cashier, kitchen display, and manager GUI.
+ * It also sets up protected routes for the cashier, kitchen display, and manager GUI that require the user to have certain roles.
+ * 
+ * @returns The rendered `App` component
+ */
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   console.log(googleClientId);

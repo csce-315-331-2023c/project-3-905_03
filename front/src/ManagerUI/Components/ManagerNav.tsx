@@ -12,6 +12,21 @@ interface ManagerNavProps {
     setIsDrawerOpen: (isOpen: boolean) => void;
 }
 
+/**
+ * `ManagerNav` is a React component that displays a navigation drawer for managers.
+ * 
+ * @remarks
+ * This component displays a list of navigation items that the manager can click to navigate to different sections of the application.
+ * The navigation drawer can be opened and closed.
+ * The manager can also switch user or sign out.
+ * 
+ * @param setActiveSection - Function to set the active section
+ * @param isDrawerOpen - Boolean indicating whether the drawer is open
+ * @param setIsDrawerOpen - Function to open or close the drawer
+ * 
+ * @returns The rendered `ManagerNav` component
+ */
+
 const ManagerNav: React.FC<ManagerNavProps> = ({ isDrawerOpen, setIsDrawerOpen, setActiveSection }) => {
     const [openSection, setOpenSection] = useState<string>('');
     const { user, setUser } = useAuth();
@@ -24,7 +39,6 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ isDrawerOpen, setIsDrawerOpen, 
             setActiveSection(section);
         }
     };
-
 
     if (!user) {
         setErrorMessage('You are not signed in');

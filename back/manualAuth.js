@@ -11,6 +11,21 @@ const pool = new Pool({
     database: 'csce315_905_03db'
 });
 
+/**
+ * This is a POST route for manual login.
+ * 
+ * @remarks
+ * This route receives an email and password from the request body.
+ * It then queries the `employees` and `customers` tables in the database for a user with the given email.
+ * If a user is found in the `employees` table, it checks if the given password matches the user's password.
+ * If the passwords match, it creates a JWT token for the user and sends it in the response.
+ * If a user is not found in the `employees` table, it checks the `customers` table.
+ * 
+ * @param req - The request object
+ * @param res - The response object
+ * 
+ * @returns A response with the JWT token if the login is successful, or an error message if the login is unsuccessful
+ */
 router.post('/auth/manual/login', async (req, res) => {
     const { email, password } = req.body;
     try {

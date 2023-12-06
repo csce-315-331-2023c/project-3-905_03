@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import { Box, TextField } from '@mui/material';
 import ConfirmationModal from './ConfirmationModal';
@@ -20,6 +20,20 @@ interface AdditionalInfoModalProps {
     employee_id: number;
 }
 
+/**
+ * `AdditionalInfoModal` is a React component that displays a modal for editing additional information of an employee.
+ * 
+ * @remarks
+ * This component displays a form for the user to edit the employee's additional information, including phone, pay rate, alternate email, preferred name, address, and emergency contact details.
+ * The form starts in view mode and can be switched to edit mode.
+ * When the form is submitted, the edited information is sent to the server and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param additional_info - The current additional information of the employee
+ * @param employee_id - The ID of the employee
+ * 
+ * @returns The rendered `AdditionalInfoModal` component
+ */
 const AdditionalInfoModal: React.FC<AdditionalInfoModalProps> = ({ closeModal, additional_info, employee_id }) => {
     const [formState, setFormState] = useState<AdditionalInfo>(
         { phone: additional_info.phone, 
@@ -48,7 +62,7 @@ const AdditionalInfoModal: React.FC<AdditionalInfoModalProps> = ({ closeModal, a
 
     const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => { 
         e.preventDefault();
-        axios.post('/editAdditionalInfo', { employee_id, additional_info: formState })
+        axios.post('/editEmployeeAdditionalInfo', { employee_id, additional_info: formState })
             .then(() => {
                 closeModal();
             })

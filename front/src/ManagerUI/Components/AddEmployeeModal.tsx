@@ -1,5 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -34,6 +33,18 @@ interface AddEmployeeModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
+/**
+ * `AddEmployeeModal` is a React component that displays a modal for adding a new employee.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new employee's details, including first name, last name, email, role, and additional information.
+ * When the form is submitted, the new employee is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new employee
+ * 
+ * @returns The rendered `AddEmployeeModal` component
+ */
 const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { 
@@ -63,6 +74,17 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
         setFormState({
             ...formState,
             [name]: value
+        });
+    };
+
+    const handleFormChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormState({
+            ...formState,
+            additional_info: {
+                ...formState.additional_info,
+                [name]: value
+            }
         });
     };
 
@@ -118,14 +140,14 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
                                 <MenuItem value="cashier">Cashier</MenuItem>
                             </Select>
                         </FormControl>
-                        <TextField name="phone" label="Phone" value={formState.additional_info.phone} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="pay_rate" label="Pay Rate" value={formState.additional_info.pay_rate} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="alt_email" label="Alternate Email" value={formState.additional_info.alt_email} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="preferred_name" label="Preferred Name" value={formState.additional_info.preferred_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="address" label="Address" value={formState.additional_info.address} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="emergency_contact_first_name" label="Emergency Contact First Name" value={formState.additional_info.emergency_contact_first_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="emergency_contact_last_name" label="Emergency Contact Last Name" value={formState.additional_info.emergency_contact_last_name} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
-                        <TextField name="emergency_contact_phone" label="Emergency Contact Phone" value={formState.additional_info.emergency_contact_phone} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="phone" label="Phone" value={formState.additional_info.phone} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="pay_rate" label="Pay Rate" value={formState.additional_info.pay_rate} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="alt_email" label="Alternate Email" value={formState.additional_info.alt_email} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="preferred_name" label="Preferred Name" value={formState.additional_info.preferred_name} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="address" label="Address" value={formState.additional_info.address} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="emergency_contact_first_name" label="Emergency Contact First Name" value={formState.additional_info.emergency_contact_first_name} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="emergency_contact_last_name" label="Emergency Contact Last Name" value={formState.additional_info.emergency_contact_last_name} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
+                        <TextField name="emergency_contact_phone" label="Emergency Contact Phone" value={formState.additional_info.emergency_contact_phone} onChange={handleFormChange2} variant='outlined' style={{ outline: 'none' }}/>
                     </div>
                     <div style={{ display: 'inline-flex', gap: '20px'}}>
                         <button className='btn' onClick={handleConfirmation}>Submit</button>

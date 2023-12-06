@@ -33,6 +33,8 @@ import { TransitionProps } from '@mui/material/transitions';
 const Customer = () => {
     const [state, upd] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isClicked, setIsClicked] = useState(false);
+
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
     const [orderId, setOrderId] = useState<number>(0);
 
@@ -202,7 +204,8 @@ const Customer = () => {
 
     useEffect(() => {
         setBagTotal(getTotal());
-    }, [bag]);
+        upd(a => !a);
+    }, [bag, isClicked]);
 
     const [zoomFactor, setZoomFactor] = useState(1);
 
@@ -237,12 +240,12 @@ const Customer = () => {
     return (
         <div className='customer'>
 
-
             <div className='customer-header'>
                 <button onClick={handleAccessLogin}><HomeIcon className="header-icon" /></button>
                 <div className="header-icon" id='translate'><Translate /></div>
                 <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon" /></button>
                 {/* <button><TranslateIcon className="header-icon"/></button> */}
+
                 <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
                 <button onClick={handleZoomIn}><ZoomInIcon className="header-icon" /></button>
 
@@ -307,7 +310,7 @@ const Customer = () => {
                 </Button>
             </div>
             <div className="displayWrap">
-                <div className="displayedItems">
+                <div className="displayedItems" onClick={() => setIsClicked(!isClicked)}>
                     {
                         (!loading) ? (
                             bagView ? (

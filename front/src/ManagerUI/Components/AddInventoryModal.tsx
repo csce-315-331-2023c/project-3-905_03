@@ -22,6 +22,18 @@ interface AddInventoryModalProps {
     maxID: number;
 }
 
+/**
+ * `AddFamilyModal` is a React component that displays a modal for adding a new family.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new family's details, including name, category, and description.
+ * When the form is submitted, the new family is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new family
+ * 
+ * @returns The rendered `AddFamilyModal` component
+ */
 const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSubmit, maxID }) => {
     const [options, setOptions] = useState<string[]>([]);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);

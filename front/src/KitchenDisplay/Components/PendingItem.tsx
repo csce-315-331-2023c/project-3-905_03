@@ -11,6 +11,17 @@ interface OrderProps {
     };
 }
 
+/**
+ * `PendingOrder` is a React component that displays a pending order.
+ * 
+ * @remarks
+ * This component fetches the served item and its toppings from the server, stores them in the state, and displays them.
+ * The served item and its toppings are fetched when the component mounts.
+ * 
+ * @param props - The properties passed to the component, including the item
+ * 
+ * @returns The rendered `PendingOrder` component
+ */
 const PendingOrder: React.FC<OrderProps> = (props) => {
     interface servedItemRow {
         item_id: number;

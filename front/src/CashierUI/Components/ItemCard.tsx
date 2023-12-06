@@ -43,6 +43,19 @@ interface ItemCardProps {
     addTopping: (toppings: Topping[], item: Item) => void;
 }
 
+/**
+ * `ItemCard` is a React component that displays an item card.
+ * 
+ * @remarks
+ * This component fetches the sizes and toppings for an item from the server, stores them in the state, and displays them in a card.
+ * The user can select a size and toppings, and add the item to their order.
+ * 
+ * @param item - The item to display
+ * @param addItem - Function to add the item to the order
+ * @param addTopping - Function to add the selected toppings to the item
+ * 
+ * @returns The rendered `ItemCard` component
+ */
 const ItemCard: React.FC<ItemCardProps> = ({ item, addItem, addTopping }) => {
     const [state, upd] = useState(false);
     const [sizes, setSizes] = useState<Items[]>([]);

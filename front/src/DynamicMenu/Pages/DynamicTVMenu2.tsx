@@ -13,6 +13,15 @@ import Weather from '../../SharedComponents/Weather';
 
 import Carousel from 'react-material-ui-carousel'
 
+/**
+ * `DynamicTVMenu2` is a React component that displays a dynamic TV menu.
+ * 
+ * @remarks
+ * This component displays a carousel of menu items, including entrees and specials, and weather information.
+ * The carousel auto-plays, with each slide displayed for a certain duration.
+ * 
+ * @returns The rendered `DynamicTVMenu2` component
+ */
 const DynamicTVMenu2: React.FC = () => {
     return (
         <div className="dynamic-menu-container">

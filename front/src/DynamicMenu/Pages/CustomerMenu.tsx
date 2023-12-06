@@ -10,7 +10,7 @@ import brisketMac from '../../assets/brisketMac.jpg';
 import cajunMacAndCheese from '../../assets/cajunMacAndCheese.jpg';
 import eggSandwich from '../../assets/eggSandwich.jpg';
 
-import TranslateIcon from '@mui/icons-material/Translate';
+import { Translate } from '../../SharedComponents/Translate';
 import HomeIcon from '@mui/icons-material/Home';
 import FormatColorResetIcon from '@mui/icons-material/FormatColorReset';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,15 @@ import DrinkItems from '../Components/DrinkItems';
 import SpecialItems from '../Components/SpecialItems';
 import Weather from '../../SharedComponents/Weather';
 
+/**
+ * `CustomerMenu` is a React component that displays the customer menu.
+ * 
+ * @remarks
+ * This component manages the grayscale state of the menu and provides navigation functionality.
+ * It displays the menu items in various categories, including waffles and toast, sides, drinks, entrees, specials, and weather.
+ * 
+ * @returns The rendered `CustomerMenu` component
+ */
 const CustomerMenu: React.FC = () => {
 
 
@@ -44,8 +53,8 @@ const CustomerMenu: React.FC = () => {
     return (
         <div className="customer-menu-container">
             <div className='customer-menu-header'>
+                <button><Translate/></button>
                 <button onClick={handleColorReset}><FormatColorResetIcon className="header-icon"/></button>
-                <button><TranslateIcon className="header-icon"/></button>
                 <button onClick={handleAccessLogin}><HomeIcon className="header-icon" /></button>
             </div>
             <div className="menu-container">

@@ -196,7 +196,7 @@ const LoginPage = () => {
             <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit
             </button>
-            {/* <div className="google-auth">
+            <div className="google-auth">
               <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
@@ -207,7 +207,7 @@ const LoginPage = () => {
                 logo_alignment='center'
                 width={250}
               /> 
-            </div>*/}
+            </div>
           </div>
           <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />
           <div className="guest-options">

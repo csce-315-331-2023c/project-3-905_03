@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import axios from 'axios';
 import { Box, TextField } from '@mui/material';
+import ConfirmationModal from './ConfirmationModal';
 
 interface DescriptionModalProps {
     closeModal: () => void;
@@ -11,6 +12,7 @@ interface DescriptionModalProps {
 const DescriptionModal: React.FC<DescriptionModalProps> = ({ closeModal, family_description, family_id }) => {
     const [description, setDescription] = useState<string>(family_description);
     const [editMode, setEditMode] = useState<boolean>(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -30,6 +32,11 @@ const DescriptionModal: React.FC<DescriptionModalProps> = ({ closeModal, family_
         e.preventDefault();
         setEditMode(true);
     }
+
+    const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowConfirmationModal(true);
+    }
     
     return (
         <div className='modal-container'>
@@ -44,20 +51,23 @@ const DescriptionModal: React.FC<DescriptionModalProps> = ({ closeModal, family_
                     >
                     <div>
                         <TextField name="family_description" disabled={!editMode} label="Family Description" multiline value={description} onChange={handleFormChange} variant='outlined' style={{ outline: 'none' }}/>
+                    </div>
+                    <div>
                         {editMode === false ? (
-                                <div className="button-container">
-                                    <button className="login-button" onClick={handleEditMode}>Edit</button>
-                                    <button className="login-button" onClick={() => closeModal()}>Close</button>
+                                <div style={{ display: 'inline-flex', gap: '20px'}}>
+                                    <button className="btn" onClick={handleEditMode}>Edit</button>
+                                    <button className="btn" onClick={() => closeModal()}>Close</button>
                                 </div>
                         ) : (
-                            <div className="button-container">
-                                <button className="login-button" onClick={handleSave}>Save</button>
-                                <button className="login-button" onClick={() => closeModal()}>Cancel</button>
+                            <div style={{ display: 'inline-flex', gap: '20px'}}>
+                                <button className="btn" onClick={handleConfirmation}>Save</button>
+                                <button className="btn" onClick={() => closeModal()}>Cancel</button>
                             </div>
                         )}
                     </div>
                 </Box>
             </div>
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleSave}/>}
         </div>
     )
 

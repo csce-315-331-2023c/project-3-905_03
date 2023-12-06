@@ -24,8 +24,8 @@ const ManagerGUI: React.FC = () => {
     Orders: OrdersTable4,
     Analytics: ManagerAnalytics,
     User: User,
-    ManageEmployees: EmployeesTable,
-    ManageCustomers: CustomersTable,
+    Employees: EmployeesTable,
+    Customers: CustomersTable,
   };
 
   const ActiveComponent = componentMapping[activeSection] || null;

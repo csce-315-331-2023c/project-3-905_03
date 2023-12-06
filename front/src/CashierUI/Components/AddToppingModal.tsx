@@ -102,12 +102,7 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
      */
     return (
         // Modal container
-        <div className='modal-container'
-            // Close modal when clicking outside of the modal
-            onClick={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                if (target.className === "modal-container") closeModal();
-            }}>
+        <div className='modal-container'>
             <div className='modal' style={{color: 'black'}}>
                 <h3>Add Toppings</h3>
                     <Box
@@ -128,7 +123,10 @@ const AddToppingModal: React.FC<AddToppingModalProps> = ({ item, sizeItem, close
                                 ))
                             }
                         </div>
-                        <button className='btn' onClick={handleSubmit}>Submit</button>
+                        <div style={{ display: 'flex', gap: '5px'}}>
+                            <button className='btn' onClick={handleSubmit}>Submit</button>
+                            <button className='btn' onClick={() => closeModal()}>Cancel</button>
+                        </div>
                     </Box>
             </div>
         </div>

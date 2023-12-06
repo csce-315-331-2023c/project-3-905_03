@@ -1,8 +1,8 @@
-
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { Button, TextField, Avatar, Typography, Grid, Box, Paper, Divider } from '@mui/material';
+import CloseButton from '@mui/icons-material/CloseTwoTone';
 import { useAuth } from './AuthContext';
-import { TextField, Button, Avatar, Typography, Grid, Box, Paper, Divider } from '@mui/material';
 import './Styles/User.css';
 
 interface UserProps {
@@ -12,7 +12,6 @@ interface UserProps {
 }
 
 const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
-    // @ts-ignore
     const { user, setUser } = useAuth();
     const [currentPassword, setCurrentPassword] = React.useState('');
     const [newPassword, setNewPassword] = React.useState('');
@@ -27,7 +26,7 @@ const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
     }, [isOpen, initialSection]);
 
     if (!isOpen || !user) return null;
-    
+
     const modalRoot = document.getElementById('modal-root');
     if (!modalRoot) return null;
 
@@ -41,14 +40,32 @@ const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
             setFeedback({ success: '', error: 'New password must be different from current password' });
             return;
         }
-
     };
 
     return ReactDOM.createPortal(
-        <div className={`modal-backdrop ${isOpen ? 'open' : ''}`} >
-            <div className="modal">
-                <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, overflowY: 'auto' }}>
-                    <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+        <div className={`modal-backdrop ${isOpen ? 'open' : ''}`}>
+            <div className="modal" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
+                <Button
+                    id="modalCloseButton"
+                    variant="outlined"
+                    startIcon={<CloseButton />}
+                    onClick={() => onClose()}
+                    sx={{
+                        backgroundColor: '#1a1a1a',
+                        color: '#414345',
+                        width: '25px',
+                        height: '25px',
+                        position: 'absolute',
+                        top: '10px',
+                        left: '10px',
+                        '&:hover': {
+                            borderColor: 'transparent',
+                            transform: 'scale(1.1)'
+                        }
+                    }}
+                />
+                <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, overflowY: 'auto', color: '#ffffff' }}>
+                    <Paper elevation={3} sx={{ p: 3, mb: 4, backgroundColor: '#41435'}}>
                         <Typography variant="h6" gutterBottom><b>Account</b></Typography>
                         <Grid container spacing={3} alignItems="center">
                             <Grid item>
@@ -102,31 +119,9 @@ const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
                                     Submit
                                 </Button>
                             </Grid>
-
                         </Grid>
                     </Paper>
-
-
-
-                    <Divider sx={{ my: 2 }} />
-                    <div id='Language'>
-                        <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                            <Typography variant="h6" gutterBottom><b>Language</b></Typography>
-
-                        </Paper>
-                    </div>
-
-
-                    <Divider sx={{ my: 2 }} />
-                    <div id='Accessibility'>
-                        <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                            <Typography variant="h6" gutterBottom><b>Accessibility</b></Typography>
-
-                        </Paper>
-                    </div>
-
                 </Box>
-                <button onClick={onClose}>Close</button>
             </div>
         </div>,
         modalRoot

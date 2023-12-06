@@ -4,6 +4,7 @@ require('dotenv').config();
 const app = express();
 const PORT = 8080;
 var cors = require('cors');
+const bcrypt = require('bcrypt');
 
 const googleOAuth= require('./googleOAuth');
 const manualAuth= require('./manualAuth');
@@ -2086,7 +2087,7 @@ app.post('/addEmployee', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email, password, role, profile_pic, profile_complete, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
+        let {first_name, last_name, email, password, role, profile_pic, profile_complete, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -2094,6 +2095,12 @@ app.post('/addEmployee', async (req, res) => {
             password: '90503',
             database: 'csce315_905_03db'
         });
+
+        if (!password) {
+            password = 'asdf';
+        }
+
+        var newPass = bcrypt.hashSync(password, 10);
 
         await client.connect();
 
@@ -2104,7 +2111,7 @@ app.post('/addEmployee', async (req, res) => {
 
         let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
         let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
-        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, newPass, role, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {
@@ -2303,6 +2310,8 @@ app.post('/addCustomer', async (req, res) => {
 
         await client.connect();
 
+        var newPass = bcrypt.hashSync(password, 10);
+
         const currentDate = new Date();
         const formattedDate = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-' + currentDate.getDate().toString().padStart(2, '0');
         const formattedTime = currentDate.getHours().toString().padStart(2, '0') + ':' + currentDate.getMinutes().toString().padStart(2, '0') + ':' + currentDate.getSeconds().toString().padStart(2, '0');
@@ -2310,7 +2319,7 @@ app.post('/addCustomer', async (req, res) => {
 
         let maxUser_id = await client.query('SELECT MAX(user_id) FROM customers');
         let user_id = (parseInt(maxUser_id.rows[0].max || 0)) + 1;
-        await client.query('INSERT INTO customers (user_id, first_name, last_name, email, password, profile_pic, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)', [user_id, first_name, last_name, email, password, profile_pic, created_at]);
+        await client.query('INSERT INTO customers (user_id, first_name, last_name, email, password, profile_pic, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)', [user_id, first_name, last_name, email, newPass, profile_pic, created_at]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {

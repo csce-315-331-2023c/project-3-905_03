@@ -77,18 +77,27 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
     }
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault()
-        onSubmit(formState)
-        const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('/addServedItemStockItem', { stock_item: selectedOption })
-        );
-        Promise.all(axiosRequests)
-            .then(() => {
-                closeModal();
-            })
-            .catch(error => {
-                console.error('Error sending requests:', error);
-            });
+        if (formState.served_item !== "" && formState.item_price !== 0 && formState.item_category !== "" && formState.family_name !== "" && selectedOptions.length != 0) {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            
+            const axiosRequests = selectedOptions.map(selectedOption =>
+                axios.post('/addServedItemStockItem', { stock_item: selectedOption })
+            );
+            Promise.all(axiosRequests)
+                .then(() => {
+                    closeModal();
+                })
+                .catch(error => {
+                    console.error('Error sending requests:', error);
+                });
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
+        
     }
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -102,6 +111,10 @@ const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID
                 setFamilyOptions(familyNames);
             })
                 .catch(er => console.log(er));
+            setFormState({
+                ...formState,
+                item_category: val
+            })
         }
     };
 

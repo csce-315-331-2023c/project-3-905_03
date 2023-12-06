@@ -94,9 +94,16 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({ closeModal, onSubmi
     }
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        onSubmit(formState);
-        closeModal();
+        if (formState.first_name !== "" && formState.last_name !== "" && formState.email !== "" && formState.role !== "" && formState.additional_info.phone !== "" && formState.additional_info.pay_rate !== 0 && formState.additional_info.alt_email !== "" && formState.additional_info.preferred_name !== "" && formState.additional_info.address !== "" && formState.additional_info.emergency_contact_first_name !== "" && formState.additional_info.emergency_contact_last_name !== "" && formState.additional_info.emergency_contact_phone !== "") {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            closeModal();
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
 
     };
 

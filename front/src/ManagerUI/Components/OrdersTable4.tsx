@@ -4,6 +4,7 @@ import axios from 'axios';
 import "../Styles/Table.css";
 import ViewOrderModal from './ViewOrderModal';
 import EditOrderModal from './EditOrderModal';
+import ConfirmationModal from './ConfirmationModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -59,6 +60,8 @@ function OrdersTable4() {
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState< Row | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteID, setDeleteID] = useState<number>(-1);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
@@ -99,6 +102,12 @@ function OrdersTable4() {
                 refreshOrders();
             })
             .catch(err => console.log(err));
+    }
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        deleteOrder(deleteID);
+        setShowConfirmationModal(false);
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -262,7 +271,7 @@ function OrdersTable4() {
                                 <IconButton onClick={() => setEditOrderModalOpen(tableMeta.rowData[1])}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => deleteOrder(tableMeta.rowData[1])}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteID(tableMeta.rowData[1])}}>
                                     <DeleteIcon/>
                                 </IconButton>
                                 {modalOpen === tableMeta.rowData[1] && <ViewOrderModal 
@@ -348,6 +357,7 @@ function OrdersTable4() {
                     options={options}
                 />
             )}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

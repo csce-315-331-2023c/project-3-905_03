@@ -52,7 +52,7 @@ function ResponsiveAppBar() {
     return (
         <>
             <AppBar position="fixed" elevation={0} sx={{
-                alignItems:'center', height: '7.5vh', zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#1a1a1a', borderBottom: '1px solid rgba(0, 0, 0, 0.12)', padding: '0px'
+                alignItems: 'center', height: '7.5vh', zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#1a1a1a', borderBottom: '1px solid rgba(0, 0, 0, 0.12)', padding: '0px'
             }}>
                 <Toolbar sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0px' }}>
                     <MessLogo style={{ width: '125px', height: '65px' }} />
@@ -72,13 +72,13 @@ function ResponsiveAppBar() {
                             id="menu-appbar"
                             anchorEl={anchorElUser}
                             anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                                vertical: 'bottom',
+                                horizontal: 'left',
                             }}
                             keepMounted
                             transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                                vertical: 'bottom',
+                                horizontal: 'left',
                             }}
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}

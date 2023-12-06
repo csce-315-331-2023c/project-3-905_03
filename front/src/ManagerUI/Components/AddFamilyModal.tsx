@@ -45,9 +45,16 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
     };
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        onSubmit(formState);
-        closeModal();
+        if (formState.family_name !== "" && formState.family_description !== "" && formState.family_category !== "") {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            closeModal();
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
 
     };
 

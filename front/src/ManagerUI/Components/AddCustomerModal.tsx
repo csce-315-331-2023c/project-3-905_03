@@ -48,9 +48,16 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
     };
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        onSubmit(formState);
-        closeModal();
+        if (formState.first_name !== "" && formState.last_name !== "" && formState.email !== "") {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            closeModal();
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
 
     };
 

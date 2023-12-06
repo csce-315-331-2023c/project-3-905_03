@@ -27,6 +27,21 @@ interface AddMenuModalProps {
     maxID: number
 }
 
+/**
+ * `AddMenuModal` is a React component that displays a modal for adding a new menu item.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new menu item's details, including name, price, ingredients, category, and family.
+ * The user can select ingredients from a dropdown.
+ * The category and family are also selected from dropdowns.
+ * When the form is submitted, the new menu item is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new menu item
+ * @param maxID - The maximum ID of the existing menu items
+ * 
+ * @returns The rendered `AddMenuModal` component
+ */
 const AddMenuModal: React.FC<AddMenuModalProps> = ({ closeModal, onSubmit, maxID }) => {
     const [options, setOptions] = useState<any[]>([])
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);

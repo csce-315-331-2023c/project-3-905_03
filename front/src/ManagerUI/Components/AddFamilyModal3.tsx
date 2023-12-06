@@ -17,6 +17,19 @@ interface AddFamilyModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
+/**
+ * `AddFamilyModal3` is a React component that displays a modal for adding a new family.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new family's details, including name, category, and description.
+ * The user can select a category from a dropdown.
+ * When the form is submitted, the new family is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new family
+ * 
+ * @returns The rendered `AddFamilyModal3` component
+ */
 const AddFamilyModal3: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { family_id: 0, family_name: "", family_category: "", family_description: "" }

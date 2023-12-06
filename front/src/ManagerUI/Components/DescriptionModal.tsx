@@ -9,6 +9,20 @@ interface DescriptionModalProps {
     family_id: number;
 }
 
+/**
+ * `DescriptionModal` is a React component that displays a modal for editing the description of a family.
+ * 
+ * @remarks
+ * This component displays a form for the user to edit the family's description.
+ * The form starts in view mode and can be switched to edit mode.
+ * When the form is submitted, the edited description is sent to the server and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param family_description - The current description of the family
+ * @param family_id - The ID of the family
+ * 
+ * @returns The rendered `DescriptionModal` component
+ */
 const DescriptionModal: React.FC<DescriptionModalProps> = ({ closeModal, family_description, family_id }) => {
     const [description, setDescription] = useState<string>(family_description);
     const [editMode, setEditMode] = useState<boolean>(false);

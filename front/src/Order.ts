@@ -1,5 +1,8 @@
 import axios from "axios";
 
+/**
+ * `Family` is an interface that represents a family of items.
+ */
 export interface Family {
   options: Item[];
   toppings: Topping[];
@@ -13,6 +16,9 @@ export interface Family {
   note?: string;
 }
 
+/**
+ * `Item` is an interface that represents an item in an order.
+ */
 export interface Item {
   id: number;
   name: string;
@@ -28,6 +34,9 @@ export interface Item {
   size?: string;
 }
 
+/**
+ * `Topping` is an interface that represents a topping for an item.
+ */
 export interface Topping {
   id: number;
   name: string;
@@ -35,6 +44,12 @@ export interface Topping {
   chosen: boolean; 
 }
 
+/**
+ * `Order` is a class that represents an order.
+ * 
+ * @remarks
+ * This class includes methods to add and remove items from the order, undo the last action, set whether the order is for dine in, get the total price of the order, get the receipt, get the price of an item, get the tax, cancel the order, and checkout.
+ */
 export class Order {
   public receipt: Item[] = [];
   public total: number = 0;

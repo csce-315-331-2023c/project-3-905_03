@@ -26,6 +26,17 @@ interface Row {
     ingredients?: string[];
 }
 
+/**
+ * `MenuTable` is a React component that displays a table of menu items.
+ * 
+ * @remarks
+ * This component fetches menu items, item families, and ingredients from the server and displays them in a table.
+ * The user can add, edit, and delete menu items.
+ * The table includes columns for the item's ID, name, price, family name, and ingredients.
+ * The name, price, family name, and ingredients can be edited directly in the table.
+ * 
+ * @returns The rendered `MenuTable` component
+ */
 function MenuTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);

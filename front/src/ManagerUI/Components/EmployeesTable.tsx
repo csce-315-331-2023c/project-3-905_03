@@ -43,6 +43,16 @@ interface Row {
 
 }
 
+/**
+ * `EmployeesTable` is a React component that displays a table of employees.
+ * 
+ * @remarks
+ * This component fetches employee data from the server and displays it in a table.
+ * The user can add, edit, and delete employees.
+ * The table includes columns for the employee's ID, first name, last name, email, role, additional information, and the date the employee was created.
+ * 
+ * @returns The rendered `EmployeesTable` component
+ */
 function EmployeesTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);

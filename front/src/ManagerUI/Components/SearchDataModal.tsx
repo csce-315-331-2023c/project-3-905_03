@@ -6,6 +6,20 @@ interface SearchDatesModalProps {
     onSubmit: (startDate: string, endDate: string) => void;
 }
 
+/**
+ * `SearchDatesModal` is a React component that displays a modal for the user to select a start date and an end date.
+ * 
+ * @remarks
+ * This component takes two functions as props: one to close the modal and one to submit the selected dates.
+ * The user can select a start date and an end date using date input fields.
+ * When the user clicks the submit button, the selected dates are passed to the submit function and the modal is closed.
+ * If the user clicks outside the modal, the modal is closed without submitting the dates.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the selected dates
+ * 
+ * @returns The rendered `SearchDatesModal` component
+ */
 const SearchDatesModal: React.FC<SearchDatesModalProps> = ({ closeModal, onSubmit }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");

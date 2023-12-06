@@ -27,6 +27,18 @@ interface Row {
     family_description: string;
 }
 
+/**
+ * `FamilyTable` is a React component that displays a table of families.
+ * 
+ * @remarks
+ * This component fetches family data from the server and displays it in a table.
+ * The user can add, edit, and delete families.
+ * The table includes columns for the family's ID, name, category, and description.
+ * The description can be viewed in a modal.
+ * The name and category can be edited directly in the table.
+ * 
+ * @returns The rendered `FamilyTable` component
+ */
 function FamilyTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);

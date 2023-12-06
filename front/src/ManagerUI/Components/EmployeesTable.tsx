@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../Styles/Table.css";
 import AddEmployeeModal from './AddEmployeeModal';
 import AdditionalInfoModal from './AdditionalInfoModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -61,6 +62,8 @@ function EmployeesTable() {
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [delteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
     const fetchEmployees = () => {
         axios.get('/getEmployees')
@@ -135,6 +138,12 @@ function EmployeesTable() {
             })
             .catch(err => console.log(err));
     };
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(delteRowIndex);
+        setShowConfirmationModal(false);
+    }
 
     const handleAddRow = (newRow: Row) => {
         axios.post('/addEmployee', newRow)
@@ -267,7 +276,7 @@ function EmployeesTable() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </span>
@@ -328,6 +337,7 @@ function EmployeesTable() {
                 </ThemeProvider>
             )}
             {modalOpen && <AddEmployeeModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     )
 }

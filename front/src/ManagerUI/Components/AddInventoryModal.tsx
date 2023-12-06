@@ -62,20 +62,27 @@ const AddInventoryModal: React.FC<AddInventoryModalProps> = ({ closeModal, onSub
     };
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        onSubmit(formState);
-
-        const axiosRequests = selectedOptions.map(selectedOption =>
-            axios.post('/addStockItemRelatedItem', { stock_item: formState.stock_item, related_item: selectedOption })
-        );
-
-        Promise.all(axiosRequests)
-            .then(() => {
-                closeModal();
-            })
-            .catch(error => {
-                console.error('Error sending requests:', error);
-            });
+        if (formState.stock_item !== "" && formState.cost !== 0 && formState.stock_quantity !== 0 && formState.max_amount !== 0 && selectedOptions.length !== 0) {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            
+            const axiosRequests = selectedOptions.map(selectedOption =>
+                axios.post('/addStockItemRelatedItem', { stock_item: formState.stock_item, related_item: selectedOption })
+            );
+    
+            Promise.all(axiosRequests)
+                .then(() => {
+                    closeModal();
+                })
+                .catch(error => {
+                    console.error('Error sending requests:', error);
+                });
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
     };
 
     const handleConfirmation = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

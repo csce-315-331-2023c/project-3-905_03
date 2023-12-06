@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 interface ConfirmationModalProps {
     closeModal: () => void;
     submitFunction: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    delete?: boolean;
 }
 
 /**
@@ -18,7 +19,7 @@ interface ConfirmationModalProps {
  * 
  * @returns The rendered `ConfirmationModal` component
  */
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ closeModal, submitFunction}) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ closeModal, submitFunction, delete: boolean}) => {
     return (
         <div className='modal-container'>
             <div className='modal'>
@@ -32,7 +33,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ closeModal, submi
                     >
                     <div>
                         <h2>Are you sure you want to proceed with this action?</h2>
-                        <h2><b>This action cannot be undone</b></h2>
+                        {boolean && <p>This action cannot be undone.</p>}
                     </div>
                     <div style={{ display: 'inline-flex', gap: '20px'}}>
                         <button className="btn" onClick={submitFunction}>Yes</button>

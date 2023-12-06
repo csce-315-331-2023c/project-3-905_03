@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import AddMenuModal from './AddMenuModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -46,6 +47,8 @@ function MenuTable() {
     const [familyNames, setFamilyNames] = useState<string[]>([]);
     const [allIngredients, setAllIngredients] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
 
     const fetchMenuItems = () => {
@@ -113,6 +116,12 @@ function MenuTable() {
             })
             .catch(err => console.log(err));
     };
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(deleteRowIndex);
+        setShowConfirmationModal(false);
+    }
 
     const handleAddRow = (newRow: Row) => {
         axios.post('/addServedItem', newRow)
@@ -299,7 +308,7 @@ function MenuTable() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)} sx={{ marginRight: '5px' }}>
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon />
                                 </IconButton>
                             </span>
@@ -346,6 +355,7 @@ function MenuTable() {
                 />
             )}
             {modalOpen && <AddMenuModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

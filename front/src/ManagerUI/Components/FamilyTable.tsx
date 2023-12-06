@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../Styles/Table.css";
 import AddFamilyModal from './AddFamilyModal';
 import DescriptionModal from './DescriptionModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -47,6 +48,8 @@ function FamilyTable() {
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
     const fetchFamilies = () => {
         axios.get('/getAllFamilies')
@@ -108,6 +111,12 @@ function FamilyTable() {
             })
             .catch(err => console.log(err));
     };
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(deleteRowIndex);
+        setShowConfirmationModal(false);
+    }
 
     const handleAddRow = (newRow: Row) => {
         axios.post('/addFamily', newRow)
@@ -208,7 +217,7 @@ function FamilyTable() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </span>
@@ -269,6 +278,7 @@ function FamilyTable() {
                 </ThemeProvider>
             )}
             {modalOpen && <AddFamilyModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

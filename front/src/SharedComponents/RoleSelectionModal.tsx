@@ -5,7 +5,7 @@ import CloseButton from '@mui/icons-material/CloseTwoTone';
 import './Styles/RoleSelectionModal.css';
 import { useModal } from './ModalContext';
 import { useNavigate } from 'react-router-dom';
-
+import { useAuth } from './AuthContext';
 interface RoleSelectionModalProps {
     isOpen: boolean;
     onClose: (role?: string) => void;
@@ -13,6 +13,7 @@ interface RoleSelectionModalProps {
 
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose }) => {
     const { showRoleSelectionModal, setShowRoleSelectionModal } = useModal();
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
 
     if (!showRoleSelectionModal) {
@@ -26,6 +27,12 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
 
     const handleRoleSelect = (role: string) => {
         setTimeout(() => setShowRoleSelectionModal(false), 3);
+        if (role === user?.role) {
+            
+        }
+        if (role === 'cashier') {
+            localStorage.setItem('mode', 'cashier');
+        }
         navigate(`/${role}`);
     };
 

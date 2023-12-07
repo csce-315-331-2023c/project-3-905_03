@@ -64,18 +64,28 @@ const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
                         }
                     }}
                 />
-                <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, overflowY: 'auto', color: '#ffffff' }}>
-                    <Paper elevation={3} sx={{ p: 3, mb: 4, backgroundColor: '#41435'}}>
+                <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, maxHeight: '80vh', overflowY: 'auto', color: '#ffffff' }}>
+                    <Paper elevation={3} sx={{ p: 3, mb: 4, backgroundColor: '#41435' }}>
                         <Typography variant="h6" gutterBottom><b>Account</b></Typography>
                         <Grid container spacing={3} alignItems="center">
                             <Grid item>
                                 <Avatar src={user.profilePic} alt={`${user.firstName} ${user.lastName}`} sx={{ width: 60, height: 60 }} />
                             </Grid>
                             <Grid item xs>
+                                <Typography>{user.preferredName}</Typography>
                                 <Typography variant="subtitle1">{user.firstName} {user.lastName}</Typography>
-                                <Typography variant="body2" color="textSecondary">{user.email}</Typography>
+                                <Typography variant="body2" color="textSecondary">{user.email} {user.altEmail}</Typography>
                                 <Typography variant="caption" sx={{ opacity: 0.7 }}>{user.role}</Typography>
+                                
                             </Grid>
+                            {/* <Grid >
+                                <Typography>ID: {user.employeeId}</Typography>
+                                <Typography>Emergency Contact: {user.emergencyContactFirstName}  {user.emergencyContactLastName}</Typography>
+                                <Typography>Emergency Contact Phone: {user.emergencyContactPhone}</Typography>
+                                <Typography>Employee Since: {user.createdAt}</Typography>
+                                <Typography>Address: {user.address}</Typography>
+                                <Typography>Phone: {user.phone}</Typography>
+                            </Grid> */}
                         </Grid>
                         <Divider sx={{ my: 2 }} />
                         <Typography variant="h6" gutterBottom><b>Change Password</b></Typography>

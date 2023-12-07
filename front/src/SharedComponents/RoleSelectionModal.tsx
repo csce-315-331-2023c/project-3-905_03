@@ -6,6 +6,7 @@ import './Styles/RoleSelectionModal.css';
 import { useModal } from './ModalContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+
 interface RoleSelectionModalProps {
     isOpen: boolean;
     onClose: (role?: string) => void;
@@ -26,6 +27,9 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
     }
 
     const handleRoleSelect = (role: string) => {
+        if (role === user?.role) {
+            return;
+        }
         setTimeout(() => setShowRoleSelectionModal(false), 3);
         if (role === user?.role) {
             
@@ -35,6 +39,8 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
         }
         navigate(`/${role}`);
     };
+
+    const { user, setUser } = useAuth();
 
     return ReactDOM.createPortal(
         <div className="modal-backdrop">
@@ -48,7 +54,7 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
                 />
                 <h2>Proceed To</h2>
                 <div className='role-options'>
-                    {['Cashier', 'Manager', 'Kitchen Display', 'TV1 ', 'TV2'].map(role => (
+                    {['Cashier', 'Manager', 'Kitchen', 'TV1', 'TV2'].map(role => (
                         <Button
                             key={role}
                             variant="contained"

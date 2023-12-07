@@ -35,16 +35,16 @@ function App() {
               <Route path="/" element={<LoginPage />} />
               <Route path="/customer-kiosk" element={<CustomerKiosk />} />
               <Route path="/customer-menu" element={<DynamicMenu />} />
-              <Route path="/dynamic-tv-menu1" element={<DynamicTVMenu1 />} />
-              <Route path="/dynamic-tv-menu2" element={<DynamicTVMenu2 />} />
+              <Route path="/TV1" element={<DynamicTVMenu1 />} />
+              <Route path="/TV2" element={<DynamicTVMenu2 />} />
               <Route path="/cashier2" element={<Cashier />} />
-              <Route path="/kitchen-display2" element={<KitchenDisplay />} />
+              <Route path="/kitchen2" element={<KitchenDisplay />} />
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
                 <Route path="/manager" element={<ManagerGUI />} />
               </Route>
               <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
                 <Route path="/cashier" element={<Cashier />} />
-                <Route path="/kitchen-display" element={<KitchenDisplay />} />
+                <Route path="/kitchen" element={<KitchenDisplay />} />
               </Route>
               <Route path="*" element={<LoginPage />} />
             </Routes>

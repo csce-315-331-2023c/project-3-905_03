@@ -36,6 +36,10 @@
   margin-top: 10px;
 }
 
+#avatar {
+  margin-left: 3.5vw;
+}
+
 .top {
   display: grid;
   justify-items: center;

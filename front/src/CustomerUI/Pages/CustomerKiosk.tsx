@@ -12,7 +12,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import FormatColorResetIcon from '@mui/icons-material/FormatColorReset';
 import { useNavigate } from 'react-router-dom';
 
-
 import wafflebite from '../../assets/wafflebite.gif';
 
 import {
@@ -20,7 +19,7 @@ import {
     FormControlLabel, FormControl, FormLabel,
     Button,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Slide
+    Slide, Avatar
 } from '@mui/material';
 import {
     ShoppingBag, ShoppingBagOutlined,
@@ -258,7 +257,7 @@ const Customer = () => {
 
                 <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
                 <button onClick={handleZoomIn}><ZoomInIcon className="header-icon" /></button>
-
+                <button ><Avatar id='avatar' className="header-icon" alt="" src="" /></button>
             </div>
             <div className="top">
 

@@ -38,7 +38,7 @@ function App() {
               <Route path="/TV1" element={<DynamicTVMenu1 />} />
               <Route path="/TV2" element={<DynamicTVMenu2 />} />
               <Route path="/cashier2" element={<Cashier />} />
-              <Route path="/kitchen-display2" element={<KitchenDisplay />} />
+              <Route path="/kitchen2" element={<KitchenDisplay />} />
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
                 <Route path="/manager" element={<ManagerGUI />} />
               </Route>

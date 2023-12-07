@@ -14,6 +14,7 @@ interface RoleSelectionModalProps {
 
 const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose }) => {
     const { showRoleSelectionModal, setShowRoleSelectionModal } = useModal();
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
 
     if (!showRoleSelectionModal) {
@@ -30,6 +31,12 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
             return;
         }
         setTimeout(() => setShowRoleSelectionModal(false), 3);
+        if (role === user?.role) {
+            
+        }
+        if (role === 'cashier') {
+            localStorage.setItem('mode', 'cashier');
+        }
         navigate(`/${role}`);
     };
 

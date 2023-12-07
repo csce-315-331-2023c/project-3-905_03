@@ -16,8 +16,7 @@
 }
 
 .modal {
-    background-color: '#1a1a1a';
-    color: #ffffff;
+    background-color: #1a1a1a;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -28,14 +27,13 @@
 }
 
 .user-container {
-
     text-align: center;
     padding: 20px;
 }
 
 .paper {
-    margin: 16px;
     padding: 16px;
+    margin-bottom: 16px;
 }
 
 .grid {
@@ -49,5 +47,3 @@
 .button {
     width: 100%;
 }
-
-

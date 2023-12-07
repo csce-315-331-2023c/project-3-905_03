@@ -5,7 +5,13 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
  */
 export interface User {
   /** User's email. */
+  employeeId: string;
+  createdAt: string;
+  preferredName: string;
   email: string;
+  altEmail: string;
+  phone: string;
+  address: string;
   /** User's first name. */
   firstName: string;
   /** User's last name. */
@@ -14,6 +20,10 @@ export interface User {
   role: string;
   /** User's profile picture. */
   profilePic: string;
+  emergencyContactFirstName: string;
+  emergencyContactLastName: string;
+  emergencyContactPhone: string;
+
 }
 
 /**

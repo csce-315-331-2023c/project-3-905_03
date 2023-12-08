@@ -1,141 +1,139 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, TextField, Avatar, Typography, Grid, Box, Paper, Divider } from '@mui/material';
+import { Button, TextField, Avatar, Typography, Grid, Box, Paper, Divider, Switch, FormControlLabel, IconButton } from '@mui/material';
 import CloseButton from '@mui/icons-material/CloseTwoTone';
-import { useAuth } from './AuthContext';
+import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
+import { useAuth, User as UserType } from './AuthContext';
 import './Styles/User.css';
+
+interface PasswordData {
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+}
+
+interface Feedback {
+    error: string;
+    success: string;
+}
 
 interface UserProps {
     isOpen: boolean;
     onClose: () => void;
-    initialSection: string;
 }
 
-const User: React.FC<UserProps> = ({ isOpen, initialSection, onClose }) => {
+const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
     const { user, setUser } = useAuth();
-    const [currentPassword, setCurrentPassword] = React.useState('');
-    const [newPassword, setNewPassword] = React.useState('');
-    const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
-    const [feedback, setFeedback] = React.useState({ error: '', success: '' });
+    const [editMode, setEditMode] = useState(false);
+    const [userData, setUserData] = useState<UserType | null>(user);
+    const [passwordData, setPasswordData] = useState<PasswordData>({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+    const [feedback, setFeedback] = useState<Feedback>({ error: '', success: '' });
 
     useEffect(() => {
-        if (isOpen && initialSection) {
-            const sectionElement = document.getElementById(initialSection);
-            sectionElement?.scrollIntoView();
+        if (user) {
+            setUserData(user);
         }
-    }, [isOpen, initialSection]);
+    }, [user]);
 
-    if (!isOpen || !user) return null;
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUserData(prevUserData => ({ ...prevUserData as UserType, [event.target.name]: event.target.value }));
+    };
+
+    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPasswordData({ ...passwordData, [event.target.name]: event.target.value });
+    };
+
+    const handleSaveChanges = () => {
+        if (userData) {
+            setUser(userData);
+        }
+
+        // Upload
+    };
+
+    const handlePasswordSubmit = () => {
+        if (passwordData.newPassword !== passwordData.confirmNewPassword) {
+            setFeedback({ success: '', error: 'Passwords do not match' });
+            return;
+        }
+        if (passwordData.currentPassword === passwordData.newPassword) {
+            setFeedback({ success: '', error: 'New password must be different from current password' });
+            return;
+        }
+        // Upload
+    };
+
+    if (!isOpen || !userData) return null;
 
     const modalRoot = document.getElementById('modal-root');
     if (!modalRoot) return null;
 
-    const handlePasswordChange = () => {
-        setFeedback({ error: '', success: '' });
-        if (newPassword !== confirmNewPassword) {
-            setFeedback({ success: '', error: 'Passwords do not match' });
-            return;
-        }
-        if (currentPassword === newPassword) {
-            setFeedback({ success: '', error: 'New password must be different from current password' });
-            return;
-        }
-    };
-
     return ReactDOM.createPortal(
-        <div className={`modal-backdrop ${isOpen ? 'open' : ''}`}>
-            <div className="modal" style={{ backgroundColor: '#1a1a1a', color: '#ffffff' }}>
-                <Button
-                    id="modalCloseButton"
-                    variant="outlined"
-                    startIcon={<CloseButton />}
-                    onClick={() => onClose()}
-                    sx={{
-                        backgroundColor: '#1a1a1a',
-                        color: '#414345',
-                        width: '25px',
-                        height: '25px',
-                        position: 'absolute',
-                        top: '10px',
-                        left: '10px',
-                        '&:hover': {
-                            borderColor: 'transparent',
-                            transform: 'scale(1.1)'
-                        }
-                    }}
-                />
-                <Box sx={{ maxWidth: 600, mx: 'auto', p: 3, maxHeight: '80vh', overflowY: 'auto', color: '#ffffff' }}>
-                    <Paper elevation={3} sx={{ p: 3, mb: 4, backgroundColor: '#41435' }}>
-                        <Typography variant="h6" gutterBottom><b>Account</b></Typography>
-                        <Grid container spacing={3} alignItems="center">
-                            <Grid item>
-                                <Avatar src={user.profilePic} alt={`${user.firstName} ${user.lastName}`} sx={{ width: 60, height: 60 }} />
-                            </Grid>
-                            <Grid item xs>
-                                <Typography>{user.preferredName}</Typography>
-                                <Typography variant="subtitle1">{user.firstName} {user.lastName}</Typography>
-                                <Typography variant="body2" color="textSecondary">{user.email} {user.altEmail}</Typography>
-                                <Typography variant="caption" sx={{ opacity: 0.7 }}>{user.role}</Typography>
-                                
-                            </Grid>
-                            {/* <Grid >
-                                <Typography>ID: {user.employeeId}</Typography>
-                                <Typography>Emergency Contact: {user.emergencyContactFirstName}  {user.emergencyContactLastName}</Typography>
-                                <Typography>Emergency Contact Phone: {user.emergencyContactPhone}</Typography>
-                                <Typography>Employee Since: {user.createdAt}</Typography>
-                                <Typography>Address: {user.address}</Typography>
-                                <Typography>Phone: {user.phone}</Typography>
-                            </Grid> */}
-                        </Grid>
-                        <Divider sx={{ my: 2 }} />
-                        <Typography variant="h6" gutterBottom><b>Change Password</b></Typography>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Current Password"
-                                    type="password"
-                                    fullWidth
-                                    value={currentPassword}
-                                    onChange={(e) => setCurrentPassword(e.target.value)}
-                                />
-                            </Grid>
+        <Box className={`modal-backdrop ${isOpen ? 'open' : ''}`} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <Paper sx={{ p: 3, width: '90%', maxWidth: '600px', maxHeight: '75vh', overflowY: 'auto', position: 'relative' }}>
+                <Button startIcon={<CloseButton />} onClick={onClose} sx={{ position: 'absolute', top: 10, right: 10 }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+                    <Avatar src={userData.profilePic || ''} sx={{ width: 120, height: 120, marginRight: 2 }} />
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Grid container spacing={1}>
                             <Grid item xs={6}>
-                                <TextField
-                                    label="New Password"
-                                    type="password"
-                                    fullWidth
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    label="Confirm New Password"
-                                    type="password"
-                                    fullWidth
-                                    value={confirmNewPassword}
-                                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                                />
-                            </Grid>
-                            {feedback.error && <Typography color="error">{feedback.error}</Typography>}
-                            {feedback.success && <Typography color="success.main">{feedback.success}</Typography>}
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handlePasswordChange}
-                                    fullWidth
-                                >
-                                    Submit
-                                </Button>
+                                <Typography>{userData.firstName} {userData.lastName}</Typography>
+                                <Typography sx={{ mr: 1 }}>{userData.email}</Typography>
                             </Grid>
                         </Grid>
-                    </Paper>
+                        <Typography variant="caption" sx={{ color: 'gray' }}>{userData.role}</Typography>
+                    </Box>
+                    <IconButton onClick={() => setEditMode(!editMode)} sx={{ marginLeft: 1 }}>
+                        {editMode ? <CloseIcon /> : <EditIcon />}
+                    </IconButton>
                 </Box>
-            </div>
-        </div>,
+                <Divider sx={{ mt: 2 }} />
+                <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <TextField label="First Name" fullWidth disabled={!editMode} name="firstName" value={userData.firstName || ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField label="Last Name" fullWidth disabled={!editMode} name="lastName" value={userData.lastName || ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField label="Email" fullWidth disabled={!editMode} name="email" value={userData.email || ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField label="Alt Email" fullWidth disabled={!editMode} name="altEmail" value={userData.altEmail || ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField label="Phone" fullWidth disabled={!editMode} name="phone" value={userData.phone || ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField label="Address" fullWidth disabled={!editMode} name="address" value={userData.address || ''} onChange={handleInputChange} />
+                        </Grid>
+                        {editMode && <Grid item xs={12}><Button variant="contained" onClick={handleSaveChanges} fullWidth sx={{ mt: 2 }}>Save Changes</Button></Grid>}
+                    </Grid>
+                </Box>
+                <Divider sx={{ mt: 2 }} />
+                <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextField label="Current Password" type="password" fullWidth name="currentPassword" value={passwordData.currentPassword} onChange={handlePasswordChange} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField label="New Password" type="password" fullWidth name="newPassword" value={passwordData.newPassword} onChange={handlePasswordChange} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField label="Confirm New Password" type="password" fullWidth name="confirmNewPassword" value={passwordData.confirmNewPassword} onChange={handlePasswordChange} />
+                        </Grid>
+                        {feedback.error && <Grid item xs={12}><Typography color="error" sx={{ mt: 2 }}>{feedback.error}</Typography></Grid>}
+                        <Grid item xs={12}>
+                            <Button variant="contained" onClick={handlePasswordSubmit} fullWidth sx={{ mt: 2 }}>Change Password</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Paper>
+        </Box>,
         modalRoot
     );
 };
 
-export default User;
+export default UserComponent;

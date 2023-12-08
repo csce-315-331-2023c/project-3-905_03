@@ -2685,6 +2685,29 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     }
 });
 
+app.post('/api/user/changePasswords', async (req, res) => {
+    const { oldPassword, newPassword, userEmail, userRole } = req.body;
+
+   
+
+    client.connect();
+
+    const tableName = userRole === 'employee' ? 'employees' : 'customers';
+
+
+
+    client.query('UPDATE $1 SET password = $2 WHERE email = $3', [], (err, result) => {
+        if (!err) {
+            res.status(200).send('success!');
+        } else {
+            res.status(400).send(err.message);
+        }
+        client.end();
+    })
+
+});
+
+
 //// SERVER
 
 app.get('*', (req, res) => {

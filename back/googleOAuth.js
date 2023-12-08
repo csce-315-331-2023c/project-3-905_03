@@ -29,13 +29,11 @@ router.post('/auth/google/login', async (req, res) => {
     const { idToken } = req.body;
     try {
         const googleUser = await verifyGoogleToken(idToken);
-
-    
+        console.log(googleUser);
         const employeeQuery = 'SELECT * FROM employees WHERE email = $1';
         const employeeRes = await pool.query(employeeQuery, [googleUser.email]);
         const employee = employeeRes.rows[0];
-
-   
+        
         let customer = null;
         if (!employee) {
             const customerQuery = 'SELECT * FROM customers WHERE email = $1';
@@ -43,29 +41,50 @@ router.post('/auth/google/login', async (req, res) => {
             customer = customerRes.rows[0];
         }
 
-    
         if (employee || customer) {
             const user = employee || customer;
-            const userForToken = {
-                email: user.email,
-                firstName: user.first_name,
-                lastName: user.last_name,
-                role: user.role || 'customer', 
-                profilePic: user.profile_pic,
-            };
-            console.log(userForToken);
+            console.log(user);
+            let userForToken = {};
+
+            if (employee) {
+                userForToken = {
+                    employeeId: user.employee_id,
+                    createdAt: user.created_at,
+                    preferredName: user.preferred_name,
+                    email: googleUser.email,
+                    altEmail: user.alt_email,
+                    phone: user.phone,
+                    address: user.address,
+                    firstName: googleUser.first_name,
+                    lastName: googleUser.last_name,
+                    role: user.role,
+                    profilePic: googleUser.picture,
+                    emergencyContactFirstName: user.emergency_contact_first_name,
+                    emergencyContactLastName: user.emergency_contact_last_name,
+                    emergencyContactPhone: user.emergency_contact_phone
+                };
+            } else {
+                userForToken = {
+                    createdAt: user.created_at,
+                    customerID: user.user_id,
+                    firstN: googleUser.first_name,
+                    lastName: googleUser.last_name,
+                    email: googleUser.email,
+                    profilePic: googleUser.picture,
+                };
+            }
+
             const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-            
-            res.status(200).json({ token });
+
+            return res.status(200).json({ token});
         } else {
-            res.status(404).json({ message: "Invalid Credentials: User Not Found" });
-        }
+            return res.status(404).json({ message: "User Not Found" });
+        }   
     } catch (error) {
-        res.status(500).json({ message: 'Internal Error: server is not responding' });
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
-
 
 
 

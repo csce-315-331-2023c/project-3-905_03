@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
+import {  jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
 import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
@@ -19,16 +19,17 @@ import axios from 'axios';
 import AppBar from './AppBar.tsx';
 
 const LoginPage = () => {
+  // States
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setUser } = useAuth();
   const navigate = useNavigate();
-  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage, showAccessibilityModal, setShowAccessibilityModal } = useModal();
-  const [selectedRole, setSelectedRole] = useState('');
+  const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage } = useModal();
 
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
 
+  // Handlers / Helpers
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -36,86 +37,38 @@ const LoginPage = () => {
   const handleMouseDownPassword = (event: any) => {
     event.preventDefault();
   };
-
-  useEffect(() => {
-    if (!showRoleSelectionModal && selectedRole) {
-      navigate(`/${selectedRole}`);
-      setSelectedRole('');
-    }
-  }, [showRoleSelectionModal, selectedRole, navigate]);
-
-  const handleManualLoginSubmit = async () => {
-    try {
-      const errors = validateForm();
-      if (errors.email || errors.password) {
-        setErrorMessage("validateForm(): " + (errors.email || errors.password));
-        setShowErrorModal(true);
-        return;
+  
+  const handleLoginError = (error: any, defaultMessage: string) => {
+    let errorMessage = defaultMessage;
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          errorMessage = 'Unauthorized: Invalid credentials.';
+          break;
+        case 403:
+          errorMessage = 'Forbidden: Access denied.';
+          break;
+        case 500:
+          errorMessage = 'Server error: Please try again later.';
+          break;
+        default:
+          break;
       }
-      console.log('Client: Making a fetch request to /auth/manual/login with email:', email);
-      const response = await axios.post('/auth/manual/login', { email, password });
-      if (response.status === 200) {
-        const { token } = response.data;
-        console.log('Client: Received data from /auth/manual/login', response.data);
-        localStorage.setItem('token', token);
-
-        const decodedUser: any = jwtDecode(token);
-        console.log('Client: decoded token => user: ', decodedUser);
-        setUser({ ...decodedUser });
-        navigateBasedOnRole(decodedUser.role);
-      } else {
-        setErrorMessage(response.data.message);
-        setShowErrorModal(true);
-      }
-    } catch (error: any) {
-      setErrorMessage(error.response?.data.message || 'Manual Authentication Failed');
-      setShowErrorModal(true);
     }
-  };
-
-  const handleGoogleLoginSuccess = async (response: any) => {
-    const idToken = response.credential;
-    try {
-      console.log('Client: Google Login Success, requesting verification from server with token: ', idToken);
-      const serverResponse = await axios.post('/auth/google/login', { idToken });
-      if (serverResponse.status === 200) {
-        console.log('Client: Received data from /auth/google/login', serverResponse.data);
-        const { token } = serverResponse.data;
-        localStorage.setItem('token', token);
-
-        const decodedUser: any = jwtDecode(token);
-        console.log('Client: decoded token => user', decodedUser);
-        setUser({ ...decodedUser });
-        navigateBasedOnRole(decodedUser.role);
-      }
-    } catch (error: any) {
-      setErrorMessage(error.response?.data.message || 'Google Authentication Failed: Invalid Credentials');
-      setShowErrorModal(true);
-    }
-
-  };
-
-
-  const handleGoogleLoginError = () => {
-    setErrorMessage('You are not authorized to access this application.');
+    setErrorMessage(errorMessage);
     setShowErrorModal(true);
   };
 
-  const handleAccessibilityModal = () => {
-    setShowAccessibilityModal(!showAccessibilityModal);
-  }
+  const handleGoogleLoginError = () => {
+    setErrorMessage('OAuth Credentials Invalid.');
+    setShowErrorModal(true);
+  };
 
   const handleErrorModal = () => {
     setShowErrorModal(!showErrorModal);
   }
 
-  const handleRoleSelectionModal = (role = '') => {
-    setShowRoleSelectionModal(!showRoleSelectionModal);
-    if (role) {
-      setSelectedRole(role);
-    }
-  }
-
+  
   const handleAccessMenu = () => {
     navigate('/customer-menu');
   };
@@ -123,6 +76,15 @@ const LoginPage = () => {
   const handleAccessKiosk = () => {
     navigate('/customer-kiosk');
   }
+
+  const initUserSession = (accessToken: any) => {
+    localStorage.setItem('token', accessToken);
+    
+    const decodedUser: any = jwtDecode(accessToken);
+    setUser({ ...decodedUser });
+    console.log('user decoded: ', decodedUser);
+    navigateBasedOnRole(decodedUser.role);
+  };
 
   const validateForm = () => {
     const errors = { email: '', password: '' };
@@ -142,6 +104,45 @@ const LoginPage = () => {
     }
     else if (role === 'admin') {
       setShowRoleSelectionModal(true);
+    }
+  };
+
+  // Login: Manual
+  const handleManualLoginSubmit = async () => {
+    try {
+      const errors = validateForm();
+      if (errors.email || errors.password) {
+        handleLoginError(errors.email || errors.password, 'Invalid email or password.');
+        return;
+      }
+      console.log('Client: Making a fetch request to /auth/manual/login with email:', email);
+      const response = await axios.post('/auth/manual/login', { email, password });
+      if (response.status === 200) {
+        const { token} = response.data;
+        initUserSession(token);
+      } else {
+        handleLoginError(response.status, 'Manual Authentication Failed');
+      }
+    } catch (error: any) {
+      handleLoginError(error, 'Manual Authentication Failed');
+    }
+  };
+
+  // Login: GoogleOAuth
+  const handleGoogleLoginSuccess = async (response: any) => {
+    const idToken = response.credential;
+    try {
+      console.log('Client: Google Login Success, requesting verification from server with token: ', idToken);
+      const serverResponse = await axios.post('/auth/google/login', { idToken });
+      if (serverResponse.status === 200) {
+        console.log('Client: Received data from /auth/google/login', serverResponse.data);
+        const { token } = serverResponse.data;
+        initUserSession(token);
+      } else {
+        handleLoginError(serverResponse.status, 'Google Authentication Failed: Invalid Credentials');
+      }
+    } catch (error: any) {
+      handleLoginError(error, 'Google Authentication Failed: Invalid Credentials');
     }
   };
 
@@ -216,10 +217,7 @@ const LoginPage = () => {
         errorMessage={errorMessage}
         onClose={handleErrorModal}
       />
-      <RoleSelectionModal
-        isOpen={showRoleSelectionModal}
-        onClose={handleRoleSelectionModal}
-      />
+
     </>
   );
 };

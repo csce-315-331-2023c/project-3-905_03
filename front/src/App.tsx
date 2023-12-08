@@ -24,21 +24,18 @@ import { ModalProvider } from './SharedComponents/ModalContext';
  */
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-  console.log(googleClientId);
   return (
-
     <AuthProvider>
       <GoogleOAuthProvider clientId={googleClientId}>
         <BrowserRouter>
           <ModalProvider>
             <Routes>
               <Route path="/" element={<LoginPage />} />
+              <Route path="/login" element={<LoginPage />} />
               <Route path="/customer-kiosk" element={<CustomerKiosk />} />
               <Route path="/customer-menu" element={<DynamicMenu />} />
               <Route path="/TV1" element={<DynamicTVMenu1 />} />
               <Route path="/TV2" element={<DynamicTVMenu2 />} />
-              <Route path="/cashier2" element={<Cashier />} />
-              <Route path="/kitchen2" element={<KitchenDisplay />} />
               <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
                 <Route path="/manager" element={<ManagerGUI />} />
               </Route>

@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './Styles/Modal.css';
-
+import { Translate } from './Translate.tsx';
 /**
- * Props for the AccessibilityModal component.
+ * Props for the TranslateModal component.
  */
-interface AccessibilityModalProps {
+interface TranslateModalProps {
     /** Whether the modal is open. */
     isOpen: boolean;
     /** Function to call when the modal should be closed. */
@@ -18,7 +18,7 @@ interface AccessibilityModalProps {
  * This component creates a modal that displays a message saying that the feature is not yet implemented.
  * The modal can be closed by clicking a button.
  */
-const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ isOpen, onClose }) => {
+const TranslateModal: React.FC<TranslateModalProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     const modalRoot = document.getElementById('modal-root');
@@ -27,8 +27,7 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ isOpen, onClose
     return ReactDOM.createPortal(
         <div className="error-modal-backdrop">
             <div className="error-modal">
-                <h2>Accessibility Options</h2>
-                <p>This feature is not yet implemented.</p>
+                <Translate />
                 <button onClick={onClose}>Close</button>
             </div>
         </div>,
@@ -36,4 +35,4 @@ const AccessibilityModal: React.FC<AccessibilityModalProps> = ({ isOpen, onClose
     );
 };
 
-export default AccessibilityModal;
+export default TranslateModal;

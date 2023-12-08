@@ -41,20 +41,22 @@
     color: #ffffff;
 }
 
-.modal button {
-    background-color: #2c5dba;
-    color: #EBEBE9;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 5px;
-    cursor: pointer;
+.login-button {
+    border-radius: var(--border-radius);
+    padding: 0.6em 1em;
     font-size: 1rem;
-    font-weight: 500;
-    /* transition: background-color 0.3s ease; */
+    border: none;
+    background-color: var(--mess-color);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.1s;
+    width: 30%;
+    margin-top: 7.5px;
 }
 
-.modal button:hover {
-    background-color: #1A1A1A;
+button:hover,
+button:focus {
+    background-color: var(--button-hover-color);
 }
 
 

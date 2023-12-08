@@ -19,10 +19,10 @@ export interface ModalContextType {
     /** Function to set whether the role selection modal is shown. */
     setShowRoleSelectionModal: (show: boolean) => void;
 
-    /** Whether the accessibility modal is shown. */
-    showAccessibilityModal: boolean;
+    /** Whether the Language modal is shown. */
+    showLanguageModal: boolean;
     /** Function to set whether the accessibility modal is shown. */
-    setShowAccessibilityModal: (show: boolean) => void;
+    setShowLanguageModal: (show: boolean) => void;
 }
 
 /**
@@ -38,10 +38,10 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [showRoleSelectionModal, setShowRoleSelectionModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
+    const [showLanguageModal, setShowLanguageModal] = useState(false);
 
     return (
-        <ModalContext.Provider value={{ showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage, showAccessibilityModal, setShowAccessibilityModal }}>
+        <ModalContext.Provider value={{ showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage, showLanguageModal, setShowLanguageModal }}>
             {children}
         </ModalContext.Provider>
     );

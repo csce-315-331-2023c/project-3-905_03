@@ -27,14 +27,24 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
         return null;
     }
 
-    const handleRoleSelect = (role: string) => {
+    const getRolesForUser = () => {
+        switch (user?.role) {
+            case 'admin':
+                return ['Cashier', 'Manager', 'Kitchen', 'TV1', 'TV2'];
+            case 'manager':
+                return ['Manager','TV1', 'TV2'];
+            case 'cashier':
+                return ['Cashier', 'Kitchen'];
+            default:
+                return [];
+        }
+    };
 
+
+    const handleRoleSelect = (role: string) => {
         setTimeout(() => setShowRoleSelectionModal(false), 3);
         if (role === user?.role) {
             return;
-        }
-        if (role === 'cashier') {
-            localStorage.setItem('mode', 'cashier');
         }
         navigate(`/${role}`);
     };
@@ -52,15 +62,11 @@ const RoleSelectionModal: React.FC<RoleSelectionModalProps> = ({ isOpen, onClose
                 />
                 <h2>Proceed To</h2>
                 <div className='role-options'>
-                    {['Cashier', 'Manager', 'Kitchen', 'TV1', 'TV2'].map(role => (
+                    {getRolesForUser().map(role => (
                         <Button
                             key={role}
-                            variant="contained"
+                            className="login-button"
                             onClick={() => handleRoleSelect(role)}
-                            sx={{
-                                backgroundColor: '#1a1a1a', color: 'white', margin: '5px', width: '100px', borderRadius:'0px', '&:hover': {
-                                    backgroundColor: '#2c5dba' }
-                            }} 
                         >
                             {role.charAt(0).toUpperCase() + role.slice(1).replace(/-/g, ' ')}
                         </Button>

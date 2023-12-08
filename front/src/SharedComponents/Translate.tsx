@@ -1,6 +1,9 @@
 import React from 'react';
 import { useEffect } from 'react';
 
+import Button from '@mui/material/Button';
+import Popover from '@mui/material/Popover';
+
 
 export const Translate = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -44,29 +47,25 @@ export const Translate = () => {
 
 
   return (
-    <>
-      {/* <Button className='profile' onClick={handlePopoverClick} >
-        <TranslateIcon className="header-icon"/>
-      </Button >
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handlePopoverClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-      >
-        <div id="google_translate_element"></div>
+    <div style={{maxHeight: '200px'}}>
+    {/* //   <Button className='profile' onClick={handlePopoverClick} >
+    //     <TranslateIcon className="header-icon"/>
+    //   </Button >
+    //   <Popover */}
+    {/* //     id={id}
+    //     open={open}
+    //     anchorEl={anchorEl}
+    //     onClose={handlePopoverClose}
+    //     anchorOrigin={{
+    //       vertical: 'bottom',
+    //       horizontal: 'left',
+    //     }}
+    //   >
+    //     <div id="google_translate_element"></div> */}
 
-      </Popover> */}
+    {/* //   </Popover> */}
       
-      <div id="google_translate_element"></div>
-    </>
+      <div id="google_translate_element" style={{ maxHeight: '200px' }} ></div>
+    </div>
   );
 };

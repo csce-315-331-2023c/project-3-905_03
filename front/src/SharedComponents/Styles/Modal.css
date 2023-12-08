@@ -18,6 +18,7 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     width: 80%;
     max-width: 450px;
+    max-height: 450px;
     text-align: center;
     font-family: sans-serif;
 }

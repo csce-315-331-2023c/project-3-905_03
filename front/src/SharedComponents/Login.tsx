@@ -28,6 +28,8 @@ const LoginPage = () => {
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
 
+  const google_API_key = import.meta.env.VITE_GOOGLE_API_KEY;
+
   // Handlers / Helpers
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -199,6 +201,7 @@ const LoginPage = () => {
                 size='large'
                 logo_alignment='center'
                 width={250}
+                key={google_API_key}
               /> 
             </div>
           </div>

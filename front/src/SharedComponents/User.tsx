@@ -149,13 +149,13 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
                             <TextField label="Address" fullWidth disabled={!editMode} name="address" value={userData.address || ''} onChange={handleInputChange} />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField label="Emergency Contact First Name" fullWidth disabled={!editMode} name="emergency_contact_first_name" value={userData.emergencyContactFirstName || ''} onChange={handleInputChange} />
+                            <TextField label="Emergency Contact First Name" fullWidth disabled={!editMode} name="emergencyContactFirstName" value={userData.emergencyContactFirstName || ''} onChange={handleInputChange} />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField label="Emergency Contact Last Name" fullWidth disabled={!editMode} name="emergency_contact_last_name" value={userData.emergencyContactLastName|| ''} onChange={handleInputChange} />
+                            <TextField label="Emergency Contact Last Name" fullWidth disabled={!editMode} name="emergencyContactLastName" value={userData.emergencyContactLastName|| ''} onChange={handleInputChange} />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField label="Emergency Contact Phone" fullWidth disabled={!editMode} name="emergency_contact_phone" value={userData.emergencyContactPhone || ''} onChange={handleInputChange} />
+                            <TextField label="Emergency Contact Phone" fullWidth disabled={!editMode} name="emergencyContactPhone" value={userData.emergencyContactPhone || ''} onChange={handleInputChange} />
                         </Grid>
                         {editMode && <Grid item xs={12}><Button variant="contained" onClick={handleSaveChanges} fullWidth sx={{ mt: 2 }}>Save Changes</Button></Grid>}
                     </Grid>

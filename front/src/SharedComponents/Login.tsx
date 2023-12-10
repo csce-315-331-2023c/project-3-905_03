@@ -10,7 +10,6 @@ import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Divider from '@mui/material/Divider';
-import GoogleSignIn from './GoogleSignIn';
 
 import './Styles/Login.css';
 import useStyles from './Styles/useStyles.ts';
@@ -28,8 +27,6 @@ const LoginPage = () => {
 
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
-
-  const google_API_key = import.meta.env.VITE_GOOGLE_API_KEY;
 
   // Handlers / Helpers
   const handleClickShowPassword = () => {
@@ -192,7 +189,7 @@ const LoginPage = () => {
             <button className="login-button" onClick={handleManualLoginSubmit}>
               Submit
             </button>
-            {/* <div className="google-auth">
+            <div className="google-auth">
               <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
@@ -203,8 +200,7 @@ const LoginPage = () => {
                 logo_alignment='center'
                 width={250}
               /> 
-            </div> */}
-            <GoogleSignIn initUserSession={initUserSession} handleLoginError={handleGoogleLoginError} />
+            </div>
           </div>
           <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />
           <div className="guest-options">

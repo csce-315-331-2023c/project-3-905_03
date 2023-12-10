@@ -52,29 +52,27 @@ function App() {
 
   return (
     <AuthProvider>
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <div id='signInDiv'>
-          <BrowserRouter>
-            <ModalProvider>
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/customer-kiosk" element={<CustomerKiosk />} />
-                <Route path="/customer-menu" element={<DynamicMenu />} />
-                <Route path="/TV1" element={<DynamicTVMenu1 />} />
-                <Route path="/TV2" element={<DynamicTVMenu2 />} />
-                <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
-                  <Route path="/manager" element={<ManagerGUI />} />
-                </Route>
-                <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
-                  <Route path="/cashier" element={<Cashier />} />
-                  <Route path="/kitchen" element={<KitchenDisplay />} />
-                </Route>
-                <Route path="*" element={<LoginPage />} />
-              </Routes>
-            </ModalProvider>
-          </BrowserRouter>
-        </div>
-      </GoogleOAuthProvider>
+      <div id='signInDiv'>
+        <BrowserRouter>
+          <ModalProvider>
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/customer-kiosk" element={<CustomerKiosk />} />
+              <Route path="/customer-menu" element={<DynamicMenu />} />
+              <Route path="/TV1" element={<DynamicTVMenu1 />} />
+              <Route path="/TV2" element={<DynamicTVMenu2 />} />
+              <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
+                <Route path="/manager" element={<ManagerGUI />} />
+              </Route>
+              <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
+                <Route path="/cashier" element={<Cashier />} />
+                <Route path="/kitchen" element={<KitchenDisplay />} />
+              </Route>
+              <Route path="*" element={<LoginPage />} />
+            </Routes>
+          </ModalProvider>
+        </BrowserRouter>
+      </div>
     </AuthProvider>
   );
 }

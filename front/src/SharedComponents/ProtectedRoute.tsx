@@ -1,62 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
 import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
-import RoleSelectionModal from './RoleSelectionModal';
 
 interface ProtectedRouteProps {
     allowedRoles: string[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
-    const { user } = useAuth();
-    const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal } = useModal();
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
-    // @ts-ignore
-    const [selectedRole, setSelectedRole] = useState('');
+    const { setErrorMessage, setShowErrorModal, showErrorModal } = useModal();
 
-    // useEffect(() => {
-    //     if (!showRoleSelectionModal && selectedRole) {
-    //         navigate(`/${selectedRole}`);
-    //         setSelectedRole(''); 
-    //     }
-    // }, [showRoleSelectionModal, selectedRole, navigate]);
+    const handleCloseModal = useCallback(() => {
+        setShowErrorModal(false);
+        navigate('/');
+    }, [navigate, setShowErrorModal]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/');
-        } else if (user) {
-            if (allowedRoles.includes(user.role)) {
-                if (user.role === 'admin') {
-                    setShowRoleSelectionModal(true);
-                } else {
-                    navigate(`/${user.role}`);
+        if (token) {
+            try {
+                const decodedUser: any = jwtDecode(token);
+                if (!decodedUser.exp || decodedUser.exp * 1000 < Date.now()) {
+                    setErrorMessage('User session expired. Please sign in again.');
+                    setShowErrorModal(true);
+                    setUser(null);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('refreshToken');
+                } else if (!allowedRoles.includes(decodedUser.role)) {
+                    setErrorMessage('User does not have access to this page.');
+                    setShowErrorModal(true);
                 }
-            } else {
-                setShowErrorModal(true);    
+            } catch (error) {
+                console.error('Error decoding token:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('refreshToken');
+                navigate('/login');
             }
+        } else {
+            setErrorMessage('Please sign in to access this page.');
+            setShowErrorModal(true);
         }
-    }, [user, allowedRoles, navigate, setShowRoleSelectionModal]);
+    }, [user, allowedRoles, navigate, setUser]);
 
-
-    const handleRoleSelection = (role?: string) => {
-        if (role) {
-            setSelectedRole(role); 
-        }
-        setShowRoleSelectionModal(false);
-    };
-
-    if (showErrorModal) {
-        return <ErrorModal isOpen={showErrorModal} errorMessage="You do not have access to this page." onClose={() => setShowErrorModal(false)} />;
-    }
-
-    if (showRoleSelectionModal) {
-        return <RoleSelectionModal isOpen={showRoleSelectionModal} onClose={handleRoleSelection} />;
-    }
-
-    return user && allowedRoles.includes(user.role) ? <Outlet /> : null;
+    return (
+        <>
+            {showErrorModal ? (
+                <ErrorModal isOpen={showErrorModal} errorMessage={setErrorMessage.toString()} onClose={handleCloseModal} />
+            ) : (
+                user && allowedRoles.includes(user.role) ? <Outlet /> : null
+            )}
+        </>
+    );
 };
 
 export default ProtectedRoute;

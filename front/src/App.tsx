@@ -31,7 +31,6 @@ function App() {
           <ModalProvider>
             <Routes>
               <Route path="/" element={<LoginPage />} />
-              <Route path="/login" element={<LoginPage />} />
               <Route path="/customer-kiosk" element={<CustomerKiosk />} />
               <Route path="/customer-menu" element={<DynamicMenu />} />
               <Route path="/TV1" element={<DynamicTVMenu1 />} />

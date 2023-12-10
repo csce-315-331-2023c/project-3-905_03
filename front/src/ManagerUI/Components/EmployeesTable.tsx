@@ -102,7 +102,6 @@ function EmployeesTable() {
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        
         setEditData(prevData => {
             if (prevData) {
                 return { ...prevData, [event.target.name]: event.target.value };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import {  jwtDecode } from 'jwt-decode';
-import { useAuth } from './AuthContext';
+import { useAuth, User } from './AuthContext';
 import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
 import { IconButton, InputAdornment } from '@mui/material';
@@ -21,7 +21,7 @@ const LoginPage = () => {
   // States
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setUser } = useAuth();
+  const { setUser} = useAuth();
   const navigate = useNavigate();
   const { showErrorModal, setShowErrorModal, showRoleSelectionModal, setShowRoleSelectionModal, errorMessage, setErrorMessage } = useModal();
 
@@ -75,12 +75,13 @@ const LoginPage = () => {
     setShowErrorModal(true);
   };
 
-  const initUserSession = (accessToken: any) => {
+  const initUserSession = (accessToken: any, refreshToken: any) => {
     localStorage.setItem('token', accessToken);
-    const decodedUser: any = jwtDecode(accessToken);
-    setUser({ ...decodedUser });
-    console.log('user decoded: ', decodedUser);
-    navigateBasedOnRole(decodedUser.role);
+    localStorage.setItem('refreshToken', refreshToken); // Store refreshToken
+
+    const decodedUser: User = jwtDecode(accessToken); 
+    setUser({ ...decodedUser }); 
+    navigateBasedOnRole(decodedUser.role); 
   };
 
   const validateForm = () => {
@@ -115,8 +116,8 @@ const LoginPage = () => {
       console.log('Client: Making a fetch request to /auth/manual/login with email:', email);
       const response = await axios.post('/auth/manual/login', { email, password });
       if (response.status === 200) {
-        const { token} = response.data;
-        initUserSession(token);
+        const { accessToken, refreshToken } = response.data;
+        initUserSession(accessToken, refreshToken);
       } else {
         handleLoginError(response.status, 'Manual Authentication Failed');
       }
@@ -133,8 +134,8 @@ const LoginPage = () => {
       const serverResponse = await axios.post('/auth/google/login', { idToken });
       if (serverResponse.status === 200) {
         console.log('Client: Received data from /auth/google/login', serverResponse.data);
-        const { token } = serverResponse.data;
-        initUserSession(token);
+        const { accessToken, refreshToken } = serverResponse.data;
+        initUserSession(accessToken, refreshToken);
       } else {
         handleLoginError(serverResponse.status, 'Google Authentication Failed: Invalid Credentials');
       }

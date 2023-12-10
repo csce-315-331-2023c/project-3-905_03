@@ -42,6 +42,7 @@ const ManagerGUI: React.FC = () => {
       Customers: CustomersTable,
     };
   }
+  
 
   const ActiveComponent = componentMapping[activeSection] || null;
 

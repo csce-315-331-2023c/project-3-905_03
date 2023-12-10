@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { JwtPayload, jwtDecode } from 'jwt-decode';
 
 /**
  * Interface for User.
@@ -11,38 +12,32 @@ export interface User {
   role: string;
   profilePic: string;
   createdAt: string;
-  
   phone: string;
   payRate: string;
-  
   altEmail: string;
   preferredName: string;
   address: string;
-  
   emergencyContactFirstName: string;
   emergencyContactLastName: string;
   emergencyContactPhone: string;
-
+  exp: number;
 }
 
 /**
  * Interface for AuthContextProps.
  */
 interface AuthContextProps {
-  /** Current user. */
-  user: User | null;
-  /** Function to set the current user. */
-  setUser: (user: User | null) => void;
+  user: User | null; // Current user.
+  setUser: (user: User | null) => void; // Function to set the current user.
 }
 
 /**
- * AuthContext is a React context for authentication.
- * It provides the current user and a function to set the current user.
+ * AuthContext provides the current user and a function to set the current user.
  */
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 /**
- * useAuth is a custom hook that allows you to access the AuthContext.
+ * useAuth is a custom hook to access the AuthContext.
  * @throws {Error} If used outside of an AuthProvider.
  * @returns {AuthContextProps} The AuthContext.
  */
@@ -55,10 +50,33 @@ export const useAuth = (): AuthContextProps => {
 };
 
 /**
- * AuthProvider is a React component that provides the AuthContext to its children.
+ * AuthProvider provides the AuthContext to its children.
+ * @param children - The child components.
  */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedUser: User = jwtDecode<User>(token);
+        if (decodedUser.exp * 1000 > Date.now()) {
+          setUser(decodedUser);
+        } else {
+          console.log('Token expired or invalid');
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          // Optionally navigate to login page
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        // Optionally navigate to login page
+      }
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
@@ -66,3 +84,5 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

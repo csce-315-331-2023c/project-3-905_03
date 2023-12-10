@@ -10,6 +10,7 @@ import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Divider from '@mui/material/Divider';
+import GoogleSignIn from './GoogleSignIn';
 
 import './Styles/Login.css';
 import useStyles from './Styles/useStyles.ts';
@@ -203,6 +204,7 @@ const LoginPage = () => {
                 width={250}
               /> 
             </div> */}
+            <GoogleSignIn initUserSession={initUserSession} handleLoginError={handleGoogleLoginError} />
           </div>
           <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />
           <div className="guest-options">

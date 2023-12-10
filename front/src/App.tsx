@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ManagerGUI from './ManagerUI/Pages/Manager';
@@ -24,6 +25,7 @@ import { ModalProvider } from './SharedComponents/ModalContext';
  */
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId={googleClientId}>

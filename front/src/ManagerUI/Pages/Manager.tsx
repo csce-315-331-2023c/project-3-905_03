@@ -5,7 +5,6 @@ import FamilyTable from '../Components/FamilyTable';
 import InventoryTable2 from '../Components/InventoryTable2';
 import OrdersTable4 from '../Components/OrdersTable4';
 import ManagerAnalytics from '../Components/ManagerAnalytics';
-import User from '../../SharedComponents/User';
 import '../Styles/Manager.css';
 import EmployeesTable from '../Components/EmployeesTable';
 import CustomersTable from '../Components/CustomersTable';
@@ -23,7 +22,7 @@ import { useAuth } from '../../SharedComponents/AuthContext';
  * @returns The rendered `ManagerGUI` component
  */
 const ManagerGUI: React.FC = () => {
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const [activeSection, setActiveSection] = useState<string>('Orders');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
 
@@ -47,19 +46,18 @@ const ManagerGUI: React.FC = () => {
   const ActiveComponent = componentMapping[activeSection] || null;
 
   return (
-    <>
+    <div className="manager-container">
       <AppBar />
-      <div className="manager-container">
-        <ManagerNav
-          isDrawerOpen={isDrawerOpen}
-          setIsDrawerOpen={setIsDrawerOpen}
-          setActiveSection={setActiveSection}
-        />
-        <div className={`rhs ${isDrawerOpen ? '' : 'rhs-expanded'}`}>
-          {ActiveComponent && <ActiveComponent isDrawerOpen={isDrawerOpen} />}
-        </div>
+      <ManagerNav
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        setActiveSection={setActiveSection}
+      />
+      <div className={`rhs ${isDrawerOpen ? '' : 'rhs-expanded'}`}>
+        {ActiveComponent && <ActiveComponent isDrawerOpen={isDrawerOpen} />}
       </div>
-    </>
+      
+    </div>
   );
 };
 

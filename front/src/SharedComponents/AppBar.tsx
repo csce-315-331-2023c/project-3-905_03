@@ -106,8 +106,6 @@ function ResponsiveAppBar() {
         settings.push({ name: 'Logout', action: () => handleUserAction('Logout') });
     }
 
-
-
     return (
         <>
             <AppBar position="fixed" elevation={0} sx={{
@@ -175,7 +173,6 @@ function ResponsiveAppBar() {
             />
             <UserModal
                 isOpen={isModalOpen}
-                initialSection={initialSection}
                 onClose={handleCloseModal}
             />
             <TranslateModal

@@ -29,3 +29,7 @@
 .rhs-expanded {
     flex: 1 0 95%;
 }
+
+.grayscale {
+    filter: grayscale(100%) contrast(1.25);
+}

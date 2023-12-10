@@ -13,12 +13,10 @@ const pool = new Pool({
 });
 
 function generateAccessToken(user) {
-    // Generate short-lived access token
-    return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '15m' });
+    return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '30m' });
 }
 
 function generateRefreshToken(user) {
-    // Generate long-lived refresh token
     return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
 }
 
@@ -39,37 +37,71 @@ router.post('/auth/google/login', async (req, res) => {
     const { idToken } = req.body;
     try {
         const googleUser = await verifyGoogleToken(idToken);
-        const employeeQuery = 'SELECT * FROM employees WHERE email = $1';
-        const employeeRes = await pool.query(employeeQuery, [googleUser.email]);
-        const employee = employeeRes.rows[0];
 
-        let customer = null;
-        if (!employee) {
-            const customerQuery = 'SELECT * FROM customers WHERE email = $1';
-            const customerRes = await pool.query(customerQuery, [googleUser.email]);
-            customer = customerRes.rows[0];
+        let query = 'SELECT * FROM employees WHERE email = $1 OR alt_email = $1';
+        let userRes = await pool.query(query, [googleUser.email]);
+        let user = userRes.rows[0];
+        let isEmployee = true;
+
+        if (!user) {
+            query = 'SELECT * FROM customers WHERE email = $1';
+            userRes = await pool.query(query, [googleUser.email]);
+            user = userRes.rows[0];
+            isEmployee = false;
         }
 
-        if (employee || customer) {
-            const user = employee || customer;
-            let userForToken = {
-                ...user, 
+        let userForToken = {};
+
+        if (isEmployee) {
+            let updateFields = {};
+            if (!user.first_name) updateFields.first_name = googleUser.given_name;
+            if (!user.last_name) updateFields.last_name = googleUser.family_name;
+            if (!user.profile_pic) updateFields.profile_pic = googleUser.picture;
+
+            if (Object.keys(updateFields).length > 0) {
+                const setClause = Object.keys(updateFields).map(field => `${field} = '${updateFields[field]}'`).join(", ");
+                const updateUserQuery = `UPDATE employees SET ${setClause} WHERE employee_id = $1`;
+                await pool.query(updateUserQuery, [user.employee_id]);
+            }
+
+            userForToken = {
+                employeeId: user.employee_id,
                 email: googleUser.email,
-                firstName: googleUser.given_name,
-                lastName: googleUser.family_name,
-                profilePic: googleUser.picture,
+                firstName: user.first_name || googleUser.given_name,
+                lastName: user.last_name || googleUser.family_name,
+                role: user.role,
+                profilePic: user.profile_pic || googleUser.picture
             };
-
-            const accessToken = generateAccessToken(userForToken);
-            const refreshToken = generateRefreshToken(userForToken);
-
-            return res.status(200).json({ accessToken, refreshToken });
         } else {
-            return res.status(404).json({ message: "User Not Found" });
+            let updateFields = {};
+            if (!user.first_name) updateFields.first_name = googleUser.given_name;
+            if (!user.last_name) updateFields.last_name = googleUser.family_name;
+            if (!user.profile_pic) updateFields.profile_pic = googleUser.picture;
+
+            if (Object.keys(updateFields).length > 0) {
+                const setClause = Object.keys(updateFields).map(field => `${field} = '${updateFields[field]}'`).join(", ");
+                const updateUserQuery = `UPDATE customers SET ${setClause} WHERE user_id = $1`;
+                await pool.query(updateUserQuery, [user.user_id]);
+            }
+
+            userForToken = {
+                customerId: user.user_id,
+                email: googleUser.email,
+                firstName: user.first_name || googleUser.given_name,
+                lastName: user.last_name || googleUser.family_name,
+                profilePic: user.profile_pic || googleUser.picture
+            };
         }
+
+        const accessToken = generateAccessToken(userForToken);
+        const refreshToken = generateRefreshToken(userForToken);
+
+        return res.status(200).json({ accessToken, refreshToken });
     } catch (error) {
+        console.error('Error in Google login:', error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
 
 module.exports = router;

@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth, User as UserType } from './AuthContext';
 import './Styles/User.css';
+import axios from 'axios';
 
 interface PasswordData {
     currentPassword: string;
@@ -31,32 +32,60 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
     const [feedback, setFeedback] = useState<Feedback>({ error: '', success: '' });
 
     useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get('/api/user');
+                setUser(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
         if (user) {
-            setUserData(user);
+            fetchUserData();
         }
     }, [user]);
-    
+
     const handleUserModalClose = () => {
         setEditMode(false);
         onClose();
-    }
+    };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUserData(prevUserData => ({ ...prevUserData as UserType, [event.target.name]: event.target.value }));
+        const { name, value } = event.target;
+        setUserData(prevUserData => ({ ...prevUserData as UserType, [name]: value }));
     };
 
     const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPasswordData({ ...passwordData, [event.target.name]: event.target.value });
     };
 
-    const handleSaveChanges = () => {
-        if (userData) {
-            setUser(userData);
+    const validateEmergencyContact = () => {
+        if (userData?.emergencyContactFirstName || userData?.emergencyContactLastName || userData?.emergencyContactPhone) {
+            return userData?.emergencyContactFirstName && userData?.emergencyContactLastName && userData?.emergencyContactPhone;
         }
-        // Upload
+        return true;
     };
 
-    const handlePasswordSubmit = () => {
+    const handleSaveChanges = async () => {
+        if (!validateEmergencyContact()) {
+            setFeedback({ ...feedback, error: 'All emergency contact fields are required.' });
+            return;
+        }
+
+        try {
+            const response = await axios.post('/api/user/update', userData);
+            if (response.status === 200) {
+                setUser(response.data);
+                setEditMode(false);
+            }
+            setFeedback({ ...feedback, success: 'User data updated successfully.' });
+        } catch (error) {
+            setFeedback({ ...feedback, error: 'Error updating user data.' });
+        }
+    };
+
+    const handlePasswordSubmit = async () => {
         if (passwordData.newPassword !== passwordData.confirmNewPassword) {
             setFeedback({ success: '', error: 'Passwords do not match' });
             return;
@@ -65,7 +94,13 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
             setFeedback({ success: '', error: 'New password must be different from current password' });
             return;
         }
-        // Upload
+        try {
+            const response = await axios.post('/api/user/change-password', passwordData);
+            
+            setFeedback({ ...feedback, success: 'Password changed successfully.' });
+        } catch (error) {
+            setFeedback({ ...feedback, error: 'Error changing password.' });
+        }
     };
 
     if (!isOpen || !userData) return null;
@@ -82,7 +117,7 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
                     <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={1}>
                             <Grid item xs={6}>
-                                <Typography>{userData.firstName} {userData.lastName}</Typography>
+                                <Typography>{userData.preferredName || userData.firstName} {userData.lastName}</Typography>
                                 <Typography sx={{ mr: 1 }}>{userData.email}</Typography>
                             </Grid>
                         </Grid>
@@ -113,6 +148,15 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
                         <Grid item xs={12}>
                             <TextField label="Address" fullWidth disabled={!editMode} name="address" value={userData.address || ''} onChange={handleInputChange} />
                         </Grid>
+                        <Grid item xs={12}>
+                            <TextField label="Emergency Contact First Name" fullWidth disabled={!editMode} name="emergency_contact_first_name" value={userData.emergencyContactFirstName || ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField label="Emergency Contact Last Name" fullWidth disabled={!editMode} name="emergency_contact_last_name" value={userData.emergencyContactLastName|| ''} onChange={handleInputChange} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField label="Emergency Contact Phone" fullWidth disabled={!editMode} name="emergency_contact_phone" value={userData.emergencyContactPhone || ''} onChange={handleInputChange} />
+                        </Grid>
                         {editMode && <Grid item xs={12}><Button variant="contained" onClick={handleSaveChanges} fullWidth sx={{ mt: 2 }}>Save Changes</Button></Grid>}
                     </Grid>
                 </Box>
@@ -130,8 +174,7 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
                         </Grid>
                         {feedback.error && <Grid item xs={12}><Typography color="error" sx={{ mt: 2 }}>{feedback.error}</Typography></Grid>}
                         <Grid item xs={12}>
-                            <Button variant="contained" onClick={handlePasswordSubmit} fullWidth sx={{ mt: 2 }}>Change Password</Button>
-                        </Grid>
+                            <Button variant="contained" onClick={handlePasswordSubmit} fullWidth sx={{ mt: 2 }}>Change Password</Button></Grid>
                     </Grid>
                 </Box>
             </Paper>

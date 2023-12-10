@@ -77,7 +77,7 @@ const LoginPage = () => {
 
   const initUserSession = (accessToken: any, refreshToken: any) => {
     localStorage.setItem('token', accessToken);
-    localStorage.setItem('refreshToken', refreshToken); // Store refreshToken
+    localStorage.setItem('refreshToken', refreshToken); 
 
     const decodedUser: User = jwtDecode(accessToken); 
     setUser({ ...decodedUser }); 

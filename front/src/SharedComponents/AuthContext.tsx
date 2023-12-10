@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { JwtPayload, jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 /**
  * Interface for User.
@@ -67,13 +67,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           console.log('Token expired or invalid');
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
-          // Optionally navigate to login page
+
         }
       } catch (error) {
         console.error('Error decoding token:', error);
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
-        // Optionally navigate to login page
+
       }
     }
   }, []);

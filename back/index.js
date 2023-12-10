@@ -16,7 +16,16 @@ app.use(cors());
 app.use(manualAuth);
 app.use(googleOAuth);
 
+
+
 const { Client } = require('pg')
+
+const pool = new Client({
+    host: 'csce-315-db.engr.tamu.edu',
+    user: 'csce315_905_03user',
+    password: '90503',
+    database: 'csce315_905_03db'
+});
 
 app.use(express.static(path.join(__dirname, '../front/dist')));
 
@@ -2055,8 +2064,8 @@ app.get('/getEmployees', async (req, res) => {
 
         const result = await client.query(`SELECT *, to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as formatted_created_at FROM employees order by employee_id`);
         const employees = result.rows.map(employee => {
-            let { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, formatted_created_at, ...additional_info } = employee;
-            return { employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, formatted_created_at, additional_info };
+            let { employee_id, first_name, last_name, email, password, role, profile_pic, formatted_created_at, ...additional_info } = employee;
+            return { employee_id, first_name, last_name, email, password, role, profile_pic, formatted_created_at, additional_info };
         });
 
         res.status(200).json({ message: 'success!', data: employees });
@@ -2104,7 +2113,7 @@ app.post('/addEmployee', async (req, res) => {
 
         let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
         let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
-        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)', [employee_id, first_name, last_name, email, password, role, profile_pic, dateTime, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {
@@ -2685,28 +2694,67 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     }
 });
 
-app.post('/api/user/changePasswords', async (req, res) => {
-    const { oldPassword, newPassword, userEmail, userRole } = req.body;
+// Fetch User Data
+app.get('/api/user', async (req, res) => {
+    try {
+        await pool.connect();
+        const userID = req.user.id;
+        const query = 'SELECT * FROM employees WHERE employee_id = $1';
+        const userData = await pool.query(query, [userID]);
 
-   
-
-    client.connect();
-
-    const tableName = userRole === 'employee' ? 'employees' : 'customers';
-
-
-
-    client.query('UPDATE $1 SET password = $2 WHERE email = $3', [], (err, result) => {
-        if (!err) {
-            res.status(200).send('success!');
+        if (userData.rows.length > 0) {
+            res.json(userData.rows[0]);
         } else {
-            res.status(400).send(err.message);
+            res.status(404).json({ message: 'User not found' });
         }
-        client.end();
-    })
-
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' });
+    } finally {
+        await pool.end();
+    }
 });
 
+app.post('/api/user/update', async (req, res) => {
+    try {
+        await pool.connect();
+        const userID = req.user.id;
+        const { firstName, lastName, email, altEmail, phone, address, emergencyContactFirstName, emergencyContactLastName, emergencyContactPhone } = req.body;
+        const updateQuery = 'UPDATE employees SET first_name = $1, last_name = $2, email = $3, alt_email = $4, phone = $5, address = $6, emergency_contact_first_name = $7, emergency_contact_last_name = $8, emergency_contact_phone = $9 WHERE employee_id = $10';
+        await pool.query(updateQuery, [firstName, lastName, email, altEmail, phone, address, emergencyContactFirstName, emergencyContactLastName, emergencyContactPhone, userID]);
+        res.json({ message: 'User updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' });
+    } finally {
+        await pool.end();
+    }
+});
+
+// Change Password
+app.post('/api/user/change-password', async (req, res) => {
+    try {
+        await pool.connect();
+        const userID = req.user.id;
+        const { currentPassword, newPassword } = req.body;
+        
+        const userRes = await pool.query('SELECT password FROM employees WHERE employees_id = $1', [userID]);
+        if (userRes.rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const validPassword = await bcrypt.compare(currentPassword, userRes.rows[0].password);
+        if (!validPassword) {
+            return res.status(400).json({ message: 'Incorrect current password' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await pool.query('UPDATE employees SET password = $1 WHERE employee_id = $2', [hashedPassword, userID]);
+        res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error' });
+    } finally {
+        await pool.end();
+    }
+});
 
 //// SERVER
 

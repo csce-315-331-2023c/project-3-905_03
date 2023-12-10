@@ -4,18 +4,21 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
  * Interface for User.
  */
 export interface User {
-  customerID: string;
   employeeID: string;
-  createdAt: string;
-  preferredName: string;
-  email: string;
-  altEmail: string;
-  phone: string;
-  address: string;
   firstName: string;
   lastName: string;
+  email: string;
   role: string;
   profilePic: string;
+  createdAt: string;
+  
+  phone: string;
+  payRate: string;
+  
+  altEmail: string;
+  preferredName: string;
+  address: string;
+  
   emergencyContactFirstName: string;
   emergencyContactLastName: string;
   emergencyContactPhone: string;

@@ -20,7 +20,6 @@ async function verifyGoogleToken(idToken) {
         });
         return ticket.getPayload();
     } catch (error) {
-        console.error('Error verifying Google token:', error);
         throw new Error('Invalid Google ID token');
     }
 }
@@ -29,7 +28,6 @@ router.post('/auth/google/login', async (req, res) => {
     const { idToken } = req.body;
     try {
         const googleUser = await verifyGoogleToken(idToken);
-        console.log(googleUser);
         const employeeQuery = 'SELECT * FROM employees WHERE email = $1';
         const employeeRes = await pool.query(employeeQuery, [googleUser.email]);
         const employee = employeeRes.rows[0];
@@ -43,7 +41,6 @@ router.post('/auth/google/login', async (req, res) => {
 
         if (employee || customer) {
             const user = employee || customer;
-            console.log(user);
             let userForToken = {};
 
             if (employee) {
@@ -75,13 +72,11 @@ router.post('/auth/google/login', async (req, res) => {
             }
 
             const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-
             return res.status(200).json({ token});
         } else {
             return res.status(404).json({ message: "User Not Found" });
         }   
     } catch (error) {
-        console.error(error);
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 });

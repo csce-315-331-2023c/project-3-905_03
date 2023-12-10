@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, TextField, Avatar, Typography, Grid, Box, Paper, Divider, Switch, FormControlLabel, IconButton } from '@mui/material';
+import { Button, TextField, Avatar, Typography, Grid, Box, Paper, Divider, IconButton } from '@mui/material';
 import CloseButton from '@mui/icons-material/CloseTwoTone';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
@@ -35,6 +35,11 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
             setUserData(user);
         }
     }, [user]);
+    
+    const handleUserModalClose = () => {
+        setEditMode(false);
+        onClose();
+    }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUserData(prevUserData => ({ ...prevUserData as UserType, [event.target.name]: event.target.value }));
@@ -48,7 +53,6 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
         if (userData) {
             setUser(userData);
         }
-
         // Upload
     };
 
@@ -72,7 +76,7 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
     return ReactDOM.createPortal(
         <Box className={`modal-backdrop ${isOpen ? 'open' : ''}`} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
             <Paper sx={{ p: 3, width: '90%', maxWidth: '600px', maxHeight: '75vh', overflowY: 'auto', position: 'relative' }}>
-                <Button startIcon={<CloseButton />} onClick={onClose} sx={{ position: 'absolute', top: 10, right: 10 }} />
+                <Button startIcon={<CloseButton />} onClick={handleUserModalClose} sx={{ position: 'absolute', top: 10, right: 10 }} />
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
                     <Avatar src={userData.profilePic || ''} sx={{ width: 120, height: 120, marginRight: 2 }} />
                     <Box sx={{ flexGrow: 1 }}>
@@ -84,10 +88,10 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
                         </Grid>
                         <Typography variant="caption" sx={{ color: 'gray' }}>{userData.role}</Typography>
                     </Box>
-                    <IconButton onClick={() => setEditMode(!editMode)} sx={{ marginLeft: 1 }}>
-                        {editMode ? <CloseIcon /> : <EditIcon />}
-                    </IconButton>
                 </Box>
+                <IconButton onClick={() => setEditMode(!editMode)} sx={{ marginLeft: 1 }}>
+                    {editMode ? <CloseIcon /> : <EditIcon />}
+                </IconButton>
                 <Divider sx={{ mt: 2 }} />
                 <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
                     <Grid container spacing={2}>

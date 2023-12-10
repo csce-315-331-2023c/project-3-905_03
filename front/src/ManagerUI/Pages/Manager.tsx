@@ -10,6 +10,7 @@ import '../Styles/Manager.css';
 import EmployeesTable from '../Components/EmployeesTable';
 import CustomersTable from '../Components/CustomersTable';
 import AppBar from '../../SharedComponents/AppBar';
+import { useAuth } from '../../SharedComponents/AuthContext';
 
 /**
  * `ManagerGUI` is a React component that displays the main interface for managers.
@@ -22,20 +23,25 @@ import AppBar from '../../SharedComponents/AppBar';
  * @returns The rendered `ManagerGUI` component
  */
 const ManagerGUI: React.FC = () => {
-
+  const { user, setUser } = useAuth();
   const [activeSection, setActiveSection] = useState<string>('Orders');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
 
-  const componentMapping: { [key: string]: React.FC<{ isDrawerOpen: boolean }> } = {
+  var componentMapping: { [key: string]: React.FC<{ isDrawerOpen: boolean }> } = {
     Menu: MenuTable2,
     Families: FamilyTable,
     Inventory: InventoryTable2,
     Orders: OrdersTable4,
     Analytics: ManagerAnalytics,
-    User: User,
-    Employees: EmployeesTable,
-    Customers: CustomersTable,
   };
+
+  if (user && user.role === 'admin') {
+    componentMapping = {
+      ...componentMapping,
+      Employees: EmployeesTable,
+      Customers: CustomersTable,
+    };
+  }
 
   const ActiveComponent = componentMapping[activeSection] || null;
 

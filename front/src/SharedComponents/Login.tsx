@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import {  jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthContext';
 import { useModal } from './ModalContext';
 import ErrorModal from './ErrorModal';
-import RoleSelectionModal from './RoleSelectionModal';
 import { IconButton, InputAdornment } from '@mui/material';
 import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
@@ -37,7 +36,24 @@ const LoginPage = () => {
   const handleMouseDownPassword = (event: any) => {
     event.preventDefault();
   };
-  
+
+  const handleGoogleLoginError = () => {
+    setErrorMessage('OAuth Credentials Invalid.');
+    setShowErrorModal(true);
+  };
+
+  const handleErrorModal = () => {
+    setShowErrorModal(!showErrorModal);
+  }
+
+  const handleAccessMenu = () => {
+    navigate('/customer-menu');
+  };
+
+  const handleAccessKiosk = () => {
+    navigate('/customer-kiosk');
+  }
+
   const handleLoginError = (error: any, defaultMessage: string) => {
     let errorMessage = defaultMessage;
     if (error.response) {
@@ -49,7 +65,7 @@ const LoginPage = () => {
           errorMessage = 'Forbidden: Access denied.';
           break;
         case 500:
-          errorMessage = 'Server error: Please try again later.';
+          errorMessage = 'Internal Server Error: Please try again later.';
           break;
         default:
           break;
@@ -59,27 +75,8 @@ const LoginPage = () => {
     setShowErrorModal(true);
   };
 
-  const handleGoogleLoginError = () => {
-    setErrorMessage('OAuth Credentials Invalid.');
-    setShowErrorModal(true);
-  };
-
-  const handleErrorModal = () => {
-    setShowErrorModal(!showErrorModal);
-  }
-
-  
-  const handleAccessMenu = () => {
-    navigate('/customer-menu');
-  };
-
-  const handleAccessKiosk = () => {
-    navigate('/customer-kiosk');
-  }
-
   const initUserSession = (accessToken: any) => {
     localStorage.setItem('token', accessToken);
-    
     const decodedUser: any = jwtDecode(accessToken);
     setUser({ ...decodedUser });
     console.log('user decoded: ', decodedUser);

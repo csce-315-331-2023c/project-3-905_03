@@ -45,7 +45,11 @@ const ManagerNav: React.FC<ManagerNavProps> = ({ isDrawerOpen, setIsDrawerOpen, 
         setShowErrorModal(true);
     }
 
-    const navItems = ['Menu', 'Families', 'Inventory', 'Orders', 'Analytics', 'Employees', 'Customers'];
+    const navItems = ['Menu', 'Families', 'Inventory', 'Orders', 'Analytics'];
+
+    if (user && user.role === 'admin') {
+        navItems.push('Employees', 'Customers');
+    }
 
     return (
         <div className={`lhs ${isDrawerOpen ? '' : 'lhs-closed'}`} style={{ borderRight: isDrawerOpen ? '1px solid rgba(0, 0, 0, 0.1)' : '' }}>

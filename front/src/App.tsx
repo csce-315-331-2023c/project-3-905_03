@@ -1,5 +1,6 @@
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; 
+import React, {useEffect} from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ManagerGUI from './ManagerUI/Pages/Manager';
 import Cashier from './CashierUI/Pages/Cashier';
@@ -23,31 +24,56 @@ import { ModalProvider } from './SharedComponents/ModalContext';
  * 
  * @returns The rendered `App` component
  */
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
+
 function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  useEffect(() => {
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleCallbackResponse
+    });
+
+    window.google.accounts.id.renderButton(
+      document.getElementById('signInButton'),
+      { theme: 'outline', size: 'large', shape: 'rectangular', text: 'signIn' }
+    );
+  }, []);
+
+  function handleCallbackResponse(response: any) {
+    console.log(response.credentials);
+  }
 
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId={googleClientId}>
-        <BrowserRouter>
-          <ModalProvider>
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/customer-kiosk" element={<CustomerKiosk />} />
-              <Route path="/customer-menu" element={<DynamicMenu />} />
-              <Route path="/TV1" element={<DynamicTVMenu1 />} />
-              <Route path="/TV2" element={<DynamicTVMenu2 />} />
-              <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
-                <Route path="/manager" element={<ManagerGUI />} />
-              </Route>
-              <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
-                <Route path="/cashier" element={<Cashier />} />
-                <Route path="/kitchen" element={<KitchenDisplay />} />
-              </Route>
-              <Route path="*" element={<LoginPage />} />
-            </Routes>
-          </ModalProvider>
-        </BrowserRouter>
+        <div id='signInDiv'>
+          <BrowserRouter>
+            <ModalProvider>
+              <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/customer-kiosk" element={<CustomerKiosk />} />
+                <Route path="/customer-menu" element={<DynamicMenu />} />
+                <Route path="/TV1" element={<DynamicTVMenu1 />} />
+                <Route path="/TV2" element={<DynamicTVMenu2 />} />
+                <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
+                  <Route path="/manager" element={<ManagerGUI />} />
+                </Route>
+                <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
+                  <Route path="/cashier" element={<Cashier />} />
+                  <Route path="/kitchen" element={<KitchenDisplay />} />
+                </Route>
+                <Route path="*" element={<LoginPage />} />
+              </Routes>
+            </ModalProvider>
+          </BrowserRouter>
+        </div>
       </GoogleOAuthProvider>
     </AuthProvider>
   );

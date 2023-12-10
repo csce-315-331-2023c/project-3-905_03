@@ -201,7 +201,6 @@ const LoginPage = () => {
                 size='large'
                 logo_alignment='center'
                 width={250}
-                key={google_API_key}
               /> 
             </div>
           </div>

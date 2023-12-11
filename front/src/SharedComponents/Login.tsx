@@ -55,12 +55,12 @@ const LoginPage = () => {
       console.log('Client: Making a fetch request to /auth/manual/login with email:', email);
       const response = await axios.post('/auth/manual/login', { email, password });
       if (response.status === 200) {
-        const { token } = response.data;
+        const { token, refreshToken } = response.data;
         console.log('Client: Received data from /auth/manual/login', response.data);
         localStorage.setItem('token', token);
-
+        localStorage.setItem('refreshToken', refreshToken);
         const decodedUser: any = jwtDecode(token);
-        console.log('Client: decoded token => user: ', decodedUser);
+        
         setUser({ ...decodedUser });
         navigateBasedOnRole(decodedUser.role);
       } else {
@@ -80,9 +80,9 @@ const LoginPage = () => {
       const serverResponse = await axios.post('/auth/google/login', { idToken });
       if (serverResponse.status === 200) {
         console.log('Client: Received data from /auth/google/login', serverResponse.data);
-        const { token } = serverResponse.data;
+        const { token, refreshToken } = serverResponse.data;
         localStorage.setItem('token', token);
-
+        localStorage.setItem('refreshToken', refreshToken);
         const decodedUser: any = jwtDecode(token);
         console.log('Client: decoded token => user', decodedUser);
         setUser({ ...decodedUser });

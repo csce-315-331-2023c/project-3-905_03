@@ -24,13 +24,6 @@ import { ModalProvider } from './SharedComponents/ModalContext';
  * 
  * @returns The rendered `App` component
  */
-
-declare global {
-  interface Window {
-    google: any;
-  }
-}
-
 function App() {
   
 

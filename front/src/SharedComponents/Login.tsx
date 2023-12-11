@@ -10,12 +10,18 @@ import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Divider from '@mui/material/Divider';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider} from '@react-oauth/google';
 import './Styles/Login.css';
 import useStyles from './Styles/useStyles.ts';
 
 import axios from 'axios';
 import AppBar from './AppBar.tsx';
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 const LoginPage = () => {
   // States

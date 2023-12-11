@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import {  } from '@react-oauth/google';
 import {  jwtDecode } from 'jwt-decode';
 import { useAuth, User } from './AuthContext';
 import { useModal } from './ModalContext';
@@ -10,12 +10,18 @@ import { TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Divider from '@mui/material/Divider';
-
+import { GoogleOAuthProvider} from '@react-oauth/google';
 import './Styles/Login.css';
 import useStyles from './Styles/useStyles.ts';
 
 import axios from 'axios';
 import AppBar from './AppBar.tsx';
+
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 const LoginPage = () => {
   // States
@@ -27,6 +33,26 @@ const LoginPage = () => {
 
   const classes = useStyles();
   const [showPassword, setShowPassword] = useState(false);
+
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  useEffect(() => {
+    /* global google */
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleGoogleLoginSuccess
+      
+    });
+
+    window.google.accounts.id.renderButton(
+      document.getElementById('signInButton'),
+      { theme: 'outline', size: 'large', shape: 'rectangular', text: 'signIn' }
+    );
+  }, []);
+
+  // function handleCallbackResponse(response: any) {
+  //   console.log(response.credentials);
+  // }
 
   // Handlers / Helpers
   const handleClickShowPassword = () => {
@@ -190,7 +216,7 @@ const LoginPage = () => {
               Submit
             </button>
             <div className="google-auth">
-              <GoogleLogin
+              {/* <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginError}
                 useOneTap
@@ -199,7 +225,13 @@ const LoginPage = () => {
                 size='large'
                 logo_alignment='center'
                 width={250}
-              /> 
+                
+              />  */}
+              <GoogleOAuthProvider clientId={googleClientId}>
+                <div id='signInButton'>
+
+                </div>
+              </GoogleOAuthProvider>
             </div>
           </div>
           <Divider orientation="vertical" flexItem sx={{ backgroundColor: '#ffffff', height: '80%' }} />

@@ -20,12 +20,6 @@ app.use(googleOAuth);
 
 const { Client } = require('pg')
 
-const pool = new Client({
-    host: 'csce-315-db.engr.tamu.edu',
-    user: 'csce315_905_03user',
-    password: '90503',
-    database: 'csce315_905_03db'
-});
 
 app.use(express.static(path.join(__dirname, '../front/dist')));
 
@@ -2694,13 +2688,20 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     }
 });
 
-// Fetch User Data
+
 app.get('/api/user', async (req, res) => {
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
+
     try {
-        await pool.connect();
+        await client.connect();
         const userID = req.user.id;
         const query = 'SELECT * FROM employees WHERE employee_id = $1';
-        const userData = await pool.query(query, [userID]);
+        const userData = await client.query(query, [userID]);
 
         if (userData.rows.length > 0) {
             res.json(userData.rows[0]);
@@ -2710,33 +2711,43 @@ app.get('/api/user', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
     } finally {
-        await pool.end();
+        await client.end();
     }
 });
 
 app.post('/api/user/update', async (req, res) => {
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
     try {
-        await pool.connect();
+        await client.connect();
         const userID = req.user.id;
         const { firstName, lastName, email, altEmail, phone, address, emergencyContactFirstName, emergencyContactLastName, emergencyContactPhone } = req.body;
         const updateQuery = 'UPDATE employees SET first_name = $1, last_name = $2, email = $3, alt_email = $4, phone = $5, address = $6, emergency_contact_first_name = $7, emergency_contact_last_name = $8, emergency_contact_phone = $9 WHERE employee_id = $10';
-        await pool.query(updateQuery, [firstName, lastName, email, altEmail, phone, address, emergencyContactFirstName, emergencyContactLastName, emergencyContactPhone, userID]);
+        await client.query(updateQuery, [firstName, lastName, email, altEmail, phone, address, emergencyContactFirstName, emergencyContactLastName, emergencyContactPhone, userID]);
         res.json({ message: 'User updated successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
     } finally {
-        await pool.end();
+        await client.end();
     }
 });
 
-// Change Password
 app.post('/api/user/change-password', async (req, res) => {
+    const client = new Client({
+        host: 'csce-315-db.engr.tamu.edu',
+        user: 'csce315_905_03user',
+        password: '90503',
+        database: 'csce315_905_03db'
+    })
     try {
-        await pool.connect();
+        await client.connect();
         const userID = req.user.id;
         const { currentPassword, newPassword } = req.body;
-        
-        const userRes = await pool.query('SELECT password FROM employees WHERE employees_id = $1', [userID]);
+        const userRes = await client.query('SELECT password FROM employees WHERE employee_id = $1', [userID]);
         if (userRes.rows.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -2747,12 +2758,12 @@ app.post('/api/user/change-password', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await pool.query('UPDATE employees SET password = $1 WHERE employee_id = $2', [hashedPassword, userID]);
+        await client.query('UPDATE employees SET password = $1 WHERE employee_id = $2', [hashedPassword, userID]);
         res.json({ message: 'Password changed successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Internal Server Error' });
     } finally {
-        await pool.end();
+        await client.end();
     }
 });
 

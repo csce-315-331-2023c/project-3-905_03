@@ -1,5 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; 
+import React, {useEffect} from 'react';
+
 import ManagerGUI from './ManagerUI/Pages/Manager';
 import Cashier from './CashierUI/Pages/Cashier';
 import CustomerKiosk from './CustomerUI/Pages/CustomerKiosk';
@@ -23,30 +25,29 @@ import { ModalProvider } from './SharedComponents/ModalContext';
  * @returns The rendered `App` component
  */
 function App() {
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  
+
   return (
     <AuthProvider>
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <BrowserRouter>
-          <ModalProvider>
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/customer-kiosk" element={<CustomerKiosk />} />
-              <Route path="/customer-menu" element={<DynamicMenu />} />
-              <Route path="/TV1" element={<DynamicTVMenu1 />} />
-              <Route path="/TV2" element={<DynamicTVMenu2 />} />
-              <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
-                <Route path="/manager" element={<ManagerGUI />} />
-              </Route>
-              <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
-                <Route path="/cashier" element={<Cashier />} />
-                <Route path="/kitchen" element={<KitchenDisplay />} />
-              </Route>
-              <Route path="*" element={<LoginPage />} />
-            </Routes>
-          </ModalProvider>
-        </BrowserRouter>
-      </GoogleOAuthProvider>
+      <BrowserRouter>
+        <ModalProvider>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/customer-kiosk" element={<CustomerKiosk />} />
+            <Route path="/customer-menu" element={<DynamicMenu />} />
+            <Route path="/TV1" element={<DynamicTVMenu1 />} />
+            <Route path="/TV2" element={<DynamicTVMenu2 />} />
+            <Route element={<ProtectedRoute allowedRoles={['manager', 'admin']} />}>
+              <Route path="/manager" element={<ManagerGUI />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={['cashier', 'admin']} />}>
+              <Route path="/cashier" element={<Cashier />} />
+              <Route path="/kitchen" element={<KitchenDisplay />} />
+            </Route>
+            <Route path="*" element={<LoginPage />} />
+          </Routes>
+        </ModalProvider>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

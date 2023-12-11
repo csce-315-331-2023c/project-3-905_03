@@ -2685,6 +2685,26 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     }
 });
 
+app.get('/api/user', async (req, res) => {
+    
+    const userId = req.session.userId; // or req.user.id, depending on your authentication setup
+    console.log('userId', userId);
+    try {
+        const userData = await pool.query('SELECT * FROM employees WHERE employee_id = $1', [userId]);
+
+        if (userData.rows.length > 0) {
+            res.json(userData.rows[0]);
+        } else {
+            res.status(404).send('User not found');
+        }
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
 //// SERVER
 
 app.get('*', (req, res) => {

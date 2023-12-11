@@ -59,7 +59,7 @@ const Customer = () => {
 
     const handleAvatarClick = () => { 
         if(confirm("Are you sure you want to logout?")  == true)
-            navigate('/');
+            handleClose();
     }
 
     const handleClose = () => {

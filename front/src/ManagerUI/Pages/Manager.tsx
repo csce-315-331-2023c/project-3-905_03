@@ -32,7 +32,6 @@ const ManagerGUI: React.FC = () => {
     Inventory: InventoryTable2,
     Orders: OrdersTable4,
     Analytics: ManagerAnalytics,
-    User: User,
     Employees: EmployeesTable,
     Customers: CustomersTable,
   };

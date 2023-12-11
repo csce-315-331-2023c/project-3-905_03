@@ -5,6 +5,7 @@ import "../Styles/CustomerKiosk.css";
 import { Item, Topping, Order, Family } from '../../Order.ts';
 import { ItemComponent } from '../Components/ItemComponent';
 import { Translate } from '../../SharedComponents/Translate.tsx';
+import { useAuth } from '../../SharedComponents/AuthContext';
 
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
@@ -45,6 +46,7 @@ const Customer = () => {
     const [currOrder, setCurrOrder] = useState<Order>(new Order());
     const [orderId, setOrderId] = useState<number>(0);
 
+    const { user, setUser } = useAuth();
 
     const [bagView, setBagView] = useState(false);
     const [bag, setBag] = useState<Family[]>([]);
@@ -57,10 +59,17 @@ const Customer = () => {
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
 
+    const handleAvatarClick = () => { 
+        if(confirm("Are you sure you want to logout?")  == true)
+            handleClose();
+    }
+
     const handleClose = () => {
         setOrderId(0);
-        window.location.reload();
-        // logout !!
+        // window.location.reload();
+        setUser(null);
+        localStorage.clear();
+        navigate('/');
     };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -257,7 +266,7 @@ const Customer = () => {
 
                 <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
                 <button onClick={handleZoomIn}><ZoomInIcon className="header-icon" /></button>
-                <button ><Avatar id='avatar' className="header-icon" alt="" src="" /></button>
+                <button onClick={handleAvatarClick}><Avatar id='avatar' className="header-icon" alt="" src="" /></button>
             </div>
             <div className="top">
 

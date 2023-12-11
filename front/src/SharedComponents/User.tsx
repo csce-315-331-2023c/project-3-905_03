@@ -128,7 +128,15 @@ const UserComponent: React.FC<UserProps> = ({ isOpen, onClose }) => {
                         <Typography variant="caption" sx={{ color: 'gray' }}>{userData.role}</Typography>
                     </Box>
                 </Box>
-                <IconButton onClick={() => setEditMode(!editMode)} sx={{ marginLeft: 1 }}>
+                <IconButton
+                    onClick={() => setEditMode(!editMode)}
+                    sx={{
+                        marginLeft: 1,
+                        color: 'red',
+                        position: 'absolute',
+                        top: 10,
+                        right: 10
+                    }}>
                     {editMode ? <CloseIcon /> : <EditIcon />}
                 </IconButton>
                 <Divider sx={{ mt: 2 }} />

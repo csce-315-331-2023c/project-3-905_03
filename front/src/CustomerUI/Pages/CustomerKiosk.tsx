@@ -57,6 +57,11 @@ const Customer = () => {
     const [selected, setSelected] = useState<Family | undefined>(undefined);
 
 
+    const handleAvatarClick = () => { 
+        if(confirm("Are you sure you want to logout?")  == true)
+            navigate('/');
+    }
+
     const handleClose = () => {
         setOrderId(0);
         window.location.reload();
@@ -257,7 +262,7 @@ const Customer = () => {
 
                 <button onClick={handleZoomOut}><ZoomOutIcon className="header-icon" /></button>
                 <button onClick={handleZoomIn}><ZoomInIcon className="header-icon" /></button>
-                <button ><Avatar id='avatar' className="header-icon" alt="" src="" /></button>
+                <button onClick={handleAvatarClick}><Avatar id='avatar' className="header-icon" alt="" src="" /></button>
             </div>
             <div className="top">
 

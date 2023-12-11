@@ -59,9 +59,7 @@ function ResponsiveAppBar() {
     const handleCloseModal = useCallback(() => {
         setIsModalOpen(false);
     }, []);
-
     
-
     const handleZoomIn = () => {
         const newZoomFactor = zoomFactor + 0.1;
         setZoomFactor(newZoomFactor);
@@ -73,7 +71,6 @@ function ResponsiveAppBar() {
         setZoomFactor(newZoomFactor);
         (document.body.style as any).zoom = `${newZoomFactor}`;
     };
-
 
     const handleColorReset = () => {
         setIsGrayscale(!isGrayscale);
@@ -109,7 +106,7 @@ function ResponsiveAppBar() {
     return (
         <>
             <AppBar position="fixed" elevation={0} sx={{
-                alignItems: 'center', minHeight: '80px',height: '7.5vh', zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#1a1a1a', borderBottom: '1px solid rgba(0, 0, 0, 0.12)', padding: '0px'
+                alignItems: 'center', minHeight: '80px',height: '7.5%', zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#1a1a1a', borderBottom: '1px solid rgba(0, 0, 0, 0.12)', padding: '0px', alignContent: 'center', justifyContent: 'center'
             }}>
                 <Toolbar sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0px' }}>
                     <MessLogo style={{ width: '10%', height: '80%' }} />
@@ -128,11 +125,11 @@ function ResponsiveAppBar() {
                         </IconButton>
                         <Tooltip title="Settings">
                             <IconButton sx={{ p: 0 }} >
-                                {user?.profilePic ? (
+                                {user? (
                                     <Avatar alt={`${user.firstName} ${user.lastName}`} src={user.profilePic} sx={{ color: '#ffffff' }} onClick={handleOpenUserMenu} />
                                 ) : (
                                         
-                                        <IconButton size='large' onClick={handleOpenUserMenu}>
+                                        <IconButton size='large'>
                                             <NoAccountsIcon sx={{ color: '#ffffff' }} />
                                         </IconButton>
                                 )} 

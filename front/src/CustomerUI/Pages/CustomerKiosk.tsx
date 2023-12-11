@@ -66,9 +66,10 @@ const Customer = () => {
 
     const handleClose = () => {
         setOrderId(0);
-        window.location.reload();
+        // window.location.reload();
         setUser(null);
         localStorage.clear();
+        navigate('/');
     };
 
     const handleSections = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -9,7 +9,17 @@ import { Order, Item, Topping } from "../../Order.ts";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from "@mui/material";
 import OrderConfirmationModal from "../Components/OrderConfirmationModal.tsx";
-
+import AppBar from '../../SharedComponents/AppBar.tsx';
+/**
+ * `Cashier` is a React component that handles the cashier functionality.
+ * 
+ * @remarks
+ * This component fetches the items from the server, manages the order state, and displays the items and the order.
+ * The user can add items to the order, remove items from the order, submit the order, and clear the order.
+ * The user can also choose whether the order is for dine-in or takeout.
+ * 
+ * @returns The rendered `Cashier` component
+ */
 const Cashier = () => {
     interface displayItem {
         family_id: number;
@@ -18,6 +28,7 @@ const Cashier = () => {
         family_description: string;
     }
 
+    // @ts-ignore
     const [state, upd] = useState(false);
     const [items, setItems] = useState<displayItem[]>([]);
     const [order, setOrder] = useState<Order>(new Order());
@@ -96,76 +107,79 @@ const Cashier = () => {
     }, []);
 
     return (
-        <Container className="cashier-container" style={{ height: '100vh', width: '100%', position: 'relative', overflow: 'auto'}}>
-            <div>
-                <div className="button-container" style={{ display: 'flex', marginTop: '5%'}}>
-                    <button className="login-button" onClick={displayEntrees}>Entrees</button>
-                    <button className="login-button" onClick={displayWT}>Waffles & Toasts</button>
-                    <button className="login-button" onClick={displaySides}>Sides</button>
-                    <button className="login-button" onClick={displayDrinks}>Drinks</button>
-                    <button className="login-button"onClick={displaySpecialItems}>Special Items</button>
-                </div>
-                <Grid container className="grid-container" style={{ display: 'flex', marginRight: '5%', marginBottom: '5%'}}>
-                    {items.map((menuItem) => (
-                        <Grid item key={menuItem.family_id} xs={12} md={6} lg={3}>
-                            <ItemCard item={menuItem} addItem={addItemToOrder} addTopping={addTopping}/>
-                        </Grid>
-                    ))}
-                </Grid>
-            </div>
-            <div>
-                <table className='table'>
-                    <thead>
-                        <tr>
-                            <th>Item ID</th>
-                            <th>Item Name</th>
-                            <th>Add Ons</th>
-                            <th>Price</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row, index) => (
-                            <tr key={index}>
-                                <td>{row.id}</td>
-                                <td>{row.name}</td>
-                                <td>{row.toppings?.filter(topping => topping.chosen).map(topping => topping.name).join(', ')}</td>
-                                <td>{order.getItemPrice(row)}</td>
-                                <td>
-                                    <span className="actions">
-                                        <IconButton onClick={() => deleteItemFromOrder(row)}>
-                                            <DeleteIcon style={{color: 'white'}}/>
-                                        </IconButton>
-                                    </span>
-                                </td>
-                            </tr>
+        <>
+            <AppBar />
+            <Container className="cashier-container" style={{ height: '92.5vh', width: '100%', position: 'relative', overflow: 'auto', marginTop:'7.5vh', overflowX: 'hidden'}}>
+                <div>
+                    <div className="button-container" style={{ display: 'flex', marginTop: '5%' }}>
+                        <button className="login-button" onClick={displayEntrees}>Entrees</button>
+                        <button className="login-button" onClick={displayWT}>Waffles & Toasts</button>
+                        <button className="login-button" onClick={displaySides}>Sides</button>
+                        <button className="login-button" onClick={displayDrinks}>Drinks</button>
+                        <button className="login-button" onClick={displaySpecialItems}>Special Items</button>
+                    </div>
+                    <Grid container className="grid-container" style={{ display: 'flex', marginRight: '5%', marginBottom: '5%' }}>
+                        {items.map((menuItem) => (
+                            <Grid item key={menuItem.family_id} xs={12} md={6} lg={3}>
+                                <ItemCard item={menuItem} addItem={addItemToOrder} addTopping={addTopping} />
+                            </Grid>
                         ))}
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>Tax: </td>
-                            <td>{order.getTax()}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td>Total: </td>
-                            <td>{order.getOrderTotal()}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div className="button-container" style={{ display: 'flex', width: '110%', marginTop: '3%'}}>
-                    <button className="login-button" onClick={() => {submitOrder()}}>Submit Order</button>
-                    <button className="login-button" onClick={() => {setTakeout(takeout === 0 ? 1 : 0); takeoutAction()}}
-                        style={{ backgroundColor: takeout === 1 ? 'green' : '#2c5dba' }}>
-                        Takeout
-                        {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
-                    </button>
-                    <button className="login-button" onClick={() => clearOrder()}>Clear Order</button>
+                    </Grid>
                 </div>
-                {modalOpen && <OrderConfirmationModal closeModal={() => (setModalOpen(false))} orderID={orderNumber}/>}            
-            </div>
-        </Container>
+                <div>
+                    <table className='table'>
+                        <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Item Name</th>
+                                <th>Add Ons</th>
+                                <th>Price</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={index}>
+                                    <td>{row.id}</td>
+                                    <td>{row.name}</td>
+                                    <td>{row.toppings?.filter(topping => topping.chosen).map(topping => topping.name).join(', ')}</td>
+                                    <td>{order.getItemPrice(row)}</td>
+                                    <td>
+                                        <span className="actions">
+                                            <IconButton onClick={() => deleteItemFromOrder(row)}>
+                                                <DeleteIcon style={{ color: 'white' }} />
+                                            </IconButton>
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>Tax: </td>
+                                <td>{order.getTax()}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>Total: </td>
+                                <td>{order.getOrderTotal()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div className="button-container" style={{ display: 'flex', width: '110%', marginTop: '3%' }}>
+                        <button className="login-button" onClick={() => { submitOrder() }}>Submit Order</button>
+                        <button className="login-button" onClick={() => { setTakeout(takeout === 0 ? 1 : 0); takeoutAction() }}
+                            style={{ backgroundColor: takeout === 1 ? 'green' : '#2c5dba' }}>
+                            Takeout
+                            {takeout === 1 && <span style={{ marginLeft: '10px' }}><FaCheck /></span>}
+                        </button>
+                        <button className="login-button" onClick={() => clearOrder()}>Clear Order</button>
+                    </div>
+                    {modalOpen && <OrderConfirmationModal closeModal={() => (setModalOpen(false))} orderID={orderNumber} />}
+                </div>
+            </Container>
+        </>
     );
 };
 

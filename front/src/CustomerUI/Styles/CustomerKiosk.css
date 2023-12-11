@@ -32,6 +32,14 @@
   height: 40px;
 }
 
+#translate {
+  margin-top: 10px;
+}
+
+#avatar {
+  margin-left: 3.5vw;
+}
+
 .top {
   display: grid;
   justify-items: center;
@@ -129,7 +137,7 @@
 /* menu */
 
 .displayWrap {
-  height: 80vh;
+  height: 78vh;
   overflow: auto;
 
   /* im gettin quirky */

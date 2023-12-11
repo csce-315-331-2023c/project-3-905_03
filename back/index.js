@@ -408,7 +408,17 @@ app.get('/getSpecialItems', (req, res) => {
 });
 
 /**
- * return served items in family given family id
+ * Handles the POST request for getting served items in a specific family.
+ * 
+ * @remarks
+ * This function is responsible for fetching all served items from a specific family from the database based on the family_id provided in the request body.
+ * The function connects to the database, executes a SQL query to get the served items where the family_id matches the provided family_id, and then sends a response with the status code and a JSON object containing the data (all served items in the specific family).
+ * If an error occurs, the function logs the error message and sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
  */
 app.post('/getServedItemsInFamily', (req, res) => {
     let { family_id } = req.body;
@@ -2076,7 +2086,7 @@ app.post('/addEmployee', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email, password, role, profile_pic, profile_complete, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
+        let {first_name, last_name, email, password, role, profile_pic, profile_complete, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
 
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
@@ -2094,7 +2104,7 @@ app.post('/addEmployee', async (req, res) => {
 
         let maxEmployee_id = await client.query('SELECT MAX(employee_id) FROM employees');
         let employee_id = (parseInt(maxEmployee_id.rows[0].max || 0)) + 1;
-        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, prefered_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
+        await client.query('INSERT INTO employees (employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, created_at, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)', [employee_id, first_name, last_name, email, password, role, profile_pic, profile_complete, dateTime, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone]);
        
         res.status(200).json({ message: 'success!' });
     } catch (error) {
@@ -2147,11 +2157,11 @@ app.post('/deleteEmployee', async (req, res) => {
 });
 
 /**
- * Handles the POST request for deleting a specific employee.
+ * Handles the POST request for editing a specific employee's basic information.
  * 
  * @remarks
- * This function is responsible for deleting a specific employee from the database. The employee_id is provided in the request body.
- * The function connects to the database, and deletes the record from the employees table where the employee_id matches the provided employee_id.
+ * This function is responsible for editing a specific employee's basic information in the database. The employee's details are provided in the request body.
+ * The function connects to the database, and updates the record in the employees table where the employee_id matches the provided employee_id.
  * If an error occurs, the function sends a response with the status code and the error message.
  * 
  * @param req - The incoming request
@@ -2186,6 +2196,19 @@ app.post('/editEmployee', async (req, res) => {
     }
 });
 
+/**
+ * Handles the POST request for editing a specific employee's additional information.
+ * 
+ * @remarks
+ * This function is responsible for editing a specific employee's additional information in the database. The employee's details are provided in the request body.
+ * The function connects to the database, and updates the record in the employees table where the employee_id matches the provided employee_id.
+ * If an error occurs, the function sends a response with the status code and the error message.
+ * 
+ * @param req - The incoming request
+ * @param res - The outgoing response
+ * 
+ * @returns void
+ */
 app.post('/editEmployeeAdditionalInfo', async (req, res) => {
     let client;
 
@@ -2435,6 +2458,7 @@ app.get('/generateRestockReport', async (req, res) => {
     try {
         await client.connect();
         const result = await client.query(restockQuery);
+        console.log("generateRestockReport(): ", result.rows);
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Database Query Error', err);
@@ -2483,9 +2507,11 @@ app.post('/generateSalesReport', async (req, res) => {
     try {
         await client.connect();
         const { rows } = await client.query(salesReportQuery, [startDate, endDate]);
+        console.log("generateSalesReport(): ", rows);
         res.status(200).json(rows);
     } catch (err) {
         console.error('Database Query Error', err);
+        
         res.status(500).json({ error: err.message });
     } finally {
         try {
@@ -2538,6 +2564,7 @@ app.post('/generateExcessReport', async (req, res) => {
         await client.connect();
         const excessItemsResult = await client.query(combinedQuery, [startDate, endDate]);
         const excessItems = excessItemsResult.rows;
+        console.log("Excess Items", excessItems);
         res.status(200).json(excessItems);
     } catch (err) {
         console.error('Database Query Error', err);
@@ -2589,6 +2616,7 @@ app.post('/generateUsageReport', async (req, res) => {
             stock_id: row.stock_id,
             usage_count: parseInt(row.usage_count)
         }));
+        console.log("generateUsageReport(): ", usageQuantities);
         res.status(200).json(usageQuantities);
     } catch (err) {
         console.error('Database Query Error', err);
@@ -2643,6 +2671,7 @@ app.post('/generateFreqPairsReport', async (req, res) => {
     try {
         await client.connect();
         const result = await client.query(freqPairsQuery, [startDate, endDate]);
+        console.log("generateFreqPairsReport(): ", result.rows);
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Database Query Error', err);

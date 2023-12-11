@@ -6,17 +6,11 @@
     --input-text-color: #575858;
     --text-color: #ffffff;
     --input-background: #2c2c2e;
-
-
     --border-radius: 0px;
-
     --mess-color: #2c5dba;
-
     --mess-secondary-color: rgb(15, 0, 122);
     --icon-color: #ffffff;
     --icon-hover-color: var(--mess-color);
-
-
 }
 
 
@@ -94,37 +88,16 @@ button:focus {
 
 
 .login-top {
-    margin-top: 2.5%;
+    margin-top: 10vh;
+    padding-top: 5%;
+    height: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    height: 75%;
+    height: 100%;
 }
 
-.login-bottom {
-    height: fit-content;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: row;
-}
 
-.logo-container {
-    margin: 1rem;
-    width: 20vw;
-    max-width: 250px;
-    min-width: 125x;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.logo-container svg {
-    width: 80%;
-    height: auto;
-}
 
 .google-auth {
     margin-top: 2rem;

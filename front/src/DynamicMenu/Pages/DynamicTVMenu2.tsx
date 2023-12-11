@@ -10,13 +10,30 @@ import logo from '../../assets/messLogo-removebg.png';
 import EntreeItems from '../Components/EntreeItems';
 import SpecialItems from '../Components/SpecialItems';
 import Weather from '../../SharedComponents/Weather';
+import { useNavigate } from 'react-router-dom';
 
 import Carousel from 'react-material-ui-carousel'
 
+/**
+ * `DynamicTVMenu2` is a React component that displays a dynamic TV menu.
+ * 
+ * @remarks
+ * This component displays a carousel of menu items, including entrees and specials, and weather information.
+ * The carousel auto-plays, with each slide displayed for a certain duration.
+ * 
+ * @returns The rendered `DynamicTVMenu2` component
+ */
 const DynamicTVMenu2: React.FC = () => {
+
+    const navigate = useNavigate();
+
+    const handleAccessLogin = () => {
+        navigate('/');
+    }
+
     return (
         <div className="dynamic-menu-container">
-            <div className="header">
+            <div onClick={handleAccessLogin} className="header">
                 <img src={logo} alt="Mess Logo" />
             </div>
 

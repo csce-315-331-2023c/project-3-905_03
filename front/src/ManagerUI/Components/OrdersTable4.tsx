@@ -4,6 +4,7 @@ import axios from 'axios';
 import "../Styles/Table.css";
 import ViewOrderModal from './ViewOrderModal';
 import EditOrderModal from './EditOrderModal';
+import ConfirmationModal from './ConfirmationModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -12,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, TableCell, Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import {Popover, Box} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -35,6 +36,17 @@ interface Row {
     status: string;
 }
 
+/**
+ * `OrdersTable4` is a React component that displays a table of orders.
+ * 
+ * @remarks
+ * This component fetches recent orders from the server and displays them in a table.
+ * The user can search for orders between specific dates, refresh the orders, view an order, edit an order, and delete an order.
+ * The table includes columns for the employee ID, order ID, order total, whether the order is for takeout, the order date, the order status, and actions.
+ * The order status can be edited directly in the table.
+ * 
+ * @returns The rendered `OrdersTable4` component
+ */
 function OrdersTable4() {
     const currentDateTime = new Date();
     const oneYearAgo = new Date(currentDateTime.getFullYear() - 1, currentDateTime.getMonth(), currentDateTime.getDate());
@@ -47,6 +59,9 @@ function OrdersTable4() {
     const [editOrderModalOpen, setEditOrderModalOpen] = useState<number | null>(null);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState< Row | null>(null);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteID, setDeleteID] = useState<number>(-1);
 
     useEffect(() => {
         axios.get('/getRecentOrders')
@@ -87,6 +102,12 @@ function OrdersTable4() {
                 refreshOrders();
             })
             .catch(err => console.log(err));
+    }
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        deleteOrder(deleteID);
+        setShowConfirmationModal(false);
     }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -153,6 +174,7 @@ function OrdersTable4() {
         { name: 'takeout', label: 'Takeout', options: { filter: true, sort: true, }},
         { name: 'formatted_order_date', label: 'Order Date', options: { filter: false, sort: true, }},
         { name: 'status', label: 'Order Status', options: { filter: true, sort: true, 
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -227,6 +249,7 @@ function OrdersTable4() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -248,7 +271,7 @@ function OrdersTable4() {
                                 <IconButton onClick={() => setEditOrderModalOpen(tableMeta.rowData[1])}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => deleteOrder(tableMeta.rowData[1])}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteID(tableMeta.rowData[1])}}>
                                     <DeleteIcon/>
                                 </IconButton>
                                 {modalOpen === tableMeta.rowData[1] && <ViewOrderModal 
@@ -275,6 +298,9 @@ function OrdersTable4() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>
@@ -331,6 +357,7 @@ function OrdersTable4() {
                     options={options}
                 />
             )}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

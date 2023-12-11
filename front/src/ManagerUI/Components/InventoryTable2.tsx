@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import AddInventoryModal from './AddInventoryModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -23,12 +24,26 @@ interface Row {
     max_amount: number;
 }
 
+/**
+ * `InventoryTable2` is a React component that displays a table of inventory items.
+ * 
+ * @remarks
+ * This component fetches inventory data from the server and displays it in a table.
+ * The user can add, edit, and delete inventory items.
+ * The table includes columns for the item's stock ID, name, cost, quantity, and maximum amount.
+ * The name, cost, quantity, and maximum amount can be edited directly in the table.
+ * 
+ * @returns The rendered `InventoryTable2` component
+ */
 function InventoryTable2() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
     const fetchInventoryItems = () => {
         axios.get('/getStockItems')
@@ -92,6 +107,12 @@ function InventoryTable2() {
             .catch(err => console.log(err));
     };
 
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(deleteRowIndex);
+        setShowConfirmationModal(false);
+    }
+
     const handleAddRow = (newRow: Row) => {
         axios.post('/addStockItem', newRow)
             .then(() => {
@@ -103,6 +124,7 @@ function InventoryTable2() {
     const columns = [
         { name: 'stock_id', label: 'Stock ID', options: {sort: true, filter: false} },
         { name: 'stock_item', label: 'Stock Item', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="stock_item" label="Stock Item" value={editData?.stock_item} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -110,6 +132,7 @@ function InventoryTable2() {
                 return value;
             }} },
         { name: 'cost', label: 'Cost', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="cost" label="Cost" value={editData?.cost} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -117,6 +140,7 @@ function InventoryTable2() {
                 return value;
             }} },
         { name: 'stock_quantity', label: 'Quantity', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="stock_quantity" label="Stock Quantity" value={editData?.stock_quantity} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -124,6 +148,7 @@ function InventoryTable2() {
                 return value;
             }} },
         { name: 'max_amount', label: 'Maximum Amount', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="max_amount" label="Maximum Amount" value={editData?.max_amount} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -133,6 +158,7 @@ function InventoryTable2() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -151,7 +177,7 @@ function InventoryTable2() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </span>
@@ -168,6 +194,9 @@ function InventoryTable2() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>
@@ -209,6 +238,7 @@ function InventoryTable2() {
                 </ThemeProvider>
             )}
             {modalOpen && <AddInventoryModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

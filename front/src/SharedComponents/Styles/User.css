@@ -1,27 +1,49 @@
-.user-container {
+.modal-backdrop {
     display: flex;
-    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: rgba(65, 67, 69, 0.8);
+    justify-content: center;
     align-items: center;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: auto;
-    color: #FFFFFF;
 }
 
-h1 {
-    font-size: 3rem;
-    font-weight: 300;
-    line-height: 1.2;
+.modal-backdrop.open {
+    display: flex;
+}
+
+.modal {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 450px;
     text-align: center;
-    color: var(--text-color);
-    margin: 1.5rem 0;
+    font-family: sans-serif;
 }
 
-.user-container p {
-    margin: 5px 0;
-    font-size: 16px;
-    color: #333;
+.user-container {
+    text-align: center;
+    padding: 20px;
 }
 
+.paper {
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.grid {
+    margin-bottom: 16px;
+}
+
+.textField {
+    width: 100%;
+}
+
+.button {
+    width: 100%;
+}

@@ -1,5 +1,5 @@
 import { Box, TextField } from '@mui/material';
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState } from 'react';
 import ConfirmationModal from './ConfirmationModal';
 
 interface Row {
@@ -15,6 +15,18 @@ interface AddCustomerModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
+/**
+ * `AddCustomerModal` is a React component that displays a modal for adding a new customer.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new customer's first name, last name, and email.
+ * When the form is submitted, the new customer is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new customer
+ * 
+ * @returns The rendered `AddCustomerModal` component
+ */
 const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { 
@@ -36,9 +48,16 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({ closeModal, onSubmi
     };
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        onSubmit(formState);
-        closeModal();
+        if (formState.first_name !== "" && formState.last_name !== "" && formState.email !== "") {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            closeModal();
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
 
     };
 

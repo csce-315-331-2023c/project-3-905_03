@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import AddCustomerModal from './AddCustomerModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -23,12 +24,25 @@ interface Row {
     formatted_created_at?: string;
 }
 
+/**
+ * `CustomersTable` is a React component that displays a table of customers.
+ * 
+ * @remarks
+ * This component fetches customer data from the server and displays it in a table.
+ * The user can add, edit, and delete customers.
+ * The table includes columns for the customer's ID, first name, last name, email, and the date the customer was created.
+ * 
+ * @returns The rendered `CustomersTable` component
+ */
 function CustomersTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
     const fetchCustomers = () => {
         axios.get('/getCustomers')
@@ -94,6 +108,12 @@ function CustomersTable() {
             .catch(err => console.log(err));
     };
 
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(deleteRowIndex);
+        setShowConfirmationModal(false);
+    }
+
     const handleAddRow = (newRow: Row) => {
         axios.post('/addCustomer', newRow)
             .then(() => {
@@ -105,6 +125,7 @@ function CustomersTable() {
     const columns = [
         { name: 'user_id', label: 'Customer ID', options: {sort: true, filter: false} },
         { name: 'first_name', label: 'First Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="first_name" label="First Name" value={editData?.first_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -112,6 +133,7 @@ function CustomersTable() {
                 return value;
             }} },
         { name: 'last_name', label: 'Last Name', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="last_name" label="Last Name" value={editData?.last_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -119,6 +141,7 @@ function CustomersTable() {
                 return value;
             }} },
         { name: 'email', label: 'Email', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="email" label="Email" value={editData?.email} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -129,6 +152,7 @@ function CustomersTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -147,7 +171,7 @@ function CustomersTable() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true), setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </span>
@@ -164,6 +188,9 @@ function CustomersTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>
@@ -205,6 +232,7 @@ function CustomersTable() {
                 </ThemeProvider>
             )}
             {modalOpen && <AddCustomerModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     )
 }

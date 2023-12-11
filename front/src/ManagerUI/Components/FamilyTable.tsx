@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../Styles/Table.css";
 import AddFamilyModal from './AddFamilyModal';
 import DescriptionModal from './DescriptionModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
@@ -27,6 +28,18 @@ interface Row {
     family_description: string;
 }
 
+/**
+ * `FamilyTable` is a React component that displays a table of families.
+ * 
+ * @remarks
+ * This component fetches family data from the server and displays it in a table.
+ * The user can add, edit, and delete families.
+ * The table includes columns for the family's ID, name, category, and description.
+ * The description can be viewed in a modal.
+ * The name and category can be edited directly in the table.
+ * 
+ * @returns The rendered `FamilyTable` component
+ */
 function FamilyTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -34,6 +47,9 @@ function FamilyTable() {
     const [editRow, setEditRow] = useState<number | null>(null);
     const [editData, setEditData] = useState<Row | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
     const fetchFamilies = () => {
         axios.get('/getAllFamilies')
@@ -96,6 +112,12 @@ function FamilyTable() {
             .catch(err => console.log(err));
     };
 
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(deleteRowIndex);
+        setShowConfirmationModal(false);
+    }
+
     const handleAddRow = (newRow: Row) => {
         axios.post('/addFamily', newRow)
             .then(() => {
@@ -126,6 +148,7 @@ function FamilyTable() {
     const columns = [
         { name: 'family_id', label: 'Family ID', options: {sort: true, filter: false} },
         { name: 'family_name', label: 'Family Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="family_name" label="Family Name" value={editData?.family_name} onChange={handleInputChange} variant='outlined' style={{ outline: 'none' }}/>;
@@ -133,6 +156,7 @@ function FamilyTable() {
                 return value;
             }} },
         { name: 'family_category', label: 'Family Category', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -160,6 +184,7 @@ function FamilyTable() {
                 return value;
             }} },
         { name: 'family_description', label: 'Description', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 return (
                     <span>
@@ -173,6 +198,7 @@ function FamilyTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -191,7 +217,7 @@ function FamilyTable() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)}>
                                     <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </span>
@@ -208,6 +234,9 @@ function FamilyTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>
@@ -249,6 +278,7 @@ function FamilyTable() {
                 </ThemeProvider>
             )}
             {modalOpen && <AddFamilyModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

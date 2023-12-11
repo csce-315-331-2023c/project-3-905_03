@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../Styles/Table.css";
 import AddMenuModal from './AddMenuModal';
+import ConfirmationModal from './ConfirmationModal';
 import MUIDataTable, { MUIDataTableMeta } from "mui-datatables";
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,6 +27,17 @@ interface Row {
     ingredients?: string[];
 }
 
+/**
+ * `MenuTable` is a React component that displays a table of menu items.
+ * 
+ * @remarks
+ * This component fetches menu items, item families, and ingredients from the server and displays them in a table.
+ * The user can add, edit, and delete menu items.
+ * The table includes columns for the item's ID, name, price, family name, and ingredients.
+ * The name, price, family name, and ingredients can be edited directly in the table.
+ * 
+ * @returns The rendered `MenuTable` component
+ */
 function MenuTable() {
     const [rows, setRows] = useState<Row[]>([]);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -34,6 +46,9 @@ function MenuTable() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [familyNames, setFamilyNames] = useState<string[]>([]);
     const [allIngredients, setAllIngredients] = useState<string[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
+    const [deleteRowIndex, setDeleteRowIndex] = useState<number>(-1);
 
 
     const fetchMenuItems = () => {
@@ -101,6 +116,12 @@ function MenuTable() {
             })
             .catch(err => console.log(err));
     };
+
+    const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        handleDeleteRow(deleteRowIndex);
+        setShowConfirmationModal(false);
+    }
 
     const handleAddRow = (newRow: Row) => {
         axios.post('/addServedItem', newRow)
@@ -194,6 +215,7 @@ function MenuTable() {
     const columns = [
         { name: 'item_id', label: 'Item ID', options: {sort: true, filter: false} },
         { name: 'served_item', label: 'Item Name', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="served_item" label="Item Name" value={editData?.served_item} onChange={handleInputChange} variant='outlined' sx={{ border: 'none' }}/>;
@@ -201,6 +223,7 @@ function MenuTable() {
                 return value;
             }} },
         { name: 'item_price', label: 'Price', options: {sort: true, filter: false,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return <TextField name="item_price" label="Price" value={editData?.item_price} onChange={handleInputChange} variant='outlined' sx={{ border: 'none' }}/>;
@@ -208,6 +231,7 @@ function MenuTable() {
                 return value;
             }} },
         { name: 'family_name', label: 'Family Name', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -233,6 +257,7 @@ function MenuTable() {
                 return value;
             }} },
         { name: 'ingredients', label: 'Ingredients', options: {sort: true, filter: true,
+            // @ts-ignore
             customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                 if (editRow === tableMeta.rowIndex) {
                     return (
@@ -264,6 +289,7 @@ function MenuTable() {
         {
             name: 'Actions',
             options: {
+                // @ts-ignore
                 customBodyRender: (value: any, tableMeta: MUIDataTableMeta, updateValue: (s: any) => any) => {
                     if (editRow === tableMeta.rowIndex) {
                         return (
@@ -282,7 +308,7 @@ function MenuTable() {
                                 <IconButton onClick={() => handleEditRow(tableMeta)} sx={{ marginRight: '5px' }}>
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteRow(tableMeta.rowIndex)}>
+                                <IconButton onClick={() => {setShowConfirmationModal(true); setDeleteRowIndex(tableMeta.rowIndex)}}>
                                     <DeleteIcon />
                                 </IconButton>
                             </span>
@@ -299,6 +325,9 @@ function MenuTable() {
         filterType: 'checkbox' as const,
         search: true,
         jumpToPage: true,
+        selectableRows: 'none' as const,
+        page: currentPage,
+        onChangePage: (currentPage: number) => setCurrentPage(currentPage),
         customToolbar: () => {
             return (
                 <div>
@@ -326,6 +355,7 @@ function MenuTable() {
                 />
             )}
             {modalOpen && <AddMenuModal closeModal={() => setModalOpen(false)} onSubmit={handleAddRow} maxID={0} />}
+            {showConfirmationModal && <ConfirmationModal closeModal={() => setShowConfirmationModal(false)} submitFunction={handleDelete} delete={true}/>}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -18,6 +18,18 @@ interface AddFamilyModalProps {
     onSubmit: (newRow: Row) => void;
 }
 
+/**
+ * `AddFamilyModal` is a React component that displays a modal for adding a new family.
+ * 
+ * @remarks
+ * This component displays a form for the user to enter the new family's details, including name, category, and description.
+ * When the form is submitted, the new family is added to the database and the modal is closed.
+ * 
+ * @param closeModal - Function to close the modal
+ * @param onSubmit - Function to submit the form and add the new family
+ * 
+ * @returns The rendered `AddFamilyModal` component
+ */
 const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit }) => {
     const [formState, setFormState] = useState<Row>(
         { family_id: 0, family_name: "", family_category: "", family_description: "" }
@@ -33,9 +45,16 @@ const AddFamilyModal: React.FC<AddFamilyModalProps> = ({ closeModal, onSubmit })
     };
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
-        onSubmit(formState);
-        closeModal();
+        if (formState.family_name !== "" && formState.family_description !== "" && formState.family_category !== "") {
+            e.preventDefault();
+            alert('Form submitted successfully!');
+            onSubmit(formState);
+            closeModal();
+        } else {
+            e.preventDefault();
+            alert('Please fill out the entire form before submitting.');
+            setShowConfirmationModal(false);
+        }
 
     };
 

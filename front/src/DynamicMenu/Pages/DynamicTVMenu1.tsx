@@ -10,11 +10,28 @@ import SideItems from '../Components/SideItems';
 import DrinkItems from '../Components/DrinkItems';
 
 import Carousel from 'react-material-ui-carousel'
+import { useNavigate } from 'react-router-dom';
 
+/**
+ * `DynamicTVMenu1` is a React component that displays a dynamic TV menu.
+ * 
+ * @remarks
+ * This component displays a carousel of menu items, including waffles and toast, sides, and drinks, along with images of selected items.
+ * The carousel auto-plays, with each slide displayed for a certain duration.
+ * 
+ * @returns The rendered `DynamicTVMenu1` component
+ */
 const DynamicTVMenu1: React.FC = () => {
+
+    const navigate = useNavigate();
+
+    const handleAccessLogin = () => {
+        navigate('/');
+    }
+
     return (
         <div className="dynamic-menu-container">
-            <div className="header">
+            <div onClick={handleAccessLogin} className="header">
                 <img src={logo} alt="Mess Logo" />
                 <div className="header-text">WELCOME TO MESS WAFFLES!</div>
                 

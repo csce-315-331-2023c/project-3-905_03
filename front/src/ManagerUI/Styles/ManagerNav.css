@@ -1,6 +1,3 @@
-.lhs {
-    width: 300px;
-}
 
 .manager-nav-container {
     width: 100%;
@@ -9,12 +6,18 @@
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
-.nav-item {
-    width: calc(100% - 2rem);
-    margin: 0.5rem 1rem;
-    align-self: center;
+.nav-items {
+    position: absolute;
+    top: 100%;
+
+    left: 0;
+    width: 15%;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .nav-item button {
@@ -42,6 +45,7 @@
     background-color: rgba(255, 255, 255, 0.15);
     transform: scale(1.05);
 }
+
 .menu-icon {
     font-size: 2rem;
     /* Adjust as needed */

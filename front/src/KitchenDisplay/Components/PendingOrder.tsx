@@ -16,6 +16,21 @@ interface OrderProps {
     onSelect: () => void;
 }
 
+/**
+ * `PendingOrder` is a React component that displays a pending order.
+ * 
+ * @remarks
+ * This component fetches the order items from the server, calculates the elapsed time since the order was placed, and displays the order.
+ * The order items are fetched when the component mounts.
+ * The elapsed time is updated every 30 seconds.
+ * If the elapsed time is more than 20 minutes, the order is marked as late.
+ * 
+ * @param order - The order to display
+ * @param isSelected - Whether the order is selected
+ * @param onSelect - Function to select the order
+ * 
+ * @returns The rendered `PendingOrder` component
+ */
 const PendingOrder: React.FC<OrderProps> = ({ order, isSelected, onSelect }) => {
     interface itemRow {
         order_item_id: number;

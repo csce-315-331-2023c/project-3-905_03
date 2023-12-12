@@ -2086,8 +2086,9 @@ app.post('/addEmployee', async (req, res) => {
     let client;
 
     try {
-        let {first_name, last_name, email, password, role, profile_pic, profile_complete, phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone } = req.body;
-
+        let {first_name, last_name, email, password, role, profile_pic, profile_complete} = req.body;
+        let {phone, pay_rate, alt_email, preferred_name, address, emergency_contact_first_name, emergency_contact_last_name, emergency_contact_phone} = additional_info;
+        
         client = new Client({
             host: 'csce-315-db.engr.tamu.edu',
             user: 'csce315_905_03user',
